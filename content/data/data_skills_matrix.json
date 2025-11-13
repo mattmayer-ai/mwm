@@ -1,0 +1,114 @@
+{
+  "ai": {
+    "rag": [
+      "RAG implementation for accuracy improvement",
+      "Vector databases (PGVector)",
+      "Semantic search optimization",
+      "Chunking strategies for domain-specific content",
+      "Hybrid retrieval systems"
+    ],
+    "evals": [
+      "Prompt evaluation frameworks",
+      "A/B testing for LLM outputs",
+      "Cost-per-value-event tracking",
+      "Human-in-the-loop validation",
+      "Deterministic demo creation for AI features"
+    ],
+    "prompting": [
+      "Multi-agent orchestration",
+      "System prompt engineering",
+      "Few-shot learning implementation",
+      "Chain-of-thought reasoning",
+      "Prompt templating for consistency"
+    ],
+    "safety": [
+      "Responsible AI governance frameworks",
+      "Bias testing methodologies",
+      "Transparency requirements",
+      "Performance monitoring systems",
+      "Explainable AI outputs"
+    ],
+    "ml_ops": [
+      "AWS Bedrock implementation",
+      "Claude Sonnet 3.7 integration",
+      "GPT-4 orchestration",
+      "Scale AI labeling workflows",
+      "Computer vision model training"
+    ]
+  },
+  "product": {
+    "discovery": [
+      "697-complaint systematic analysis",
+      "Assumption mapping and validation",
+      "User interview methodologies",
+      "Jobs-to-be-done framework",
+      "Ethnographic research",
+      "Problem reframing techniques"
+    ],
+    "strategy": [
+      "3-5 year roadmap development",
+      "North Star metric definition",
+      "Strategic pivot execution",
+      "Market analysis frameworks",
+      "Competitive positioning",
+      "Build vs buy decisions"
+    ],
+    "delivery": [
+      "Agile/Scrum methodologies",
+      "Cross-functional orchestration",
+      "MVP definition and scoping",
+      "Feature flag implementation",
+      "Progressive rollout strategies",
+      "Release planning"
+    ],
+    "analytics": [
+      "Conversion funnel optimization",
+      "Cohort analysis",
+      "A/B testing frameworks",
+      "OKR implementation",
+      "Performance metrics definition",
+      "Cost-benefit modeling"
+    ]
+  },
+  "domains": [
+    "aviation",
+    "defense",
+    "enterprise_saas",
+    "construction_tech",
+    "education_tech",
+    "manufacturing",
+    "naval_training",
+    "regulated_industries"
+  ],
+  "tools": [
+    "AWS Bedrock",
+    "Scale AI",
+    "Jira/Confluence",
+    "Figma",
+    "Miro",
+    "React",
+    "Node.js",
+    "Tailwind",
+    "Firebase",
+    "GitHub/GitLab",
+    "Neo4j",
+    "PGVector",
+    "xAPI/CMI 5",
+    "Azure",
+    "WebGL"
+  ],
+  "levels": {
+    "rag": "expert",
+    "retrieval": "expert",
+    "evals": "advanced",
+    "genai_prod": "expert",
+    "prompting": "expert",
+    "computer_vision": "advanced",
+    "product_strategy": "expert",
+    "customer_discovery": "expert",
+    "cross_functional_leadership": "expert",
+    "experimentation": "expert",
+    "strategic_planning": "expert",
+    "agile_methodologies": "expert"
+  }
+}

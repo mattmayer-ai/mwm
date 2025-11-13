@@ -1,0 +1,11 @@
+node_modules
+dist
+functions/lib
+.firebase
+coverage
+*.log
+*.map
+.DS_Store
+.env.local
+.env.*.local
+

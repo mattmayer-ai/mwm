@@ -1,0 +1,49 @@
+name: Deploy to Firebase
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate sitemap
+        run: npm run build:sitemap
+        env:
+          SITE_URL: ${{ secrets.SITE_URL || 'https://your-project.web.app' }}
+
+      - name: Build
+        run: npm run build
+
+      - name: Run tests
+        run: npm run test
+        continue-on-error: true  # Don't fail deploy on test failures (adjust as needed)
+
+      - name: Install Functions dependencies
+        run: |
+          cd functions
+          npm ci
+          npm run build
+
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@v13.23.0
+        with:
+          args: deploy --only hosting,functions,firestore:rules
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+          PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+

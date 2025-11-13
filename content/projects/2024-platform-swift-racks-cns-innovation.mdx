@@ -1,0 +1,66 @@
+---
+title: "CNS — Multi-Agent Innovation Platform"
+dates: "2024–Present"
+role: "Head of Product, Swift Racks"
+tags: ["ai","multi-agent","enterprise","saas","innovation","platform"]
+impact: ["$4.1M ARR Year 1 target","$280M ARR Year 5 projection","5 specialized AI agents","Automated discovery lifecycle"]
+---
+
+## Context {#sec-context}
+
+In 2024, Swift Racks identified a massive gap in how enterprises approach innovation. Companies were drowning in ideas but starving for validation. Product teams spent months building features nobody wanted, while potentially transformative insights remained buried in support tickets, sales calls, and user feedback. The innovation process was broken at a fundamental level [ref:1][ref:2].
+
+Traditional innovation management tools focused on idea collection and project tracking, but they didn't address the core challenge: systematically moving from assumption to validated learning. Teams had Jira for tickets, Miro for workshops, and spreadsheets for tracking, but no integrated system for the complete innovation lifecycle. The cognitive overhead of managing experiments across tools was crushing productivity [ref:1][ref:3].
+
+We saw an opportunity to build something transformative: an AI-powered platform that wouldn't just track innovation but actively orchestrate it. The vision was ambitious—create specialized AI agents that could handle different aspects of the discovery process, working together like a senior product team that never sleeps [ref:1][ref:4].
+
+## Problem {#sec-problem}
+
+Through our own product development at Swift Racks, managing five concurrent products across different industries, we experienced the pain firsthand. Each product required continuous experimentation, but coordinating experiments across teams was chaotic. We were using seven different tools, had no standardized process for moving from insight to action, and were losing institutional knowledge every time someone left [ref:1][ref:3].
+
+The breaking point came during a strategic planning session where we realized we had run over 200 experiments across our portfolio but couldn't quickly answer: Which assumptions had we already validated? What patterns emerged across different products? Which experiment types yielded highest learning value per dollar spent? Our insights were scattered across Confluence pages, Slack threads, and individual notebooks [ref:3][ref:4].
+
+We interviewed 50+ product leaders at enterprises and found universal struggles: experiment velocity was too slow (average 3 months from idea to learning), validated learnings weren't being captured systematically, teams kept re-testing the same assumptions, and there was no intelligent prioritization of which experiments to run next [ref:2][ref:5].
+
+## Insight {#sec-insight}
+
+The breakthrough came from recognizing that innovation follows predictable patterns that could be systematized and automated. Every successful product discovery journey moves through the same stages: ideas emerge from problems, assumptions underlie every idea, hypotheses test specific assumptions, experiments validate or invalidate hypotheses, learnings synthesize into decisions, and decisions inform next actions [ref:4][ref:6].
+
+What if we could create specialized AI agents for each stage? Not generic ChatGPT-style assistance, but purpose-built agents with deep expertise in their specific domain. A Manager agent to orchestrate the overall process. An Assumption Discovery agent to surface and rank hidden beliefs. An Experiment Design agent to craft optimal tests. A Learning Synthesis agent to extract patterns from results [ref:1][ref:4].
+
+The real innovation wasn't just the individual agents but their orchestration. By having agents work together—passing context, building on each other's outputs, learning from collective results—we could create compounding intelligence that gets smarter with every experiment run [ref:4][ref:7].
+
+## Solution {#sec-solution}
+
+CNS (Central Nervous System) features four specialized AI agents built on AWS Bedrock using Claude Sonnet 3.7, each with distinct capabilities. The Manager agent orchestrates workflows, maintains context, and ensures nothing falls through cracks. The Assumption Discovery agent analyzes ideas to surface hidden beliefs, ranking them by impact and uncertainty. The Experiment Design agent creates optimal test plans, selecting methods based on our criteria matrix of desirability, feasibility, viability, time, and cost. The Learning Synthesis agent extracts patterns from results, identifying insights that humans might miss [ref:1][ref:4][ref:7].
+
+The technical architecture leverages Spring Framework with Spring AI for agent orchestration, PGVector for semantic search across historical experiments, Neo4j for relationship mapping between ideas, assumptions, and learnings, and comprehensive prompt engineering ensuring consistent, high-quality outputs. Every interaction strengthens the knowledge graph, creating proprietary competitive advantage [ref:1][ref:8].
+
+The user experience is deceptively simple. Teams describe problems in natural language through a chat interface. CNS automatically generates assumption maps, experiment cards, and tracking frameworks. As experiments run, the platform captures results and synthesizes learnings. The complexity is hidden—users just see clear next steps [ref:4][ref:7].
+
+## Results {#sec-results}
+
+Early adoption within Swift Racks has transformed our innovation velocity. Experiment design time decreased from days to hours, with AI agents generating comprehensive experiment plans in minutes. We're running 3x more experiments with the same team, validating assumptions faster than ever. The quality of experiments improved dramatically—our AI-suggested tests have 40% higher learning value scores [ref:1][ref:3].
+
+The business model projects significant enterprise value. Targeting $4.1M ARR in Year 1 through seat-based SaaS and enterprise deployments, scaling to $280M ARR by Year 5 as the platform becomes essential innovation infrastructure. Early enterprise conversations with Fortune 500 companies indicate strong demand for private cloud deployments [ref:1][ref:2].
+
+Most importantly, CNS is creating a new category: Intelligent Innovation Management. Unlike traditional tools that just track, CNS actively participates in the innovation process. Every hypothesis tested, every learning captured, every pattern identified becomes part of the platform's growing intelligence. Enterprises aren't just buying software; they're acquiring compounding innovation capability [ref:4][ref:9].
+
+## What I'd Do Differently {#sec-retro}
+
+I would have started with a narrower agent focus rather than building four agents simultaneously. While the full system is powerful, we could have validated core value with just the Experiment Design agent first, then expanded. The complexity of multi-agent orchestration delayed our MVP by two months [ref:4][ref:7].
+
+The knowledge graph architecture should have been designed for federation from day one. As enterprises request private deployments, they want their learnings isolated while still benefiting from aggregated insights. Retrofitting federation is proving more complex than anticipated [ref:8].
+
+Finally, I underestimated the change management required for AI-assisted innovation. Teams initially resisted AI-generated experiment plans, viewing them skeptically. We should have built more transparency into the agent reasoning process from the start, showing why specific experiments were recommended. The black box problem is real in enterprise adoption [ref:5][ref:9].
+
+## Sources
+[1] AI/ML Product Experience Brief - CNS platform
+[2] Swift CNS Beta MVP PRD - November 2025
+[3] Product weekly reports - CNS development updates
+[4] Swift Racks Product Innovation Guide
+[5] Confluence - CNS user stories and requirements
+[6] 30-Second Career Stories - Strategic planning
+[7] CNS Developer Onboarding Guide
+[8] Confluence - CNS technical architecture
+[9] Innovation weekly report - November 2025

@@ -1,0 +1,137 @@
+[
+  {
+    "start": "2010-08",
+    "end": "2018-07",
+    "company": "Air Canada",
+    "title": "eLearning Manager, Flight Operations",
+    "highlights": [
+      "Evolved from eLearning Manager to product leadership role",
+      "Personally logged 697 complaints to identify access as core problem",
+      "Built industry's first offline iPad training platform",
+      "Reduced training friction by 70% (10+ clicks to 3)",
+      "$1.5M annual savings",
+      "75% engagement increase",
+      "Orchestrated 6 departments: HR, Finance, IT, DevOps, Training, C-suite"
+    ]
+  },
+  {
+    "start": "2018-07",
+    "end": "2021-09",
+    "company": "RaceRocks 3D Inc",
+    "title": "Product Manager",
+    "highlights": [
+      "Led Boeing VR oxygen mask trainer project (valuable failure case)",
+      "Developed Canadian Armed Forces Naval Training Program for MV ASTERIX",
+      "Pioneered AR/VR/XR integration for military training",
+      "Architected Azure-based systems with xAPI, CMI 5, WebGL",
+      "Conducted classified user research for defense clients"
+    ]
+  },
+  {
+    "start": "2021-09",
+    "end": "2024-05",
+    "company": "RaceRocks 3D Inc",
+    "title": "Senior Product Manager",
+    "highlights": [
+      "Served on strategy committee for 4 consecutive years",
+      "Developed world's first integrated Replenishment at Sea (RAS) simulator",
+      "$20M+ annual operational savings since 2019",
+      "$800K/day training cost eliminated",
+      "Led strategic planning cycles with 3-5 year roadmaps",
+      "Managed products for Boeing, Lockheed Martin, Royal Canadian Navy"
+    ]
+  },
+  {
+    "start": "2024-06",
+    "end": "present",
+    "company": "Swift Racks",
+    "title": "Head of Product",
+    "highlights": [
+      "Leading AI-powered digital transformation initiatives",
+      "Architected CNS multi-agent innovation platform (Manager, Assumption Discovery, Experiment Design, Learning Synthesis agents)",
+      "CNS targeting $4.1M ARR Year 1, scaling to $280M by Year 5",
+      "Orchestrated TakeCost pivot: 95% conversion improvement through journey redesign",
+      "Built AutoTake computer vision: 85% processing time reduction",
+      "5,200 blueprint elevations trained, 4,900 in pipeline",
+      "EdPal pivot from VR to AI lesson planning for 50,000+ homeschool families",
+      "$1.8M recurring revenue growth achieved",
+      "Established responsible AI governance frameworks"
+    ]
+  },
+  {
+    "start": "2024-09",
+    "end": "present",
+    "company": "Schulich School of Business",
+    "title": "Product Management Instructor",
+    "highlights": [
+      "Teaching experimentation frameworks and AI product development",
+      "Developed Assumption-to-Experiment Pipeline curriculum",
+      "Customer Journey Optimization methodology",
+      "85% industry placement rate for students",
+      "Real-world case studies from Air Canada, RaceRocks, Swift Racks"
+    ]
+  },
+  {
+    "start": "2013-02",
+    "end": "2013-05",
+    "company": "Harvard Business School",
+    "title": "Leadership and Management Training",
+    "highlights": [
+      "Executive education program",
+      "Focus on organizational leadership and change management"
+    ]
+  },
+  {
+    "start": "2020-10",
+    "end": "2020-10",
+    "company": "Scrum Alliance",
+    "title": "Certified Scrum Product Owner (CSPO)",
+    "highlights": [
+      "Agile methodology certification",
+      "Product ownership frameworks"
+    ]
+  },
+  {
+    "start": "2022-05",
+    "end": "2022-06",
+    "company": "Scrum Alliance",
+    "title": "Certified Advanced Scrum Product Owner (A-CSPO)",
+    "highlights": [
+      "Advanced agile product management",
+      "Scaled agile frameworks"
+    ]
+  },
+  {
+    "start": "2024-06",
+    "end": "2024-06",
+    "company": "Center for Humane Technology",
+    "title": "Foundations of Humane Technology",
+    "highlights": [
+      "Ethical AI and technology design",
+      "Responsible innovation frameworks"
+    ]
+  },
+  {
+    "start": "2024-10",
+    "end": "2025-03",
+    "company": "AI Upskilling",
+    "title": "AI Product Strategy & Implementation",
+    "highlights": [
+      "Advanced AI/ML product development",
+      "LLM implementation strategies",
+      "Multi-agent system design"
+    ]
+  },
+  {
+    "start": "2025-09",
+    "end": "2025-11",
+    "company": "DeepLearning.AI",
+    "title": "Machine Learning Specialization",
+    "highlights": [
+      "Supervised Learning: Regression and Classification",
+      "Advanced Learning Algorithms",
+      "Unsupervised Learning, Recommenders, Reinforcement Learning",
+      "99% course completion"
+    ]
+  }
+]

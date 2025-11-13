@@ -1,0 +1,35 @@
+{
+  "testCases": [
+    {
+      "question": "What is your experience with React?",
+      "expectedCitations": ["resume", "project"],
+      "minCitations": 1
+    },
+    {
+      "question": "Tell me about a project you worked on",
+      "expectedCitations": ["project"],
+      "minCitations": 1
+    },
+    {
+      "question": "What technologies do you use?",
+      "expectedCitations": ["resume", "project"],
+      "minCitations": 1
+    },
+    {
+      "question": "What was your role at your previous company?",
+      "expectedCitations": ["resume"],
+      "minCitations": 1
+    },
+    {
+      "question": "Describe a challenging problem you solved",
+      "expectedCitations": ["project"],
+      "minCitations": 1
+    }
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "targetAccuracy": 0.8,
+    "lastUpdated": "2025-01-27"
+  }
+}
+

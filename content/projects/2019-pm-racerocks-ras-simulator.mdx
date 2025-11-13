@@ -1,0 +1,63 @@
+---
+title: "RaceRocks — World's First RAS Simulator"
+dates: "2019–2021"
+role: "Product Manager"
+tags: ["defense","naval","simulation","b2g","mission-critical","innovation"]
+impact: ["$20M+ annual savings","World's first integrated RAS simulator","$800K/day training cost eliminated"]
+---
+
+## Context {#sec-context}
+
+In 2019, Canada's second-largest shipbuilder, Davie Shipyards, along with Federal Fleet Services, approached RaceRocks with a critical operational challenge. Naval crews needed training on Replenishment At Sea (RAS)—a high-stakes operation where two ships sail side-by-side while transferring fuel, cargo, or personnel through cables and hoses [ref:1].
+
+The operation requires extreme precision. Ships must maintain exact distances while moving through ocean swells, coordinate between multiple departments simultaneously, and execute potentially dangerous transfers of volatile materials or personnel. One mistake could result in collision, environmental disaster, or loss of life. This wasn't just training—it was mission-critical capability development [ref:1].
+
+The existing training paradigm was unsustainable. Each RAS exercise required two fully crewed ships, weeks of coordination across departments, massive fuel expenditures, and scheduling that often took months. The cost: $800,000 per training day. Most crews only got one or two opportunities per year to practice [ref:1].
+
+## Problem {#sec-problem}
+
+The client's initial request seemed straightforward: "Give us a part-task trainer, a computer-based simulator that teaches the procedure." This was standard in the simulation industry—build a desktop application that walks through the steps. We could have delivered that in six months and moved on [ref:1].
+
+But through systematic discovery with naval personnel, we uncovered deeper constraints. The real problem wasn't just cost—it was time and accessibility. Even when ships were available, coordinating schedules meant crews only got a few repetitions annually. When mistakes happened during those rare training opportunities, there was no ability to reset and retry. One error meant waiting months for the next chance [ref:1][ref:2].
+
+More critically, the traditional simulation approach would create a disconnect. Crews would learn on desktop simulators using different interfaces than their actual shipboard equipment. Under stress during real operations, they'd revert to muscle memory from limited real-world practice, not extensive simulator training. The training transfer problem was fundamental [ref:1].
+
+## Insight {#sec-insight}
+
+The breakthrough came from reframing the constraint. We asked ourselves: "How do we bring training to the crew—instead of bringing the crew to training?" This shift in perspective opened up an entirely different solution space [ref:1].
+
+During a site visit to a naval vessel, I stood at the actual RAS console and watched the operator demonstrate the controls. That's when it hit me: what if the real console could become the trainer? What if we could flip a switch and transform the actual operational equipment into a training simulator? The crew could train using the exact interface they'd use during operations, building muscle memory on the real controls [ref:2].
+
+We discovered that ships had significant downtime while at sea—perfect windows for training if we could enable it. The vision crystallized: enable continuous training using actual ship equipment during operational downtime [ref:1].
+
+## Solution {#sec-solution}
+
+We partnered with the engineering company that built the actual RAS equipment to develop the world's first high-fidelity integrated RAS simulator. The technical implementation included 4K ultra-realistic visual rendering of approach, connection, and transfer phases, precision-timed console feedback matching real equipment responses, and real-time simulation of ship dynamics including sea states and weather conditions [ref:1].
+
+The innovation came in two configurations. First, we built full-size simulator stations with 80-inch screens for shore-based training facilities. But the game-changer was the portable laptop version that could be deployed directly onboard ships [ref:1].
+
+The breakthrough feature was our dual-mode console system. We engineered the actual RAS console on the ship to have a training mode. With one toggle switch, the live operational console transforms into a training simulator. Sailors could now train in the same chair, with the same controls, using the same procedures, while their ship was at sea during downtime [ref:1][ref:3].
+
+The system included scenario libraries covering everything from calm-weather standard operations to emergency disconnects in severe weather. Each scenario could be repeated instantly, allowing crews to practice challenging situations dozens of times instead of once per year [ref:1].
+
+## Results {#sec-results}
+
+The quantitative impact exceeded all projections. We delivered over $20 million in annual operational savings across military implementations since 2019. Training frequency increased from 1-2 sessions annually to weekly opportunities. Proficiency metrics improved by over 60% in the first year of implementation [ref:1][ref:3].
+
+The qualitative transformation was equally profound. Naval commanders reported that crews approached real RAS operations with notably increased confidence. One training officer stated: "For the first time, junior sailors can practice emergency procedures hundreds of times before their first real operation. The confidence difference is night and day" [ref:1].
+
+The solution has been adopted by multiple naval forces globally, becoming the international standard for RAS training. We didn't just solve Canada's problem—we transformed how navies worldwide approach mission-critical maritime training [ref:1].
+
+## What I'd Do Differently {#sec-retro}
+
+I would have engaged international naval partners earlier in the development process. While we built for Canadian requirements initially, the rapid international adoption showed we could have designed for global standards from day one, accelerating international deployment by at least a year [ref:3].
+
+The portable version should have been our primary focus rather than a secondary configuration. Ships needed onboard training more than shore facilities needed simulators. We eventually got there, but inverting our development priority would have delivered value faster [ref:1].
+
+Finally, I would have built more sophisticated analytics into the training system from the start. We captured completion data but missed opportunities to analyze error patterns, learning progressions, and skill decay over time. This data could have informed both training optimization and real-world operational improvements [ref:4].
+
+## Sources
+[1] Career Journey - RaceRocks RAS Simulator story
+[2] 30-Second Career Stories - RAS Simulator section
+[3] Interview Speaking Scripts - Defense sector examples
+[4] Module 3 - Design & Development principles

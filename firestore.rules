@@ -1,0 +1,83 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Chunks are read-only for all users
+    match /chunks/{chunkId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    // Sources are read-only
+    match /sources/{sourceId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    // Index metadata is read-only
+    match /meta/{metaId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    // Chat turns - users can create their own
+    match /chatTurns/{turnId} {
+      allow read, write: if request.auth != null || request.resource.data.sessionId != null;
+    }
+    
+    // Analytics events - users can create
+    match /analytics/{eventId} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
+    
+    // Rate limit tracking (internal, no client access)
+    match /_rateLimits/{limitId} {
+      allow read, write: if false;
+    }
+    
+    // Contact leads - server writes only
+    match /leads/{leadId} {
+      allow create: if false; // Only via Cloud Function
+      allow read, update, delete: if false;
+    }
+    
+    // Contact requests - anyone can create
+    match /contactRequests/{requestId} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
+    
+    // Feedback - users can create with schema validation
+    match /feedback/{feedbackId} {
+      allow create: if
+        request.resource.data.verdict in ['up', 'down'] &&
+        request.resource.data.timestamp is string &&
+        request.resource.data.sessionId is string &&
+        request.resource.data.sessionId.size() <= 64 &&
+        (!('note' in request.resource.data) || 
+         (request.resource.data.note is string && request.resource.data.note.size() <= 500)) &&
+        request.resource.data.question is string &&
+        request.resource.data.answer is string;
+      allow read, update, delete: if false;
+    }
+    
+    // Golden examples - read-only for all, write only via server
+    match /golden_examples/{exampleId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    // Settings - readable; writes only from server (Firebase Admin SDK)
+    match /meta/settings {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    // Projects - read-only for all users
+    match /projects/{projectId} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}
+

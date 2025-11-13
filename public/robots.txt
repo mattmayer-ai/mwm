@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Allow: /projects/
+Allow: /about
+Allow: /contact
+
+# Update this with your actual domain
+Sitemap: https://<your-project>.web.app/sitemap.xml
+

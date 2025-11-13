@@ -1,0 +1,104 @@
+# .cursorrules for mwm — AI-Driven Portfolio
+
+## Core Principles
+
+- **MVP First**: Focus on MUST stories (U1–U8) + S4 (dark mode) from `/docs/prd.md`. Defer "Could Have" features to backlog.
+- **Quality & Type Safety**: TypeScript strict mode; explicit error handling; no `any` types without justification.
+- **Accessibility**: WCAG 2.2 AA compliance; semantic HTML; keyboard navigation; screen reader support.
+- **Performance**: Meet PRD targets (chat p50 ≤ 3s, p95 ≤ 6s; LCP ≤ 2.5s; FCP < 1.5s).
+- **Security**: No API keys in client code; all AI calls server-side; rate limiting; spam protection.
+
+## Code Quality & Organization
+
+- **TypeScript**: Strict mode enabled; prefer explicit types over inference when ambiguous.
+- **Components**: Small, focused, reusable; co-locate with related logic when appropriate.
+- **Error States**: Always handle loading, error, and empty states explicitly.
+- **File Structure**: Follow Vite + React Router conventions; `/src/app/routes` for pages, `/src/components` for UI, `/src/lib` for utilities, `/src/features` for feature modules.
+- **Naming**: Use descriptive names; prefer `camelCase` for variables/functions, `PascalCase` for components/types.
+
+## Stack Conventions
+
+- **Framework**: React 19 + Vite 7.7 (SPA); React Router DOM 7.4 for routing; Zustand 5.8 for app state.
+- **Styling**: Tailwind CSS 3.3.6 + Radix UI primitives (Dialog, Dropdown Menu, Select, Label, Slot, Tabs, Toast); Lucide + Heroicons for icons.
+- **Content**: MDX/Markdown files in `/content`; resume PDF in `/public/resume`.
+- **Backend**: Firebase 12.4.0 — Firestore for content/chunks/telemetry, Cloud Functions (HTTPS) for `/api/*`, Firebase Hosting for deploy.
+- **Data**: Firestore for chunks/metadata; Cloud Storage for lexical index (FlexSearch/Lunr); upgrade path to embeddings later.
+- **AI**: Server-side only via Firebase Functions; Anthropic SDK 0.67.0 (Claude 3.5) for generation.
+- **Testing**: Vitest for unit tests; Playwright optional for E2E later.
+
+## Accessibility Requirements
+
+- Semantic HTML (`<nav>`, `<main>`, `<article>`, etc.).
+- ARIA labels where semantic HTML isn't sufficient.
+- Keyboard navigation for all interactive elements.
+- Focus indicators visible and consistent.
+- Color contrast meets WCAG AA (4.5:1 for normal text, 3:1 for large text).
+- Reduced motion support via `prefers-reduced-motion`.
+
+## Security & Privacy
+
+- **API Keys**: Never expose in client code; use Firebase config secrets; proxy all AI calls through Firebase Functions.
+- **Rate Limiting**: Implement per IP/session for chat and contact forms (Firebase Functions middleware or Firestore-based tracking).
+- **Spam Protection**: Honeypot fields in forms; captcha fallback on abuse.
+- **Privacy**: No PII in analytics; anonymize session IDs; redact sensitive text in logs.
+- **HTTPS**: Enforce in production via Firebase Hosting; HSTS headers.
+- **Admin Access**: Owner-only reindex via Firebase Auth email check or admin secret header.
+
+## Performance Targets
+
+- **Chat Latency**: p50 ≤ 3s, p95 ≤ 6s (streaming acceptable).
+- **Page Load**: LCP ≤ 2.5s, FCP < 1.5s on desktop reference.
+- **Rendering**: ≥ 6 project cards render within 1s on first load.
+- **Filter Updates**: Results update < 200ms with 3 active filters.
+
+## RAG & AI Guidelines
+
+- **Citations**: Every answer must include at least 2 ranked citations with inline `[n]` markers.
+- **Scope Guarding**: Refuse questions outside knowledge scope; never invent employers, titles, or dates.
+- **Chunking**: 700–1,000 tokens with 10–15% overlap; metadata includes `docId`, `sectionId`, `sourceUrl`, `title`.
+- **Retrieval**: Lexical search (FlexSearch/Lunr) → top-K candidates → simple re-rank (term overlap + section title boost) to 3–5 snippets. Keep retrieval interface abstracted for future vector DB upgrade.
+- **Prompting**: Use system prompt from PRD; keep user prompts concise; compress history.
+
+## Testing & QA
+
+- **QA Harness**: Maintain `tests/chat.qa.spec.ts` with seeded questions; target ≥80% accuracy with citations.
+- **CI**: Run ESLint, Prettier, typecheck, Lighthouse, and axe-core in CI.
+- **Manual Smoke**: Test re-index flow after content updates.
+
+## Documentation
+
+- **PRD**: `/docs/prd.md` is the source of truth for all requirements.
+- **Comments**: Explain "why" not "what"; document complex algorithms and business logic.
+- **README**: Keep updated with setup instructions and environment variables.
+
+## Git & Commits
+
+- **Commits**: Logical units; descriptive messages; reference PRD sections when relevant.
+- **Branches**: Use feature branches for non-trivial changes; main/master for production-ready code.
+
+## UI Guidelines
+
+- **Home Canvas**: Immersive "canvas" feel with subtle dot grid background; logo top-right.
+- **Context Card**: Compact (420-520px width on desktop), rectangular corners (8-12px), max-height clamped.
+- **Chat Input**: Positioned directly beneath context card with matching corner radius; no pill-shaped edges.
+- **Title**: "Ask me anything about my work" fits single line on 1280px width (text-xl/2xl).
+- **No Initial Scroll**: Hero fits on 1440×900 without scrolling; overflow only when messages grow.
+- **Navigation**: 
+  - No dense top bar; primary actions are bottom-center quick buttons with icons.
+  - Settings (hamburger) → contains theme + "How the AI works".
+  - Experience / Portfolio / Connect open as wide modals (Radix Dialog) with blurred backdrop; easy close.
+- **Maintain**: Analytics hooks, citation deep-link highlights, tone badges.
+
+## Code Style
+
+- **TypeScript**: Strict mode; no `any` without justification; explicit prop types.
+- **Components**: Functional React; small, focused, reusable; co-locate styles.
+- **Imports**: Use path aliases (`@app/*`, `@features/*`, `@components/*`, `@lib/*`, `@stores/*`).
+- **Accessibility**: Semantic HTML, ARIA labels, keyboard navigation, focus states.
+
+## When in Doubt
+
+- Refer to `/docs/prd.md` for requirements and acceptance criteria.
+- Prefer simpler solutions that meet MVP requirements.
+- Ask one targeted question if requirements are ambiguous, then proceed with the simplest compliant solution.
+

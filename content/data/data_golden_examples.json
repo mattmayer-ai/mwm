@@ -1,0 +1,100 @@
+[
+  {
+    "question": "Tell me about the pilot training fix at Air Canada",
+    "expected_answer_md": "At Air Canada, I transformed pilot training by addressing a fundamental access problem disguised as a cost issue. After personally logging 697 complaints over an entire year, I discovered pilots weren't struggling with training content but with accessing it from hotels, layovers, and between flights. We built one of the industry's first offline iPad training platforms with automatic sync, reducing the path to training from 10+ clicks to just 3. This systematic journey optimization delivered $1.5M in annual savings and increased engagement by 75%, while serving thousands of pilots globally who could finally complete their mandatory training anywhere, anytime.",
+    "expected_slugs": [
+      "/projects/2012-pm-air-canada-offline-training#sec-insight",
+      "/projects/2012-pm-air-canada-offline-training#sec-results"
+    ],
+    "tags": ["aviation", "narrative", "accessibility", "journey-optimization"]
+  },
+  {
+    "question": "How does Matt approach AI product development?",
+    "expected_answer_md": "My AI product development approach centers on responsible implementation with measurable business impact. At Swift Racks, I've architected multi-agent systems using AWS Bedrock and Claude Sonnet 3.7, while establishing comprehensive governance frameworks covering bias testing, transparency, and performance monitoring. The key is balancing innovation with constraints—as my Boeing VR failure taught me, the right product at the wrong time is still wrong. I focus on systematic experimentation, using our AI-powered test selection framework to optimize which experiments deliver highest strategic value. Every AI implementation must pass our feasibility gates: technical maturity, user trust, and clear ROI demonstration.",
+    "expected_slugs": [
+      "/resume#core-skills",
+      "/projects/2024-strategy-swift-racks-takecost-pivot#sec-solution",
+      "/teaching/schulich#sec-frameworks"
+    ],
+    "tags": ["ai", "methodology", "responsible-ai", "experimentation"]
+  },
+  {
+    "question": "What's the story behind the RAS simulator?",
+    "expected_answer_md": "The Replenishment at Sea simulator began with a simple request from Davie Shipyards for a basic training tool, but I reframed the problem entirely. Instead of accepting their $800K per day training cost as just expensive, I asked 'How do we bring training to the crew instead of bringing the crew to training?' We developed the world's first integrated RAS simulator that could switch the actual ship's console into training mode with one toggle. Sailors could now practice using real controls during downtime at sea. This delivered over $20M in annual savings while transforming how naval forces globally approach mission-critical training—turning limited yearly opportunities into continuous skill development.",
+    "expected_slugs": [
+      "/projects/2019-pm-racerocks-ras-simulator#sec-insight",
+      "/projects/2019-pm-racerocks-ras-simulator#sec-solution",
+      "/projects/2019-pm-racerocks-ras-simulator#sec-results"
+    ],
+    "tags": ["defense", "narrative", "innovation", "problem-reframing"]
+  },
+  {
+    "question": "How did you pivot TakeCost's strategy?",
+    "expected_answer_md": "TakeCost came to us after two years focused entirely on accuracy, but our research with 15 contractors revealed they were solving the wrong problem. Contractors weren't losing jobs due to inaccurate estimates—they were losing them because estimates took 10-15 hours to complete. One contractor told us bluntly: 'I'd rather be 10% off and first to bid than 100% accurate and third.' We immediately restructured their roadmap, moving AI-powered Auto Takeoff from Q3 to Q1, then completely inverted their customer journey to show value before requiring signup. The result: 95% conversion improvement and 85% reduction in processing time, validating that speed, not accuracy, was the key to winning in construction estimation.",
+    "expected_slugs": [
+      "/projects/2024-strategy-swift-racks-takecost-pivot#sec-insight",
+      "/projects/2024-strategy-swift-racks-takecost-pivot#sec-solution",
+      "/projects/2024-strategy-swift-racks-takecost-pivot#sec-results"
+    ],
+    "tags": ["pivot", "customer-discovery", "construction-tech", "journey-optimization"]
+  },
+  {
+    "question": "What is the CNS platform?",
+    "expected_answer_md": "CNS (Central Nervous System) is our AI-powered innovation platform at Swift Racks that automates the entire product discovery lifecycle. It features specialized AI agents—Manager, Assumption Discovery, Experiment Design, and Learning Synthesis—that work together to transform raw ideas into validated business models. Using AWS Bedrock with Claude Sonnet 3.7, teams can describe problems in natural language and receive automated experiment plans, asset creation, and structured learning synthesis. Every hypothesis, test, and outcome becomes proprietary data in our knowledge base, creating a compounding insight flywheel. We're targeting $4.1M ARR in Year 1, scaling to $280M by Year 5 through seat-based enterprise deployments.",
+    "expected_slugs": [
+      "/resume#experience",
+      "/projects/2024-cns-swift-racks-innovation-platform#sec-solution"
+    ],
+    "tags": ["ai", "product", "innovation", "multi-agent", "enterprise"]
+  },
+  {
+    "question": "Tell me about Matt's teaching at Schulich",
+    "expected_answer_md": "I teach product management at Schulich School of Business, focusing on practical application over theory. My curriculum spans three modules: Introduction to Product Management using my Air Canada case, Customer Discovery using the TakeCost pivot, and Design & Development using live Swift CNS experiments. Students learn my signature frameworks including the Assumption-to-Experiment Pipeline, Customer Journey Optimization distinguishing 'moment of intrigue' from 'aha moment,' and the 70% Friction Reduction Method. With an 85% industry placement rate, students regularly report using these frameworks in their roles. As one graduate noted: 'The assumption-to-experiment pipeline you taught is literally how I run product development now.'",
+    "expected_slugs": [
+      "/teaching/schulich#sec-courses",
+      "/teaching/schulich#sec-frameworks",
+      "/teaching/schulich#sec-outcomes"
+    ],
+    "tags": ["education", "frameworks", "methodology", "talent-development"]
+  },
+  {
+    "question": "How does Matt handle cross-functional leadership?",
+    "expected_answer_md": "My cross-functional leadership approach centers on building coalition through individual value propositions while maintaining unified product vision. At Air Canada, orchestrating six departments—HR, Finance, IT, DevOps, Training, and C-suite—taught me that you can't mandate cooperation. Instead, I created specific value propositions: cost savings for Finance, efficiency for Training, accessibility for pilots. At RaceRocks, I managed teams across different security clearances and time zones. The key is transparency and psychological safety where disagreement drives better decisions. This framework became my template for driving change in large organizations, whether coordinating military contractors or building product teams at Swift Racks.",
+    "expected_slugs": [
+      "/resume#core-skills",
+      "/projects/2012-pm-air-canada-offline-training#sec-solution",
+      "/teaching/schulich#sec-frameworks"
+    ],
+    "tags": ["leadership", "cross-functional", "stakeholder-management", "methodology"]
+  },
+  {
+    "question": "What happened with the Boeing VR project?",
+    "expected_answer_md": "The Boeing VR oxygen mask trainer was what I call a 'beautiful failure' that taught me crucial lessons about product timing. Boeing asked us to solve costly installation errors through VR training. We built a fully functional, gorgeous simulator with exact tolerances that management loved. But 2018-era VR controllers couldn't replicate the precision-level finger movements required for actual mask installation—the twist and seat movements with sub-centimeter accuracy. Despite being the 'right' solution, it wasn't viable with available technology. This experience shapes how I approach every AI implementation today: innovation alone isn't enough—you need timing, technical maturity, and constraint validation. It's better to acknowledge limitations than ship unusable perfection.",
+    "expected_slugs": [
+      "/projects/2018-constraint-racerocks-boeing-vr#sec-problem",
+      "/projects/2018-constraint-racerocks-boeing-vr#sec-retro",
+      "/teaching/schulich#sec-cases"
+    ],
+    "tags": ["failure", "learning", "constraints", "vr", "timing"]
+  },
+  {
+    "question": "How does Matt approach strategic planning?",
+    "expected_answer_md": "My strategic planning approach balances long-term vision with adaptive execution through quarterly reviews. At RaceRocks, I served on the strategy committee for four consecutive years, conducting annual planning cycles that developed 3-5 year roadmaps, updated vision/mission statements, and created five strategic initiatives annually that cascaded to departmental goals. At Swift Racks, I transformed operational chaos by implementing North Star metrics and quarterly strategic reviews that enable rapid pivots in response to evolving technology. The key is maintaining your North Star while allowing tactical pivots based on market feedback and technical constraints. This framework has guided multi-million dollar product decisions across defense and enterprise sectors.",
+    "expected_slugs": [
+      "/resume#core-skills",
+      "/projects/racerocks-strategic-planning#sec-context",
+      "/timeline"
+    ],
+    "tags": ["strategy", "planning", "leadership", "roadmapping"]
+  },
+  {
+    "question": "What's Matt's approach to customer journey optimization?",
+    "expected_answer_md": "I distinguish between the 'moment of intrigue' when users understand potential value and the 'aha moment' when they're ready to commit. Most products try jumping straight to the aha moment, but you must optimize for intrigue first. At TakeCost, we inverted their entire journey from Homepage→Signup→Learn→Value to Homepage→Try Now→Experience→Commit, achieving 95% conversion improvement. At Air Canada, systematic journey mapping reduced pilot training access from 10+ clicks to 3—a 70% friction reduction. The principle: deliver value before demanding commitment. Whether it's construction contractors experiencing instant AI estimates or pilots accessing training offline, reducing friction to that first value moment transforms adoption.",
+    "expected_slugs": [
+      "/projects/2024-strategy-swift-racks-takecost-pivot#sec-solution",
+      "/projects/2012-pm-air-canada-offline-training#sec-solution",
+      "/teaching/schulich#sec-frameworks"
+    ],
+    "tags": ["customer-journey", "optimization", "conversion", "methodology"]
+  }
+]
