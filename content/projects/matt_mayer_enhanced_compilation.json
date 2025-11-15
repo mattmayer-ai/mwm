@@ -1,0 +1,212 @@
+{
+  "version": 2,
+  "createdAt": "2025-11-14T20:15:00.000Z",
+  "profile": {
+    "name": "Matt Mayer",
+    "currentRole": "Head of Product, Swift Racks",
+    "location": "Toronto, Ontario, Canada",
+    "yearsExperience": 15,
+    "yearsProductManagement": 11,
+    "coreIdentity": "Strategic product leader specializing in AI-powered digital transformation across regulated industries including aviation, defense, construction tech, and enterprise SaaS"
+  },
+  "leadership": {
+    "philosophy": "I lead through coalition building, creating individual value propositions for each stakeholder while maintaining unified product vision. My approach centers on transparency and psychological safety where disagreement drives better decisions.",
+    "crossFunctional": {
+      "airCanada": "Orchestrated 6 departments (HR, Finance, IT, DevOps, Training, C-suite) by creating specific value propositions: cost savings for Finance, efficiency for Training, accessibility for pilots. This became my template for driving change in large organizations.",
+      "raceRocks": "Managed product teams across different security clearance levels, time zones, and organizational cultures while delivering mission-critical systems for Boeing, Lockheed Martin, and Royal Canadian Navy.",
+      "swiftRacks": "Currently managing partnerships generating $1.8M recurring revenue while coordinating across engineering, sales, and customer success teams."
+    },
+    "teamBuilding": {
+      "current": "Building product team at Swift Racks while simultaneously teaching at Schulich School of Business, giving me unique insight into emerging PM talent.",
+      "talentDevelopment": "I believe in developing people through real challenges rather than just training sessions—my students work on actual product problems while learning frameworks.",
+      "hiringPhilosophy": "Focus on curiosity and learning velocity over specific experience. Can teach skills, can't teach mindset."
+    },
+    "strategicLeadership": {
+      "boardExperience": "Served on RaceRocks strategy committee for 4 consecutive years, conducting annual planning cycles developing 3-5 year roadmaps, vision/mission statements, and 5 strategic initiatives annually.",
+      "executiveAlignment": "Direct reporting relationships with CEOs and CTOs throughout career. Expert at translating technical complexity into business impact for board presentations.",
+      "transformationLeadership": "Transformed Swift Racks from operational chaos to structured execution through North Star metrics and quarterly strategic reviews."
+    }
+  },
+  "aimlExpertise": {
+    "technicalImplementation": {
+      "multiAgentSystems": "Architected CNS platform with 5 specialized AI agents (Manager, Assumption Discovery, Experiment Design, Learning Synthesis, Knowledge Graph) using AWS Bedrock and Claude Sonnet 3.7.",
+      "llmOrchestration": "Built enterprise-grade LLM solutions using GPT-4 and Claude models, implementing RAG for accuracy and human-in-the-loop validation for critical decisions.",
+      "computerVision": "Led development of AutoTake system processing 5,200 blueprint elevations with 85% processing time reduction through Scale AI and custom ML models.",
+      "platforms": ["AWS Bedrock", "Claude Sonnet 3.7", "GPT-4", "Scale AI", "TensorFlow", "Custom ML pipelines"]
+    },
+    "responsibleAI": {
+      "governance": "Established comprehensive AI governance frameworks covering bias testing, transparency requirements, and performance monitoring.",
+      "ethicalFrameworks": "Completed Center for Humane Technology certification, implementing ethical AI principles across all products.",
+      "trustBuilding": "Developed transparency requirements ensuring users understand when interacting with AI and how their data is used."
+    },
+    "businessImpact": {
+      "revenue": "$1.8M recurring revenue growth with 60% attributed to AI-enhanced solutions",
+      "efficiency": "85% operational efficiency improvements through AI automation",
+      "scaling": "CNS platform targeting $4.1M ARR Year 1, scaling to $280M by Year 5"
+    },
+    "continuousLearning": {
+      "selfDirected": "Completed 9-month self-directed AI upskilling program, building SAS products using AI, connecting AWS Bedrock, and mastering LLM implementation.",
+      "formalEducation": "DeepLearning.AI Machine Learning Specialization (99% completion), covering supervised/unsupervised learning and reinforcement learning.",
+      "practicalApplication": "Currently teaching AI product development at Schulich while actively building production AI systems."
+    }
+  },
+  "productMethodology": {
+    "frameworks": {
+      "assumptionToExperiment": "Developed systematic pipeline from idea → assumption → hypothesis → experiment → learning, now taught at Schulich and implemented across Swift Racks portfolio.",
+      "customerJourneyOptimization": "Distinguished between 'moment of intrigue' (understanding potential value) and 'aha moment' (ready to commit). Most products fail by jumping straight to aha without optimizing for intrigue first.",
+      "frictionReduction": "70% Friction Reduction Method - systematically map user journey, identify blockers, prioritize by impact. Applied at Air Canada (10+ clicks to 3) and TakeCost (95% conversion improvement).",
+      "experimentationAtScale": "Built AI-powered experiment selection using criteria matrices evaluating risk, cost, learning value, and strategic alignment. Running 3x more experiments with same resources."
+    },
+    "dataInsights": {
+      "systematicResearch": "Personally logged 697 complaints at Air Canada to identify root problems. Conducted 15 contractor interviews for TakeCost pivot. Always start with data, not assumptions.",
+      "synthesisApproach": "Use affinity mapping and journey mapping to identify patterns. Look for what users do, not what they say. The truth is in the friction points.",
+      "validationMethods": "Implement staged rollouts with success metrics defined upfront. Use cohort analysis to validate improvements. Always have a control group."
+    },
+    "strategyExecution": {
+      "northStarMetrics": "Every product needs one metric that matters. At Air Canada: training completion rate. At TakeCost: time to first estimate. At CNS: experiments per team per quarter.",
+      "quarterlyReviews": "Implement OKR cycles with quarterly strategic reviews. Maintain long-term vision while enabling tactical pivots based on market feedback.",
+      "roadmapping": "Balance strategic objectives with user impact and technical feasibility. Use Now/Next/Later framework with clear progression criteria."
+    }
+  },
+  "swiftRacksAccomplishments": {
+    "role": "Head of Product (June 2024 - Present)",
+    "overview": "Leading AI-powered digital transformation across 5 products including CNS innovation platform, TakeCost construction estimation, and EdPal education technology.",
+    "cnssPlatform": {
+      "description": "Multi-agent AI innovation platform automating entire product discovery lifecycle",
+      "architecture": "5 specialized agents using AWS Bedrock and Claude Sonnet 3.7",
+      "businessModel": "Seat-based SaaS targeting $4.1M ARR Year 1, $280M Year 5",
+      "impact": "3x experiment velocity, 40% higher learning value scores",
+      "innovation": "Creating new category: Intelligent Innovation Management"
+    },
+    "takeCostPivot": {
+      "challenge": "2 years focused on accuracy, but contractors needed speed",
+      "research": "12 contractor interviews revealed 'I'd rather be 10% off and first to bid than 100% accurate and third'",
+      "solution": "Reprioritized AI Auto Takeoff from Q3 to Q1, inverted customer journey",
+      "results": "95% conversion improvement, 85% processing time reduction"
+    },
+    "edPalTransformation": {
+      "original": "VR education platform for STEM lessons",
+      "pivot": "AI-powered lesson planning copilot for homeschool families",
+      "market": "50,000+ Canadian homeschool families",
+      "value": "3-5 hours weekly time savings per educator"
+    },
+    "operationalExcellence": {
+      "revenue": "$1.8M recurring revenue growth achieved",
+      "efficiency": "85% operational improvements across portfolio",
+      "teamBuilding": "Established product team while teaching at Schulich",
+      "partnerships": "Managing strategic partnerships across multiple industries"
+    }
+  },
+  "careerHighlights": {
+    "airCanada": {
+      "tenure": "2010-2018 (8 years)",
+      "evolution": "eLearning Manager → Product Leadership role",
+      "keyAchievement": "Built industry's first offline iPad training platform",
+      "problemSolving": "Personally logged 697 complaints to identify access as core problem, not cost",
+      "impact": "$1.5M annual savings, 70% friction reduction, 75% engagement increase",
+      "stakeholders": "Orchestrated 6 departments including C-suite",
+      "innovation": "Pioneered 'Training. Anywhere. Anytime' approach for global pilot workforce"
+    },
+    "raceRocks": {
+      "tenure": "2018-2024 (6 years)",
+      "progression": "Product Manager → Senior Product Manager",
+      "strategicRole": "Strategy committee member for 4 consecutive years",
+      "majorProject": "World's first integrated Replenishment at Sea (RAS) simulator",
+      "impact": "$20M+ annual operational savings, $800K/day training cost eliminated",
+      "clients": "Boeing, Lockheed Martin, Royal Canadian Navy",
+      "leadership": "Managed products across different security clearances and global teams"
+    },
+    "teaching": {
+      "institution": "Schulich School of Business",
+      "role": "Product Management Instructor (2024-Present)",
+      "curriculum": "Assumption-to-Experiment Pipeline, Customer Journey Optimization",
+      "outcomes": "85% industry placement rate for students",
+      "approach": "Real-world case studies from actual product challenges",
+      "impact": "Students report using frameworks directly in their roles"
+    }
+  },
+  "specificCapabilities": {
+    "zeroToOne": {
+      "experience": "Led multiple zero-to-one products across aviation, defense, and AI sectors",
+      "approach": "Start with systematic user research, validate core assumptions early, build MVP focused on primary value proposition",
+      "examples": "Air Canada iPad platform, RAS simulator, CNS innovation platform"
+    },
+    "enterpriseSales": {
+      "b2bExperience": "Current focus on B2B subscription products at Swift Racks",
+      "dealSizes": "Managed contracts from $500K to $20M across defense and enterprise",
+      "stakeholders": "Expert at multi-stakeholder sales including technical, operational, and executive buyers"
+    },
+    "regulatedIndustries": {
+      "aviation": "8 years at Air Canada navigating Transport Canada regulations",
+      "defense": "6 years with classified projects requiring security clearances",
+      "compliance": "Expert at balancing innovation with regulatory constraints"
+    },
+    "technicalFluency": {
+      "coding": "Hands-on experience with React, Node.js, Python for prototyping",
+      "architecture": "Can discuss system design, API architecture, and scaling challenges with engineering teams",
+      "infrastructure": "Experience with AWS, Azure, cloud deployments"
+    }
+  },
+  "communicationStyle": {
+    "executive": "Focus on business impact and strategic alignment. Use metrics and clear value propositions. No technical jargon unless specifically relevant.",
+    "technical": "Can dive deep into implementation details. Understand engineering constraints and tradeoffs. Use precise technical language when appropriate.",
+    "crossFunctional": "Create individual value propositions for each stakeholder. Find common ground while maintaining product vision. Use their language and metrics.",
+    "teaching": "Use real examples and case studies. Break complex concepts into digestible frameworks. Always connect theory to practice."
+  },
+  "keyMetrics": {
+    "revenue": {
+      "swiftRacks": "$1.8M recurring revenue growth",
+      "cnsProjection": "$4.1M ARR Year 1, $280M Year 5",
+      "airCanada": "$1.5M annual savings",
+      "raceRocks": "$20M+ operational savings"
+    },
+    "efficiency": {
+      "autoTake": "85% processing time reduction",
+      "takeCost": "95% conversion improvement",
+      "airCanada": "70% friction reduction",
+      "experiments": "3x experiment velocity with CNS"
+    },
+    "scale": {
+      "airCanada": "5,000+ pilots globally",
+      "blueprints": "5,200 elevations trained, 4,900 in pipeline",
+      "edPal": "50,000+ target market",
+      "teaching": "85% placement rate"
+    }
+  },
+  "interviewInsights": {
+    "cbmInterview": {
+      "date": "September 30, 2025",
+      "position": "VP of Product at ClearBlue Markets",
+      "keyPoints": [
+        "Emphasized hands-on experience with AI/ML implementation",
+        "Discussed comfort with C-suite and board presentations",
+        "Highlighted experience with B2B subscription products",
+        "Confirmed experience with compliance in regulated industries",
+        "Showed enthusiasm for zero-to-one product development",
+        "Demonstrated data-driven approach through 697 complaint analysis story"
+      ]
+    },
+    "strengths": [
+      "Cross-functional leadership across 6+ departments",
+      "Proven track record in regulated industries",
+      "Hands-on technical capability with AI/ML",
+      "Strategic planning with 3-5 year roadmaps",
+      "Teaching and talent development experience"
+    ]
+  },
+  "quotableStatements": {
+    "onLeadership": "You can't mandate cooperation. Instead, I create specific value propositions for each stakeholder while maintaining unified product vision.",
+    "onAI": "AI implementation must pass three gates: technical maturity, user trust, and clear ROI demonstration. Innovation alone isn't enough—you need timing.",
+    "onStrategy": "Speed of movement is linked to speed of data insights. The companies that learn fastest win.",
+    "onCustomerFocus": "Most products fail by jumping straight to the 'aha moment' without optimizing for the 'moment of intrigue' first.",
+    "onExperimentation": "Every hypothesis tested, every learning captured, every pattern identified becomes proprietary competitive advantage.",
+    "onFailure": "The Boeing VR project was a beautiful failure. It taught me that the right product at the wrong time is still wrong.",
+    "onTeaching": "I believe in developing people through real challenges. My students work on actual product problems while learning frameworks."
+  },
+  "futureDirection": {
+    "targetRoles": ["VP Product", "Director Product", "Head of Product", "CPO"],
+    "industries": ["FinTech", "Climate Tech", "Healthcare AI", "Enterprise SaaS"],
+    "values": "Seeking roles where I can combine AI expertise with strategic leadership to drive meaningful business transformation",
+    "contribution": "I bring unique combination of hands-on AI implementation, regulated industry experience, and proven ability to deliver measurable outcomes"
+  }
+}

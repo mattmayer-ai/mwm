@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { getAllProjects, filterProjects, type Project } from '../../../lib/projects';
 import { useFiltersStore, useFiltersFromURL } from '../../../stores/filters.store';
-import { ProjectCard } from '../../../components/ProjectCard';
+import { PortfolioCard } from '../../../components/PortfolioCard';
 import { FilterBar } from '../../../components/FilterBar';
 
 export function ProjectsPage() {
@@ -55,44 +55,101 @@ export function ProjectsPage() {
     return filterProjects(projects, filters);
   }, [projects, filters]);
 
-  if (loading) {
-    return (
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="bg-gray-200 dark:bg-gray-700 rounded-lg h-48 animate-pulse" />
-          ))}
-        </div>
-      </div>
-    );
-  }
+  const yearsRange =
+    availableYears.length > 0 ? `${availableYears[availableYears.length - 1]} – ${availableYears[0]}` : '—';
+  const totalIndustries = availableIndustries.length;
+  const totalRoles = availableRoles.length;
+  const totalProjects = projects.length;
+
+  const loadingSkeleton = (
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      {[1, 2, 3, 4, 5, 6].map((i) => (
+        <div key={i} className="h-56 rounded-2xl bg-gray-200/70 dark:bg-gray-800/60 animate-pulse" />
+      ))}
+    </div>
+  );
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <FilterBar
-        availableRoles={availableRoles}
-        availableIndustries={availableIndustries}
-        availableSkills={availableSkills}
-        availableYears={availableYears}
-      />
+    <div className="mx-auto flex w-full flex-col gap-6 lg:flex-row">
+      <aside className="lg:w-1/3">
+        <div className="rounded-3xl border border-slate-200/80 bg-white/95 p-6 shadow-[0_12px_45px_rgba(15,23,42,0.08)] dark:border-gray-800/60 dark:bg-gray-900/90">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-blue">Portfolio</p>
+          <h2 className="mt-3 text-2xl font-semibold text-slate-900 dark:text-slate-100">
+            6 flagship programs across AI platforms, defense, and aviation
+          </h2>
+          <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
+            Filter by role, industry, or year to see focused outcomes. Each tile captures the mission, impact, and
+            stack.
+          </p>
 
-      {filteredProjects.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-gray-600 dark:text-gray-400 mb-4">No projects found matching your filters.</p>
-          <button
-            onClick={() => useFiltersStore.getState().clearFilters()}
-            className="text-brand-blue dark:text-brand-blue/80 hover:underline"
-          >
-            Clear filters
-          </button>
+          <dl className="mt-6 grid grid-cols-1 gap-4 text-sm text-slate-700 dark:text-slate-200">
+            <div className="rounded-2xl border border-slate-200/80 p-4 dark:border-gray-800">
+              <dt className="text-xs uppercase tracking-widest text-slate-500">Programs shipped</dt>
+              <dd className="text-2xl font-semibold text-slate-900 dark:text-slate-100">{totalProjects || '—'}</dd>
+            </div>
+            <div className="rounded-2xl border border-slate-200/80 p-4 dark:border-gray-800">
+              <dt className="text-xs uppercase tracking-widest text-slate-500">Industries covered</dt>
+              <dd className="text-2xl font-semibold text-slate-900 dark:text-slate-100">{totalIndustries || '—'}</dd>
+            </div>
+            <div className="rounded-2xl border border-slate-200/80 p-4 dark:border-gray-800">
+              <dt className="text-xs uppercase tracking-widest text-slate-500">Leadership seats</dt>
+              <dd className="text-2xl font-semibold text-slate-900 dark:text-slate-100">{totalRoles || '—'}</dd>
+            </div>
+            <div className="rounded-2xl border border-slate-200/80 p-4 dark:border-gray-800">
+              <dt className="text-xs uppercase tracking-widest text-slate-500">Timeline</dt>
+              <dd className="text-lg font-semibold text-slate-900 dark:text-slate-100">{yearsRange}</dd>
+            </div>
+          </dl>
+
+          <div className="mt-6 border-t border-slate-200 pt-6 dark:border-gray-800">
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-blue">Career track</p>
+            <ul className="mt-4 space-y-4 text-sm text-slate-700 dark:text-slate-200">
+              {projects
+                .slice()
+                .sort((a, b) => b.year - a.year)
+                .map((project) => (
+                  <li key={`${project.slug}-timeline`} className="border-l-2 border-brand-blue/60 pl-4">
+                    <p className="text-xs uppercase tracking-widest text-slate-500">{project.year}</p>
+                    <p className="font-semibold text-slate-900 dark:text-slate-100">{project.title}</p>
+                    <p className="text-xs text-slate-500">{project.role?.join(', ')}</p>
+                  </li>
+                ))}
+            </ul>
+          </div>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProjects.map((project: Project) => (
-            <ProjectCard key={project.slug} project={project} />
-          ))}
+      </aside>
+
+      <section className="flex-1">
+        <div className="rounded-3xl border border-slate-200/80 bg-white/95 p-4 shadow-[0_12px_45px_rgba(15,23,42,0.08)] dark:border-gray-800/60 dark:bg-gray-900/90">
+          <FilterBar
+            availableRoles={availableRoles}
+            availableIndustries={availableIndustries}
+            availableSkills={availableSkills}
+            availableYears={availableYears}
+          />
+          <div className="mt-6">
+            {loading ? (
+              loadingSkeleton
+            ) : filteredProjects.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-slate-300 px-6 py-12 text-center text-slate-600 dark:border-slate-700 dark:text-slate-300">
+                <p className="mb-3 font-medium">No projects found with those filters.</p>
+                <button
+                  onClick={() => useFiltersStore.getState().clearFilters()}
+                  className="text-brand-blue underline-offset-4 hover:underline"
+                >
+                  Clear filters
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                {filteredProjects.map((project: Project) => (
+                  <PortfolioCard key={project.slug} project={project} />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-      )}
+      </section>
     </div>
   );
 }

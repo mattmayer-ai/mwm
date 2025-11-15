@@ -25,19 +25,38 @@
     "rewrites": [
       {
         "source": "/api/chat",
-        "function": "chat"
+        "function": {
+          "functionId": "chat",
+          "region": "us-east1"
+        }
       },
       {
         "source": "/api/settings",
-        "function": "settings"
+        "function": {
+          "functionId": "settings",
+          "region": "us-central1"
+        }
       },
       {
         "source": "/api/contact",
-        "function": "contact"
+        "function": {
+          "functionId": "contact",
+          "region": "us-central1"
+        }
       },
       {
         "source": "/api/health",
-        "function": "health"
+        "function": {
+          "functionId": "health",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/api/aws-selfcheck",
+        "function": {
+          "functionId": "awsSelfcheck",
+          "region": "us-east1"
+        }
       },
       {
         "source": "**",

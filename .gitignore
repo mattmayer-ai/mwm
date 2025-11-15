@@ -39,6 +39,9 @@ ui-debug.log
 # Functions build output
 functions/lib
 
+# Generated lexical indexes
+indexes/
+
 # Testing
 coverage
 

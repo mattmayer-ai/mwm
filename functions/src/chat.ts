@@ -1,71 +1,68 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import Anthropic from '@anthropic-ai/sdk';
+import { ConverseCommand } from '@aws-sdk/client-bedrock-runtime';
 
 // Admin is initialized in index.ts
-import { retrieveCandidates, rerankCandidates } from './retrieval';
-import { buildSystemPrompt, buildUserPrompt, extractCitations, type TonePreset } from './prompts';
+import { retrieveCandidates, rerankCandidates, type ChunkCandidate } from './retrieval';
+import {
+  buildSystemPrompt,
+  buildUserPrompt,
+  extractCitations,
+  type TonePreset,
+  type PromptContextEntry,
+} from './prompts';
 import { pickTone } from './tone';
 import { checkRateLimits } from './rateLimit';
-
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY || '',
-});
+import { getBedrockClient } from './bedrock';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
 }
 
-interface ChatRequest {
-  messages: ChatMessage[];
-  scope?: string; // Optional docId to scope retrieval
-}
+// ChatRequest interface removed - using inline type in handler
 
 /**
  * POST /api/chat
  * RAG-powered chat endpoint with citations
  */
 export const chat = functions.https.onRequest(async (req, res) => {
-  // CORS headers
+  // CORS
   const allowedOrigins = [
     'https://askmwm.web.app',
     'https://askmwm.firebaseapp.com',
-    'http://localhost:3000',
     'http://localhost:5173',
   ];
-  
   const origin = req.headers.origin || '';
-  if (allowedOrigins.includes(origin) || origin.includes('localhost')) {
+  if (allowedOrigins.includes(origin)) {
     res.set('Access-Control-Allow-Origin', origin);
   }
   res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.set('Access-Control-Allow-Headers', 'Content-Type');
+  res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
-    res.status(204).send('');
+    res.status(204).end();
     return;
   }
 
   if (req.method !== 'POST') {
-    res.status(405).json({ error: 'Method not allowed' });
+    res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
     return;
   }
 
-  const startTime = Date.now();
+  // Debug: prove what reached the function
+  const ct = req.get('content-type') || '';
+  console.log('CHAT IN:', {
+    method: req.method,
+    contentType: ct,
+    rawLen: (req as any).rawBody?.length || 0,
+    hasBody: !!req.body,
+  });
+
+  const correlationId = `chat-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  console.log('CHAT start', { correlationId });
 
   try {
-    // Log request for debugging
-    console.log('Chat request received:', {
-      method: req.method,
-      headers: {
-        'content-type': req.headers['content-type'],
-        origin: req.headers.origin,
-      },
-      bodyType: typeof req.body,
-      bodyKeys: req.body ? Object.keys(req.body) : null,
-    });
-
     // Rate limiting (with error handling - don't block if rate limit check fails)
     let rateLimit;
     try {
@@ -85,56 +82,80 @@ export const chat = functions.https.onRequest(async (req, res) => {
     }
 
     // Parse and validate request body
-    let body: ChatRequest;
-    try {
-      body = req.body;
-      if (!body || typeof body !== 'object') {
-        console.error('Invalid request body:', { body, type: typeof body });
-        res.status(400).json({ error: 'Invalid request body', details: 'Body must be a JSON object' });
-        return;
-      }
-    } catch (err) {
-      console.error('Failed to parse request body:', err);
-      res.status(400).json({ error: 'Failed to parse request body', details: err instanceof Error ? err.message : 'Unknown error' });
-      return;
+    const body = req.body || {};
+    let { messages, scope, question: questionFallback } = body as {
+      messages?: Array<{ role: string; content: string }>;
+      scope?: string;
+      question?: string;
+    };
+
+    // Normalize & sanitize
+    const safeMsgs: ChatMessage[] = Array.isArray(messages)
+      ? messages
+          .filter((m) => m && typeof m.content === 'string')
+          .map((m) => ({
+            role: (m.role === 'assistant' ? 'assistant' : 'user') as 'user' | 'assistant',
+            content: m.content.trim(),
+          }))
+          .filter((m) => m.content.length > 0)
+      : [];
+
+    // Fallback: accept a single `question` string
+    if (safeMsgs.length === 0 && typeof questionFallback === 'string' && questionFallback.trim()) {
+      safeMsgs.push({ role: 'user', content: questionFallback.trim() });
+      console.log('Fallback synthesized from `question`');
     }
 
-    const { messages, scope } = body;
-
-    // Enhanced validation logging
-    console.log('Validating messages:', {
-      messagesType: typeof messages,
-      isArray: Array.isArray(messages),
-      length: messages?.length,
-      messages: messages?.map((m: any) => ({ role: m?.role, hasContent: !!m?.content, contentLength: m?.content?.length })),
-    });
-
-    if (!messages || !Array.isArray(messages) || messages.length === 0) {
-      console.error('Validation failed: Messages array check', { messages, type: typeof messages, isArray: Array.isArray(messages) });
-      res.status(400).json({ error: 'Messages array is required and must not be empty' });
-      return;
-    }
-
-    // Get the last user message
-    const lastUserMessage = messages.filter((m) => m.role === 'user').pop();
-    console.log('Last user message:', {
-      found: !!lastUserMessage,
-      hasContent: !!lastUserMessage?.content,
-      contentType: typeof lastUserMessage?.content,
-      content: lastUserMessage?.content?.substring(0, 50),
+    console.log('Validated messages:', { length: safeMsgs.length, first: safeMsgs[0] });
+    console.log('CHAT IN', {
+      correlationId,
+      firstMsg: safeMsgs[0]?.content?.slice(0, 120) || '',
     });
     
-    if (!lastUserMessage || !lastUserMessage.content || typeof lastUserMessage.content !== 'string') {
-      console.error('Validation failed: Last user message check', {
-        lastUserMessage,
-        hasContent: !!lastUserMessage?.content,
-        contentType: typeof lastUserMessage?.content,
-      });
+    if (safeMsgs.length === 0) {
+      res.status(400).json({ error: 'EMPTY_MESSAGES_AFTER_FILTER' });
+      return;
+    }
+
+    // Get the last user message from safeMsgs
+    const lastUserMessage = safeMsgs.filter((m) => m.role === 'user').pop();
+    if (!lastUserMessage) {
+      console.error('Validation failed: No user message found in safeMsgs');
       res.status(400).json({ error: 'At least one user message with content is required' });
       return;
     }
 
     const question = lastUserMessage.content;
+
+    // --- QUICK PING BYPASS (keeps SSE shape) ---
+    // Only respond to exact "ping" for testing, not "hi" or other messages
+    const first = (safeMsgs[0]?.content || '').toLowerCase().trim();
+    if (first === 'ping') {
+      res.set('Content-Type', 'text/event-stream');
+      res.set('Cache-Control', 'no-cache');
+      res.set('Connection', 'keep-alive');
+      res.flushHeaders?.();
+      res.write(`data: ${JSON.stringify({ type: 'chunk', content: 'pong' })}\n\n`);
+      res.write(`data: ${JSON.stringify({ type: 'done', citations: [], tone: 'professional' })}\n\n`);
+      res.end();
+      return;
+    }
+
+    // --- SMALL TALK HANDLER ---
+    const smallTalkPattern =
+      /^(hi|hello|hey|heya|hiya|howdy|good (morning|afternoon|evening)|what's up|sup|how are you|thanks|thank you|yo)\b/i;
+    if (smallTalkPattern.test(question) && question.length <= 60) {
+      res.set('Content-Type', 'text/event-stream');
+      res.set('Cache-Control', 'no-cache');
+      res.set('Connection', 'keep-alive');
+      res.flushHeaders?.();
+      const friendly =
+        "Hey! Thanks for checking in. Whenever you're ready, just ask about a project, role, or result and I'll jump straight into the details.";
+      res.write(`data: ${JSON.stringify({ type: 'chunk', content: friendly })}\n\n`);
+      res.write(`data: ${JSON.stringify({ type: 'done', citations: [], tone: 'professional' })}\n\n`);
+      res.end();
+      return;
+    }
 
     // Check settings for personal mode (read from Firestore meta/settings)
     let allowPersonal = false;
@@ -149,19 +170,44 @@ export const chat = functions.https.onRequest(async (req, res) => {
       allowPersonal = process.env.ALLOW_PERSONAL === 'true';
     }
 
-    // Retrieve relevant chunks (get top 12, re-rank to 3-5)
-    const candidates = await retrieveCandidates(question, 12, scope);
-    const reranked = rerankCandidates(candidates, 4); // Return top 3-4 for tighter context
+    // ---- RAG (retrieval) ----
+    const norag = req.query.norag === '1';
+    console.log('RAG start', { correlationId, norag });
 
-    // Build context for prompt
-    const context = reranked.map((c) => ({
-      text: c.text,
-      title: c.title,
-      sourceUrl: c.sourceUrl,
-    }));
+    let candidates: ChunkCandidate[] = [];
+    let reranked: ChunkCandidate[] = [];
+    let context: PromptContextEntry[] = [];
+
+    if (!norag) {
+      try {
+        candidates = await retrieveCandidates(question);
+        console.log('RAG done', { correlationId, candidateCount: candidates?.length || 0 });
+        reranked = await rerankCandidates(candidates); // placeholder reranker keeps order
+
+        // Build context for prompt
+        const isWhoAboutMatt = /\b(who is|who's|about|bio|background)\b/i.test(question);
+        const priorityIds = ['resume', 'resume-pdf', 'content_resume_resume', 'timeline', 'teaching'];
+        const sortedReranked = isWhoAboutMatt
+          ? [...reranked].sort((a, b) => {
+              const aBoost = priorityIds.some((id) => a.docId?.toLowerCase().includes(id)) ? 1 : 0;
+              const bBoost = priorityIds.some((id) => b.docId?.toLowerCase().includes(id)) ? 1 : 0;
+              if (aBoost === bBoost) return 0;
+              return bBoost - aBoost;
+            })
+          : reranked;
+        context = sortedReranked.slice(0, 6).map((c) => ({
+          title: c.sourceTitle,
+          sourceUrl: c.url || '/',
+          snippet: c.snippet.slice(0, 400),
+        }));
+      } catch (ragError) {
+        console.warn('RAG retrieval failed, continuing without context:', ragError);
+        // Continue without RAG context
+      }
+    }
 
     // Build conversation history (last 2 turns)
-    const history: ChatMessage[] = messages.slice(-4); // Last 2 turns (user + assistant)
+    const history: ChatMessage[] = safeMsgs.slice(-4); // Last 2 turns (user + assistant)
 
     // Determine tone based on question and scope
     const tone = pickTone(question, scope, allowPersonal);
@@ -175,42 +221,80 @@ export const chat = functions.https.onRequest(async (req, res) => {
       ? systemPrompt + '\n\nNote: Personal/vulnerable mode is disabled; respond professionally.'
       : systemPrompt;
 
+    if (!norag && context.length === 0) {
+      res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
+      res.flushHeaders?.();
+      const msg =
+        'I don’t have a sourced answer yet. Ask about projects, case studies, or experience listed on this site, or try rephrasing.';
+      res.write(`data: ${JSON.stringify({ type: 'chunk', content: msg })}\n\n`);
+      res.write(`data: ${JSON.stringify({ type: 'done', citations: [], tone: 'professional' })}\n\n`);
+      res.end();
+      return;
+    }
+
     // Build prompt
     const userPrompt = buildUserPrompt(question, context, history);
 
-    // Call Claude
-    const stream = anthropic.messages.stream({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: effectiveTone === 'personal' ? 180 : 1024,
-      system: finalSystemPrompt,
-      messages: [
-        ...history.map((msg) => ({
-          role: (msg.role === 'user' ? 'user' : 'assistant') as 'user' | 'assistant',
-          content: msg.content,
-        })),
-        {
-          role: 'user' as const,
-          content: userPrompt,
-        },
-      ],
-    });
+    // ---- Bedrock call ----
+    const modelId = 'anthropic.claude-3-5-sonnet-20240620-v1:0';
+    console.log('BEDROCK start', { correlationId, model: modelId });
 
-    // Stream response
-    let answer = '';
+    // Set SSE headers before Bedrock call
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders?.();
 
-    for await (const event of stream) {
-      if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
-        const chunk = event.delta.text;
-        answer += chunk;
-        res.write(`data: ${JSON.stringify({ type: 'chunk', content: chunk })}\n\n`);
-      }
-    }
+    const historicalMessages = safeMsgs
+      .slice(0, Math.max(0, safeMsgs.length - 1))
+      .map((m) => ({
+        role: (m.role === 'user' ? 'user' : 'assistant') as 'user' | 'assistant',
+        content: [{ text: m.content }],
+      }));
+
+    const brMessages =
+      safeMsgs.length === 0
+        ? [
+            {
+              role: 'user' as const,
+              content: [{ text: userPrompt }],
+            },
+          ]
+        : [
+            ...historicalMessages,
+            {
+              role: 'user' as const,
+              content: [{ text: userPrompt }],
+            },
+          ];
+
+    const client = getBedrockClient();
+
+    const cmd = new ConverseCommand({
+      modelId,
+      system: [{ text: finalSystemPrompt }],
+      messages: brMessages,
+      inferenceConfig: {
+        maxTokens: effectiveTone === 'personal' ? 180 : 600,
+        temperature: 0.1,
+        topP: 0.9,
+      },
+    });
+
+    const t0 = Date.now();
+    const resp = await client.send(cmd);
+    console.log('BEDROCK done', { correlationId });
+
+    const parts = resp.output?.message?.content ?? [];
+    const answer = parts.map((p) => p?.text).filter(Boolean).join('') || '';
 
     // Extract citations
     const citations = extractCitations(answer, context);
+
+    // Emit one chunk + done (UI already understands this)
+    res.write(`data: ${JSON.stringify({ type: 'chunk', content: answer })}\n\n`);
 
     // Calculate token estimates (rough: ~4 chars per token)
     const tokenIn = Math.ceil((userPrompt.length + finalSystemPrompt.length) / 4);
@@ -221,8 +305,7 @@ export const chat = functions.https.onRequest(async (req, res) => {
     res.end();
 
     // Log metrics with observability
-    const latency = Date.now() - startTime;
-    const correlationId = `chat-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+    const latency = Date.now() - t0;
     console.log(JSON.stringify({
       correlationId,
       tone: effectiveTone,
@@ -254,31 +337,38 @@ export const chat = functions.https.onRequest(async (req, res) => {
       console.error('Failed to log analytics:', err);
     }
   } catch (error) {
-    const correlationId = `chat-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    const errorStack = error instanceof Error ? error.stack : undefined;
+    const e = error as any;
+    const awsMeta = e?.$metadata || {};
+    const code = e?.name || e?.code || 'UnknownError';
+    const msg = e?.message || String(error);
     
-    console.error(JSON.stringify({
+    console.error('CHAT error', {
       correlationId,
-      error: 'Chat request failed',
-      message: errorMessage,
-      stack: errorStack,
-    }));
+      code,
+      msg,
+      awsMeta,
+      stack: e?.stack,
+    });
     
+    // Emit a graceful SSE error so the client can show a friendly message
     if (!res.headersSent) {
-      res.status(500).json({
-        error: 'Chat request failed',
-        message: 'Something went wrong. Please try again.',
-        correlationId, // Include for support
-      });
-    } else {
-      res.write(`data: ${JSON.stringify({ 
-        type: 'error', 
-        message: 'Something went wrong. Please try again.',
-        correlationId,
-      })}\n\n`);
-      res.end();
+      res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
+      res.flushHeaders?.();
     }
+    
+    res.write(`data: ${JSON.stringify({
+      type: 'error',
+      code,
+      message: 'Sorry — something broke while generating a reply. Try again.',
+    })}\n\n`);
+    res.write(`data: ${JSON.stringify({
+      type: 'done',
+      citations: [],
+      tone: 'professional',
+    })}\n\n`);
+    res.end();
   }
 });
 

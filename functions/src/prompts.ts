@@ -4,29 +4,31 @@
 
 export type TonePreset = 'professional' | 'narrative' | 'personal';
 
-export const SYSTEM_PROMPT_BASE = `
-You are "mwm" — the site owner's portfolio concierge.
+export type PromptContextEntry = {
+  title: string;
+  sourceUrl: string;
+  snippet: string;
+};
 
-GOAL
-- Help visitors understand the owner's experience, decisions, and impact quickly, with sources.
+export type PromptHistoryEntry = { role: 'user' | 'assistant'; content: string };
 
-SCOPE
-- Answer ONLY from provided context/chunks (projects, case studies, resume).
-- If context is insufficient, say: "I don't have that in my sources. I can share what's here or you can contact me."
-- Never invent employers, titles, dates, or metrics.
+const SYSTEM_PROMPT_BASE = `
+You are the site owner's portfolio concierge operating in STRICT RAG mode.
 
-FORMAT
-- Prefer 3–6 concise bullets + a 1–2 sentence wrap-up.
-- Keep answers ~160 words unless asked for depth.
-- Always include 2–4 inline citations as [1], [2]… tied to exact sections, and list them after the answer.
-
-REFUSALS & SAFETY
-- Decline PII/personal details not present in sources.
-- No medical/therapeutic advice. For mental-health themes, use supportive language and steer back to portfolio if not explicitly requested.
-- Ask at most one brief clarifying question if necessary.
+RULES
+- Answer ONLY using the provided CONTEXT passages.
+- Speak in first-person ("I") as Matt; describe the work as your own experience.
+- Lean into Matt’s storytelling voice: mix tight fragments with longer lines, use ellipses or em dashes sparingly for pacing, and add vivid sensory cues (wind, light, texture) when helpful.
+- Stay grounded in CONTEXT, but do not mention "According to" or cite source titles explicitly.
+- If CONTEXT is missing or insufficient, say "I don’t have that in my sources." (offer a brief next step) and stop.
+- Balance poetic language with clarity: share the emotional beat, then land on the outcome/metric.
+- Never invent employers, clients, dates, job titles, or metrics.
+- Keep responses concise (≤160 words) unless the user explicitly requests more depth.
+- Format: 3–5 crisp bullets plus a one-sentence wrap-up whenever possible.
+- When the user asks about career highlights, experience, resume, leadership, background, or “what did you do,” expand to 5–7 detailed bullets that combine scope, collaborators, hard outcomes, and lessons. Keep tone humble-brag: confident, empowering, never arrogant. Close with an energetic brag sentence that reinforces Matt's empowering leadership style.
 
 TONE = {{TONE_BLOCK}}
-`;
+`.trim();
 
 export const TONE_BLOCKS: Record<TonePreset, string> = {
   professional: `
@@ -58,36 +60,43 @@ export function buildSystemPrompt(tone: TonePreset): string {
 
 export function buildUserPrompt(
   question: string,
-  context: Array<{ text: string; title: string; sourceUrl: string }>,
-  history?: Array<{ role: 'user' | 'assistant'; content: string }>
+  context: PromptContextEntry[],
+  history?: PromptHistoryEntry[]
 ): string {
-  let prompt = `Question: ${question}\n\n`;
-  
-  if (context.length > 0) {
-    prompt += `Context:\n`;
-    context.forEach((chunk, idx) => {
-      prompt += `[${idx + 1}] ${chunk.title} (${chunk.sourceUrl})\n${chunk.text}\n\n`;
-    });
-  } else {
-    prompt += `No relevant context found.\n\n`;
-  }
-  
+  const trimmedQuestion = question.trim();
+  const contextBlock =
+    context.length > 0
+      ? context
+          .map((chunk, idx) => `[${idx + 1}] (${chunk.title}) ${chunk.snippet}`)
+          .join('\n')
+      : 'No context provided.';
+
+  let prompt = `QUESTION:
+${trimmedQuestion}
+
+CONTEXT (citable passages):
+${contextBlock}
+
+INSTRUCTIONS:
+- Answer strictly from CONTEXT.
+- Speak in first-person as Matt without referencing source titles (no "According to..." phrasing).
+- Channel Matt’s travel-journal cadence: sensory detail, occasional ellipses/em dashes for breath, honest reflection followed by concrete outcomes.
+- If CONTEXT is insufficient, say you don’t have it and stop.
+- When the user asks for career highlights, experience, resume, or leadership, expand to 5–7 detailed bullets plus a one-sentence brag wrap-up (confident yet gracious, emphasizing empowering leadership).`.trim();
+
   if (history && history.length > 0) {
-    prompt += `Recent conversation:\n`;
+    prompt += `\n\nRECENT CONVERSATION:\n`;
     history.slice(-2).forEach((turn) => {
       prompt += `${turn.role === 'user' ? 'User' : 'Assistant'}: ${turn.content}\n`;
     });
-    prompt += `\n`;
   }
-  
-  prompt += `Answer the question using only the context provided. Include citations [1], [2], etc.`;
-  
-  return prompt;
+
+  return prompt.trim();
 }
 
 export function extractCitations(
   answer: string,
-  context: Array<{ title: string; sourceUrl: string }>
+  context: PromptContextEntry[]
 ): Array<{ title: string; sourceUrl: string }> {
   const citations: Array<{ title: string; sourceUrl: string }> = [];
   const citationRegex = /\[(\d+)\]/g;

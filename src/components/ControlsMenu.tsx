@@ -1,14 +1,12 @@
 import { useState } from 'react';
-import { Menu, Sun, Moon, Monitor, Info, Settings } from 'lucide-react';
+import { Menu, Sun, Moon, Monitor, Info } from 'lucide-react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useThemeStore } from '../stores/theme.store';
 import { TrustDialogWrapper } from './TrustDialogWrapper';
-import { AdminPanel } from '../features/admin/AdminPanel';
 
 export function ControlsMenu() {
   const { theme, setTheme } = useThemeStore();
   const [trustOpen, setTrustOpen] = useState(false);
-  const [adminOpen, setAdminOpen] = useState(false);
 
   return (
     <>
@@ -79,25 +77,12 @@ export function ControlsMenu() {
               </button>
             </DropdownMenu.Item>
 
-            {/* Settings (Admin) */}
-            <DropdownMenu.Item asChild>
-              <button
-                onClick={() => setAdminOpen(true)}
-                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-              >
-                <Settings className="w-4 h-4" />
-                Settings
-              </button>
-            </DropdownMenu.Item>
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
       </DropdownMenu.Root>
 
       {/* Trust Dialog - controlled externally */}
       {trustOpen && <TrustDialogWrapper onClose={() => setTrustOpen(false)} />}
-
-      {/* Admin Panel - controlled externally */}
-      {adminOpen && <AdminPanel open={adminOpen} onOpenChange={setAdminOpen} />}
     </>
   );
 }

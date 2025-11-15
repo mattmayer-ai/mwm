@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { injectJSONLD, generatePersonSchema, generateCreativeWorkSchema } from '../../../lib/jsonld';
+import { injectJSONLD, generatePersonSchema } from '../../../lib/jsonld';
 import { injectOGTags } from '../../../lib/og';
 
 export default function About() {
@@ -24,160 +24,122 @@ export default function About() {
       knowsAbout: ['Product Management', 'GenAI', 'RAG', 'React', 'Firebase'],
     }), 'jsonld-person');
 
-    // Inject CreativeWork schema for resume
-    injectJSONLD(generateCreativeWorkSchema({
-      name: 'Experience Summary',
-      description: 'Professional experience summary',
-      url: `${window.location.origin}/resume/mwm-resume.pdf`,
-      author: {
-        '@type': 'Person',
-        name: 'Matt M',
-      },
-      datePublished: '2025-01-01',
-    }), 'jsonld-experience');
   }, []);
 
   return (
-    <main className="container mx-auto px-4 py-6 max-w-4xl">
-      <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">Overview</h1>
-      
-      {/* Summary */}
-      <section className="mb-8">
-        <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-          I bring 11+ years of product management expertise and 15+ years in systems integration, specializing in transforming complex organizational challenges into measurable business outcomes. Currently Head of Product at Swift Racks, I lead development of enterprise AI platforms including our CNS innovation copilot, achieving $1.8M recurring revenue growth and 85% operational efficiency improvements.
+    <main className="mx-auto w-full max-w-6xl px-4 py-8">
+      <header className="mb-8">
+        <p className="text-xs font-semibold uppercase tracking-[0.35em] text-brand-blue">Experience</p>
+        <h1 className="mt-2 text-3xl font-semibold text-slate-900 dark:text-slate-100">Overview</h1>
+        <p className="mt-2 max-w-3xl text-sm text-slate-600 dark:text-slate-300">
+          Dual-track view of my recent leadership roles, core skills, and teaching commitments.
         </p>
-        <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-          My career spans regulated industries from aviation to defense, where I've consistently delivered zero-to-one products under mission-critical constraints. At Air Canada, I pioneered one of the industry's first offline iPad training platforms, reducing friction by 70% and saving $1.5M annually. At RaceRocks, I developed the world's first integrated Replenishment at Sea simulator, delivering $20M+ in operational savings.
-        </p>
-        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-          I distinguish myself through systematic experimentation and customer journey optimization, teaching these principles at Schulich School of Business while actively building AI-powered solutions using GPT-4 and Claude models.
-        </p>
-      </section>
+      </header>
 
-      {/* Core Skills */}
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Core Skills</h2>
-        <div className="space-y-4">
-          <div>
-            <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">AI/ML Product Leadership</h3>
-            <p className="text-gray-700 dark:text-gray-300 text-sm">
-              Architected multi-agent AI systems using AWS Bedrock (Claude Sonnet 3.7), GPT-4, and computer vision. Established responsible AI governance frameworks covering bias testing, transparency, and performance monitoring. Built RAG implementations achieving 85% processing efficiency improvements.
+      <div className="grid gap-6 lg:grid-cols-[360px,1fr]">
+        <aside className="space-y-6 rounded-3xl border border-slate-200/80 bg-white/95 p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)] dark:border-gray-800/70 dark:bg-gray-900/90">
+          <section>
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Summary</h2>
+            <p className="mt-3 text-sm text-slate-700 dark:text-slate-300">
+              I bring 11+ years of product leadership and 15 years of systems integration across aviation, defense, and AI platforms.
+              I currently lead Swift Racks’ CNS innovation copilot, driving $1.8M ARR with an 85% efficiency lift.
             </p>
-          </div>
-          <div>
-            <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Strategic Planning & Roadmapping</h3>
-            <p className="text-gray-700 dark:text-gray-300 text-sm">
-              Served on RaceRocks strategy committee for 4 consecutive years, developing 3-5 year roadmaps and annual strategic initiatives. Transformed Swift Racks from operational chaos to structured execution through North Star metrics and quarterly strategic reviews.
+            <p className="mt-3 text-sm text-slate-700 dark:text-slate-300">
+              Career highlights include building Air Canada’s offline iPad training platform (70% friction reduction) and
+              RaceRocks’ RAS simulator ($20M+ operational savings). I teach experimentation frameworks at Schulich while
+              scaling multi-agent AI systems.
             </p>
-          </div>
-          <div>
-            <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Experimentation & Data Insights</h3>
-            <p className="text-gray-700 dark:text-gray-300 text-sm">
-              Developed systematic frameworks from idea to assumption to experiment, including AI-powered experiment selection using criteria matrices. Personally logged 697 user complaints at Air Canada to identify root problems. Conducted comprehensive user research pivoting entire product strategies.
-            </p>
-          </div>
-          <div>
-            <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Cross-Functional Leadership</h3>
-            <p className="text-gray-700 dark:text-gray-300 text-sm">
-              Orchestrated teams across 6+ departments at Air Canada (HR, Finance, IT, DevOps, Training, C-suite). Managed globally distributed defense teams with different security clearances. Currently building product teams while teaching at Schulich.
-            </p>
-          </div>
-        </div>
-      </section>
+          </section>
 
-      {/* Experience */}
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Overview</h2>
-        <div className="space-y-6">
-          <div className="border-l-2 border-brand-blue pl-4">
-            <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Swift Racks</h3>
-              <span className="text-sm text-gray-600 dark:text-gray-400">June 2024 - Present</span>
+          <section>
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Core Skills</h2>
+            <div className="mt-4 space-y-4 text-sm text-slate-700 dark:text-slate-300">
+              <div>
+                <p className="font-semibold text-slate-900 dark:text-slate-100">AI/ML Product Leadership</p>
+                <p>Architected multi-agent AI systems (AWS Bedrock, GPT-4, CV) and set AI governance with 85% efficiency gains.</p>
+              </div>
+              <div>
+                <p className="font-semibold text-slate-900 dark:text-slate-100">Strategic Planning & Roadmapping</p>
+                <p>Ran annual strategy cycles at RaceRocks and brought Swift Racks to disciplined North Star execution.</p>
+              </div>
+              <div>
+                <p className="font-semibold text-slate-900 dark:text-slate-100">Experimentation & Insights</p>
+                <p>Developed AI-powered experiment selection and logged 697 complaints at Air Canada to pivot strategy.</p>
+              </div>
+              <div>
+                <p className="font-semibold text-slate-900 dark:text-slate-100">Cross-Functional Leadership</p>
+                <p>Led teams across HR, Finance, IT, DevOps, and secure defense programs with mixed clearances.</p>
+              </div>
             </div>
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Head of Product</p>
-            <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-              Leading AI-powered digital transformation across enterprise clients. Architected CNS (Central Nervous System) innovation platform featuring specialized AI agents for automated product discovery, targeting $4.1M ARR Year 1 scaling to $280M by Year 5. Orchestrated TakeCost strategy pivot through 15 contractor interviews, discovering speed trumped accuracy, achieving 95% conversion improvement. Built AutoTake computer vision system processing 5,200+ blueprint elevations, reducing processing time by 85%.
-            </p>
-            <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed mt-2">
-              Established comprehensive experimentation framework with AI-powered test selection. Implemented responsible AI governance across GPT-4, Claude, and custom LLM orchestrations. Generated $1.8M recurring revenue through strategic pivots and customer journey optimization.
-            </p>
-          </div>
+          </section>
 
-          <div className="border-l-2 border-brand-blue pl-4">
-            <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">RaceRocks 3D Inc</h3>
-              <span className="text-sm text-gray-600 dark:text-gray-400">Sept 2021 - May 2024</span>
+          <section>
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Teaching</h2>
+            <div className="mt-3 rounded-2xl border border-slate-200/80 p-4 dark:border-gray-800">
+              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-brand-blue">Schulich School of Business</p>
+              <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">Product Management Instructor</p>
+              <p className="text-xs uppercase tracking-widest text-slate-500">2024 – Present</p>
+              <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                Teach experimentation, AI product development, and customer discovery using live product challenges.
+              </p>
             </div>
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Senior Product Manager</p>
-            <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-              Led strategic planning for defense technology portfolio, conducting 4 annual planning cycles with executives. Developed world's first integrated Replenishment at Sea simulator for Canadian Navy, saving $15M+ annually since 2019. Managed product teams across Boeing, Lockheed Martin, and Royal Canadian Navy programs with mission-critical requirements.
-            </p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Education</h2>
+            <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
+              <li><strong>DeepLearning.AI</strong> — Machine Learning Specialization (2025)</li>
+              <li><strong>Scrum Alliance</strong> — Advanced CSPO (2022)</li>
+              <li><strong>Harvard Business School</strong> — Leadership & Management (2013)</li>
+              <li><strong>Ryerson University</strong> — Bachelor of Design, Marketing minor (2006)</li>
+            </ul>
+          </section>
+        </aside>
+
+        <section className="space-y-6 rounded-3xl border border-slate-200/80 bg-white/95 p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)] dark:border-gray-800/70 dark:bg-gray-900/90">
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Recent Roles</h2>
+          <div className="mt-4 space-y-5">
+            {[
+              {
+                company: 'Swift Racks',
+                range: '2024 – Present',
+                role: 'Head of Product',
+                copy:
+                  'Lead CNS innovation platform and AutoTake CV pipeline, targeting $4.1M ARR in year one and $280M by year five; built AI governance and experimentation frameworks with a 95% conversion lift.',
+              },
+              {
+                company: 'RaceRocks 3D (Senior PM)',
+                range: '2021 – 2024',
+                role: 'Senior Product Manager',
+                copy:
+                  'Directed defense portfolio strategy, launching the first integrated RAS simulator delivering $15M+ annual savings and coordinating Boeing, Lockheed, and Royal Canadian Navy programs.',
+              },
+              {
+                company: 'RaceRocks 3D',
+                range: '2018 – 2021',
+                role: 'Product Manager',
+                copy:
+                  'Built AR/VR/XR training systems for CAF Naval programs, architecting Azure/xAPI stacks and running classified research sprints for defense readiness.',
+              },
+              {
+                company: 'Air Canada',
+                range: '2010 – 2018',
+                role: 'eLearning Manager, Flight Operations',
+                copy:
+                  'Launched the first offline iPad training platform, cutting friction 70% and saving $1.5M annually while increasing engagement 75%.',
+              },
+            ].map((job) => (
+              <article key={job.company} className="rounded-2xl border border-slate-200/80 p-5 dark:border-gray-800">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{job.company}</h3>
+                  <span className="text-xs uppercase tracking-widest text-slate-500">{job.range}</span>
+                </div>
+                <p className="text-sm font-medium text-brand-blue">{job.role}</p>
+                <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{job.copy}</p>
+              </article>
+            ))}
           </div>
-
-          <div className="border-l-2 border-brand-blue pl-4">
-            <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">RaceRocks 3D Inc</h3>
-              <span className="text-sm text-gray-600 dark:text-gray-400">July 2018 - Sept 2021</span>
-            </div>
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Product Manager</p>
-            <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-              Pioneered AR/VR/XR integration for military training systems. Led development of Canadian Armed Forces Naval Training Program for MV ASTERIX. Architected Azure-based systems with xAPI, CMI 5, and WebGL technologies. Conducted classified user research yielding actionable intelligence for defense products.
-            </p>
-          </div>
-
-          <div className="border-l-2 border-brand-blue pl-4">
-            <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Air Canada</h3>
-              <span className="text-sm text-gray-600 dark:text-gray-400">Aug 2010 - July 2018</span>
-            </div>
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">eLearning Manager, Flight Operations</p>
-            <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-              Evolved from eLearning Manager to product leadership, orchestrating cross-functional digital transformation. Built industry's first offline iPad-accessible training platform serving thousands of pilots globally. Reduced training friction by 70% through systematic journey mapping, from 10+ clicks to 3. Delivered $1.5M annual savings and 75% engagement increase.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Teaching */}
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Teaching</h2>
-        <div className="border-l-2 border-brand-blue pl-4">
-          <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Schulich School of Business</h3>
-            <span className="text-sm text-gray-600 dark:text-gray-400">2024 - Present</span>
-          </div>
-          <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Product Management Instructor</p>
-          <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
-            Teaching product management principles to next generation of product leaders. Focus on experimentation frameworks, customer discovery, and AI product development. Students work on real product challenges while learning systematic approaches to validation and iteration.
-          </p>
-        </div>
-      </section>
-
-      {/* Education */}
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-4">Education</h2>
-        <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-          <p><strong>DeepLearning.AI</strong> - Machine Learning Specialization (2025)</p>
-          <p><strong>Scrum Alliance</strong> - Certified Advanced Scrum Product Owner (A-CSPO) (2022)</p>
-          <p><strong>Harvard Business School</strong> - Leadership and Management Training (2013)</p>
-          <p><strong>Ryerson University</strong> - Bachelor of Design (Communications), Minor in Marketing (2001-2006)</p>
-        </div>
-      </section>
-
-      {/* Download PDF option */}
-      <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-        <a
-          href="/resume/mwm-resume.pdf"
-          download
-          className="inline-flex items-center gap-2 rounded-lg bg-brand-blue px-4 py-2 text-white hover:bg-brand-pink transition-colors"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          Download PDF Resume
-        </a>
+        </section>
       </div>
     </main>
   );

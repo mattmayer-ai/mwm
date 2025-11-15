@@ -1,73 +1,50 @@
 import { collection, query, orderBy, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from './firebase';
+import { portfolioProjects } from '../../data/portfolioProjects';
+import type { Project, CaseStudy } from './types/project';
 
-export interface Project {
-  slug: string;
-  title: string;
-  year: number;
-  role: string[];
-  industry: string[];
-  skills: string[];
-  summary: string;
-  impact: Array<{
-    label?: string;
-    metric?: string;
-    before?: string;
-    after?: string;
-    delta?: string;
-  }>;
-  updatedAt: number;
-}
-
-export interface CaseStudy {
-  projectSlug: string;
-  sections: Array<{
-    id: string;
-    title: string;
-    body: string;
-  }>;
-  outcomes: Array<{
-    metric: string;
-    baseline?: string;
-    result?: string;
-    delta?: string;
-  }>;
-  anchors: Array<{
-    sectionId: string;
-    anchor: string;
-  }>;
-  updatedAt: number;
-}
+export type { Project, CaseStudy } from './types/project';
 
 /**
  * Get all projects, sorted by year descending
  */
 export async function getAllProjects(): Promise<Project[]> {
-  const projectsRef = collection(db, 'projects');
-  const q = query(projectsRef, orderBy('year', 'desc'));
-  const snapshot = await getDocs(q);
-  
-  return snapshot.docs.map((doc) => ({
-    ...doc.data(),
-    slug: doc.id,
-  })) as Project[];
+  try {
+    const projectsRef = collection(db, 'projects');
+    const q = query(projectsRef, orderBy('year', 'desc'));
+    const snapshot = await getDocs(q);
+    const docs = snapshot.docs.map((item) => ({
+      ...item.data(),
+      slug: item.id,
+    })) as Project[];
+    if (docs.length > 0) {
+      return docs;
+    }
+  } catch (err) {
+    console.error('getAllProjects failed, falling back to local data:', err);
+  }
+  return portfolioProjects as Project[];
 }
 
 /**
  * Get a single project by slug
  */
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
-  const projectRef = doc(db, 'projects', slug);
-  const projectDoc = await getDoc(projectRef);
-  
-  if (!projectDoc.exists()) {
-    return null;
+  try {
+    const projectRef = doc(db, 'projects', slug);
+    const projectDoc = await getDoc(projectRef);
+    
+    if (projectDoc.exists()) {
+      return {
+        ...projectDoc.data(),
+        slug: projectDoc.id,
+      } as Project;
+    }
+  } catch (err) {
+    console.error('getProjectBySlug failed, looking up fallback:', err);
   }
-  
-  return {
-    ...projectDoc.data(),
-    slug: projectDoc.id,
-  } as Project;
+
+  return (portfolioProjects as Project[]).find((p) => p.slug === slug) || null;
 }
 
 /**

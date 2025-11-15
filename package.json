@@ -12,9 +12,12 @@
     "test": "vitest",
     "test:qa": "vitest --run tests/chat.qa.spec.ts",
     "ingest": "tsx scripts/ingest.ts",
+    "ingest:full": "tsx scripts/ingest.full.ts",
     "build:sitemap": "tsx scripts/generate-sitemap.ts",
+    "seed:projects": "tsx scripts/seedProjects.ts",
     "deploy": "bash scripts/quick-deploy.sh",
     "deploy:full": "bash scripts/full-deploy.sh",
+    "deploy:everything": "bash scripts/deploy_everything.sh",
     "watch:deploy": "node scripts/watch-and-deploy.js"
   },
   "dependencies": {
@@ -28,8 +31,6 @@
     "@radix-ui/react-tabs": "^1.1.1",
     "@radix-ui/react-toast": "^1.2.2",
     "firebase": "^12.4.0",
-    "flexsearch": "^0.7.43",
-    "gray-matter": "^4.0.3",
     "lucide-react": "^0.468.0",
     "pdf-parse": "^1.1.1",
     "react": "^18.3.0",
@@ -51,10 +52,14 @@
     "eslint": "^9.18.0",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.16",
+    "flexsearch": "^0.8.212",
+    "firebase-admin": "^13.0.1",
+    "gray-matter": "^4.0.3",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
-    "tsx": "^4.19.2",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.4",
     "vite": "^5.4.0",
     "vitest": "^2.1.8"
   }

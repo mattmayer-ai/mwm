@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { buildSitemap } from '../../../lib/sitemap';
+import { buildSitemap } from '@lib/sitemap';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '../../../lib/firebase';
+import { db } from '@lib/firebase';
 
 /**
  * Sitemap route - generates XML sitemap dynamically

@@ -11,6 +11,7 @@ interface ChatRequest {
 interface ChatChunk {
   type: 'chunk' | 'done' | 'error';
   content?: string;
+  text?: string;
   citations?: Array<{ title: string; sourceUrl: string }>;
   tone?: 'professional' | 'narrative' | 'personal';
   message?: string;
@@ -76,12 +77,15 @@ export async function streamChat(
         if (line.startsWith('data: ')) {
           try {
             const data: ChatChunk = JSON.parse(line.slice(6));
-            if (data.type === 'chunk' && data.content) {
-              onChunk(data.content);
-            } else if (data.type === 'done' && data.citations) {
-              onComplete(data.citations, data.tone);
+            if (data.type === 'chunk') {
+              const chunkText = data.content ?? data.text ?? '';
+              if (chunkText) {
+                onChunk(chunkText);
+              }
+            } else if (data.type === 'done') {
+              onComplete(data.citations ?? [], data.tone);
             } else if (data.type === 'error') {
-              onError(data.message || 'Unknown error');
+              onError(data.message || data.content || 'Unknown error');
             }
           } catch (e) {
             // Skip malformed JSON

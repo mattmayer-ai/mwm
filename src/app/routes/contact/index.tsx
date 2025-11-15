@@ -14,7 +14,7 @@ export default function Contact() {
       name: formData.get('name'),
       email: formData.get('email'),
       message: formData.get('message'),
-      honeypot: formData.get('hp'), // Hidden honeypot field
+      hp: formData.get('hp') || '', // Hidden honeypot field - backend expects 'hp'
     };
 
     try {
@@ -26,31 +26,26 @@ export default function Contact() {
       });
 
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({ error: 'Request failed' }));
-        if (res.status === 429) {
-          setErrorMessage(`Rate limit exceeded. Please try again in ${errorData.retryAfter || 60} seconds.`);
-        } else {
-          setErrorMessage(errorData.message || errorData.error || 'Something went wrong');
-        }
-        setStatus('err');
-        return;
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `HTTP_${res.status}`);
       }
 
       setStatus('ok');
       e.currentTarget.reset();
     } catch (err) {
-      setErrorMessage('Network error. Please check your connection and try again.');
+      const errorMessage = err instanceof Error ? err.message : 'Network error. Please check your connection and try again.';
+      setErrorMessage(errorMessage);
       setStatus('err');
     }
   }
 
   return (
     <main className="max-w-2xl mx-auto">
-      <p className="text-gray-600 dark:text-gray-400 mb-6">
+      <p className="text-gray-600 dark:text-gray-400 mb-4">
         Let's discuss how we can work together.
       </p>
 
-      <form className="mt-6 space-y-4" onSubmit={submit}>
+      <form className="mt-4 space-y-4" onSubmit={submit}>
         {/* Honeypot field - hidden from users */}
         <input
           name="hp"
@@ -61,32 +56,34 @@ export default function Contact() {
           aria-hidden="true"
         />
 
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Name
-          </label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            required
-            placeholder="Your name"
-            className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Name
+            </label>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              required
+              placeholder="Your name"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
 
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Email
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            required
-            placeholder="your@email.com"
-            className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Email
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              placeholder="your@email.com"
+              className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
         </div>
 
         <div>
@@ -98,7 +95,7 @@ export default function Contact() {
             name="message"
             required
             placeholder="How can we work together?"
-            rows={6}
+            rows={4}
             className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
           />
         </div>
@@ -124,7 +121,7 @@ export default function Contact() {
         )}
       </form>
 
-      <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+      <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
           Prefer to schedule a call?
         </p>

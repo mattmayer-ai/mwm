@@ -49,14 +49,19 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     }
     trackChatMessage();
     
-    // Add user message
-    state.addMessage({
-      role: 'user',
-      content,
-    });
+    // Validate input content
+    const trimmedContent = content.trim();
+    if (!trimmedContent) {
+      return; // Don't send empty messages
+    }
 
-    // Set loading state
-    set({ isLoading: true, error: null });
+    // Create user message
+    const userMessage: ChatMessage = {
+      id: generateMessageId(),
+      role: 'user',
+      content: trimmedContent,
+      timestamp: new Date(),
+    };
 
     // Create assistant message placeholder
     const assistantId = generateMessageId();
@@ -66,20 +71,38 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       content: '',
       timestamp: new Date(),
     };
+
+    // Add both messages atomically in a single set() call
     set((state) => ({
-      messages: [...state.messages, assistantMessage],
+      messages: [...state.messages, userMessage, assistantMessage],
+      isLoading: true,
+      error: null,
     }));
 
-    // Build request - only include messages with content (exclude empty assistant placeholder)
+    // Get updated state AFTER adding messages to build request
+    const updatedState = get();
+    
+    // Build request - only include messages with real content (exclude empty assistant placeholder)
     const request = {
-      messages: state.messages
-        .filter((m) => m.content && m.content.trim().length > 0)
+      messages: updatedState.messages
+        .filter((m) => typeof m.content === 'string' && m.content.trim().length > 0)
         .map((m) => ({
           role: m.role,
           content: m.content,
         })),
       scope,
     };
+
+    // Validate request before sending - ABORT if empty
+    if (!request.messages || request.messages.length === 0) {
+      console.error('ABORT: empty messages payload', request);
+      set({
+        error: 'Failed to prepare message. Please try again.',
+        isLoading: false,
+        messages: updatedState.messages.filter((msg) => msg.id !== assistantId),
+      });
+      return;
+    }
 
     let accumulatedContent = '';
 
@@ -110,18 +133,31 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         },
         // onError
         (error) => {
+          const currentState = get();
+          // Update assistant message with error instead of removing it
           set({
             error,
             isLoading: false,
-            messages: state.messages.filter((msg) => msg.id !== assistantId),
+            messages: currentState.messages.map((msg) =>
+              msg.id === assistantId
+                ? { ...msg, content: 'Sorry — something broke. Try again in a moment.' }
+                : msg
+            ),
           });
         }
       );
     } catch (error) {
+      const currentState = get();
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      // Update assistant message with error instead of removing it
       set({
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: errorMessage,
         isLoading: false,
-        messages: state.messages.filter((msg) => msg.id !== assistantId),
+        messages: currentState.messages.map((msg) =>
+          msg.id === assistantId
+            ? { ...msg, content: 'Sorry — something broke. Try again in a moment.' }
+            : msg
+        ),
       });
     }
   },

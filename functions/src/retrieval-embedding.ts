@@ -26,7 +26,7 @@ import type { ChunkCandidate } from './retrieval';
  */
 export async function rerankCandidatesWithEmbeddings(
   candidates: ChunkCandidate[],
-  query: string,
+  _query: string,
   topN: number = 4
 ): Promise<ChunkCandidate[]> {
   // TODO: Implement embedding-based reranking
@@ -50,15 +50,15 @@ export async function rerankCandidatesWithEmbeddings(
  */
 export async function hybridRetrieve(
   query: string,
-  topK: number = 12,
+  _topK: number = 12,
   topN: number = 4,
-  scope?: string
+  _scope?: string
 ): Promise<ChunkCandidate[]> {
   // Import lexical search (keep existing implementation)
   const { retrieveCandidates } = await import('./retrieval');
   
   // Get top-K from lexical search
-  const candidates = await retrieveCandidates(query, topK, scope);
+  const candidates = await retrieveCandidates(query);
   
   // Rerank with embeddings
   return rerankCandidatesWithEmbeddings(candidates, query, topN);

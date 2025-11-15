@@ -49,14 +49,13 @@ export function TrustDialog() {
           </Dialog.Title>
           <div className="mt-4 text-sm text-gray-700 dark:text-gray-300 space-y-3">
             <p>
-              Answers come strictly from this site's projects, case studies, and resume via 
-              retrieval-augmented generation (RAG). Each claim links to a source.
+              Answers are grounded in Matt’s projects, case studies, resume, and teaching notes using retrieval-augmented generation (RAG). The model never pulls from public web data.
             </p>
             <ul className="list-disc pl-5 space-y-1">
-              <li><strong>Model:</strong> Anthropic Claude 3.5 Sonnet</li>
+              <li><strong>Model:</strong> Anthropic Claude 3.5 Sonnet (AWS Bedrock)</li>
               <li><strong>Index last updated:</strong> {lastIndexedAt || '—'}</li>
               <li><strong>Privacy:</strong> no PII stored; anonymized analytics only</li>
-              <li><strong>Sources:</strong> projects, case studies, resume content</li>
+              <li><strong>Sources:</strong> projects, case studies, resume & teaching content</li>
             </ul>
             <p className="pt-2">
               If something looks off, down-vote the answer and I'll review it.
@@ -64,7 +63,7 @@ export function TrustDialog() {
           </div>
           <div className="mt-6 flex justify-end">
             <Dialog.Close asChild>
-              <button className="rounded-lg bg-gray-100 dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+              <button className="rounded-xl bg-brand-blue px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-pink focus:outline-none focus:ring-2 focus:ring-brand-blue/40">
                 Close
               </button>
             </Dialog.Close>

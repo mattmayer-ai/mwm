@@ -32,18 +32,25 @@ export function ChatMessageList({ messages, isLoading, error }: ChatMessageListP
           <p className="text-sm">Ask me anything about my work, experience, or projects.</p>
         </div>
       )}
-      {messages.map((message) => (
-        <div
-          key={message.id}
-          className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-        >
+      {messages.map((message, index) => {
+        const hasContent = Boolean(message.content && message.content.trim().length > 0);
+        const displayContent =
+          hasContent || message.role !== 'assistant'
+            ? message.content
+            : '…';
+
+        return (
           <div
-            className={`max-w-[80%] rounded-lg px-4 py-2 ${
-              message.role === 'user'
-                ? 'bg-brand-blue text-white'
-                : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
-            }`}
+            key={message.id}
+            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
+            <div
+              className={`max-w-[80%] rounded-lg px-4 py-2 ${
+                message.role === 'user'
+                  ? 'bg-brand-blue text-white'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
+              }`}
+            >
             {/* Show tone badge immediately when tone is known, even during streaming */}
             {message.role === 'assistant' && message.tone && (
               <div className="mb-2">
@@ -55,9 +62,11 @@ export function ChatMessageList({ messages, isLoading, error }: ChatMessageListP
                 *Content note: this touches on intense emotions.*
               </div>
             )}
-            <div className="prose prose-sm dark:prose-invert max-w-none">
-              <p className="whitespace-pre-wrap">{message.content}</p>
-            </div>
+            {displayContent && (
+              <div className="prose prose-sm dark:prose-invert max-w-none">
+                <p className="whitespace-pre-wrap">{displayContent}</p>
+              </div>
+            )}
             {message.citations && message.citations.length > 0 && (
               <div className="mt-3 pt-3 border-t border-gray-300 dark:border-gray-600">
                 <p className="text-xs font-semibold mb-2">Sources:</p>
@@ -74,9 +83,9 @@ export function ChatMessageList({ messages, isLoading, error }: ChatMessageListP
                 </ul>
               </div>
             )}
-            {message.role === 'assistant' && message.content && (
+            {message.role === 'assistant' && hasContent && (
               <FeedbackButtons
-                question={messages[messages.indexOf(message) - 1]?.content || ''}
+                question={messages[index - 1]?.content || ''}
                 answer={message.content}
                 citations={message.citations}
                 messageId={message.id}
@@ -84,7 +93,8 @@ export function ChatMessageList({ messages, isLoading, error }: ChatMessageListP
             )}
           </div>
         </div>
-      ))}
+        );
+      })}
       {isLoading && (
         <div className="flex justify-start">
           <div className="bg-gray-100 dark:bg-gray-800 rounded-lg px-4 py-2">

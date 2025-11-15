@@ -4,75 +4,69 @@ import { checkRateLimits } from './rateLimit';
 
 // Admin is initialized in index.ts
 
-interface ContactRequest {
-  name: string;
-  email: string;
-  message: string;
-  honeypot?: string; // Spam protection
-}
-
 /**
  * POST /api/contact
  * Contact form submission with rate limiting and spam protection
  */
 export const contact = functions.https.onRequest(async (req, res) => {
-  // CORS headers
-  const allowedOrigins = [
+  // CORS
+  const allowed = [
     'https://askmwm.web.app',
     'https://askmwm.firebaseapp.com',
-    'http://localhost:3000',
     'http://localhost:5173',
   ];
-  
   const origin = req.headers.origin || '';
-  if (allowedOrigins.includes(origin) || origin.includes('localhost')) {
+  if (allowed.includes(origin)) {
     res.set('Access-Control-Allow-Origin', origin);
   }
   res.set('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.set('Access-Control-Allow-Headers', 'Content-Type');
+  res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
-    res.status(204).send('');
+    res.status(204).end();
     return;
   }
 
   if (req.method !== 'POST') {
-    res.status(405).json({ error: 'Method not allowed' });
+    res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
     return;
   }
 
   try {
-    // Rate limiting
-    const rateLimit = await checkRateLimits(req);
-    if (!rateLimit.allowed) {
-      res.status(429).json({
-        error: 'Rate limit exceeded',
-        message: rateLimit.reason || 'Too many requests',
-        retryAfter: Math.ceil((rateLimit.resetAt - Date.now()) / 1000),
+    // Rate limiting (with error handling - don't block if rate limit check fails)
+    let rateLimit;
+    try {
+      rateLimit = await checkRateLimits(req);
+      if (!rateLimit.allowed) {
+        res.status(429).json({
+          error: 'RATE_LIMIT',
+          retryAfter: Math.ceil((rateLimit.resetAt - Date.now()) / 1000),
+        });
+        return;
+      }
+    } catch (rateLimitError) {
+      // Log but don't block - rate limiting is best-effort
+      console.warn('Rate limit check failed, allowing request:', rateLimitError);
+      // Continue with the request
+    }
+
+    const body = req.body || {};
+    const { name = '', email = '', message = '', hp = '' } = body;
+
+    // Honeypot check
+    if (hp) {
+      res.status(200).json({ ok: true }); // honeypot
+      return;
+    }
+
+    // Validate payload and log failures
+    if (!name.trim() || !/^[^@]+@[^@]+\.[^@]+$/.test(email) || message.trim().length < 10) {
+      console.log('CONTACT invalid', {
+        nameLen: name.length,
+        email,
+        msgLen: message.length,
       });
-      return;
-    }
-
-    const body: ContactRequest = req.body;
-    const { name, email, message, honeypot } = body;
-
-    // Validation
-    if (!name || !email || !message) {
-      res.status(400).json({ error: 'Name, email, and message are required' });
-      return;
-    }
-
-    // Spam protection: honeypot field should be empty
-    if (honeypot && honeypot.trim() !== '') {
-      // Silently reject (don't reveal it's a honeypot)
-      res.status(200).json({ success: true });
-      return;
-    }
-
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      res.status(400).json({ error: 'Invalid email address' });
+      res.status(400).json({ error: 'INVALID_INPUT' });
       return;
     }
 
@@ -99,10 +93,12 @@ export const contact = functions.https.onRequest(async (req, res) => {
     res.json({ success: true, message: 'Message received' });
   } catch (error) {
     console.error('Contact form error:', error);
-    res.status(500).json({
-      error: 'Failed to submit message',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    });
+    if (!res.headersSent) {
+      res.status(500).json({
+        error: 'Failed to submit message',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      });
+    }
   }
 });
 

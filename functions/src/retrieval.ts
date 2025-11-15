@@ -1,140 +1,198 @@
 import * as admin from 'firebase-admin';
-import FlexSearch, { Index } from 'flexsearch';
 
-// Admin is initialized in index.ts
-const db = admin.firestore();
-const storage = admin.storage();
-
-// Define the minimal surface we actually use for FlexSearch
-type FlexIndexSerialized = {
-  export: () => Promise<string> | string;
-  import: (data: unknown) => void; // single-arg serialized import that FlexSearch supports
-  search: (q: string, opts?: unknown) => Promise<number[] | string[] | unknown> | number[] | string[] | unknown;
+export type ChunkCandidate = {
+  docId: string;
+  score: number;
+  sourceTitle: string;
+  url?: string;
+  snippet: string;
 };
 
-export interface ChunkCandidate {
-  id: string;
-  docId: string;
-  sectionId: string;
-  text: string;
-  sourceUrl: string;
+type LookupEntry = {
   title: string;
-  score: number;
-}
+  url?: string;
+};
 
-/**
- * Load lexical index from Cloud Storage
- */
-async function loadIndex(): Promise<FlexIndexSerialized> {
-  const bucket = storage.bucket();
-  const file = bucket.file('indexes/primary.json');
-  
-  const [fileContent] = await file.download();
-  const indexData = JSON.parse(fileContent.toString());
-  
-  // Create index with proper typing
-  const index: Index = new (FlexSearch as any).Index({
+type StoreEntry = Record<string, string>;
+
+type CachedIndex = {
+  index: any;
+  lookup: Record<string, LookupEntry>;
+  store?: StoreEntry;
+};
+
+let cache: CachedIndex | null = null;
+
+function getFlexIndex(): any {
+  const FlexSearch = require('flexsearch');
+  return new (FlexSearch.Index ?? FlexSearch)({
     tokenize: 'forward',
-    cache: 100,
+    preset: 'match',
   });
-  
-  // Import serialized data using single-arg form
-  (index as unknown as FlexIndexSerialized).import(indexData);
-  
-  // Return as our minimal surface so callers don't depend on flexsearch types
-  return index as unknown as FlexIndexSerialized;
 }
 
-/**
- * Retrieve candidate chunks using lexical search
- */
-export async function retrieveCandidates(
-  query: string,
-  topK: number = 12, // Get more candidates for better re-ranking
-  scope?: string
-): Promise<ChunkCandidate[]> {
-  // Load index
-  const index = await loadIndex();
-  
-  // Search index - get top-K * 2 for re-ranking pool
-  const searchResults = index.search(query, topK * 2);
-  const results = (Array.isArray(searchResults) ? searchResults : await searchResults) as string[];
-  
-  // Fetch chunk documents from Firestore
-  const chunksRef = db.collection('chunks');
-  const chunkPromises = results.map((chunkId) => chunksRef.doc(chunkId).get());
-  const chunkDocs = await Promise.all(chunkPromises);
-  
-  // Filter and map to candidates
-  const candidates: ChunkCandidate[] = [];
-  for (const doc of chunkDocs) {
-    if (!doc.exists) continue;
-    
-    const data = doc.data();
-    if (!data) continue;
-    
-    // Apply scope filter if provided
-    if (scope && data.docId !== scope) continue;
-    
-    // Enhanced re-ranking: term overlap + section title boost + scope boost
-    const text = data.text as string;
-    const title = data.title as string;
-    const queryTerms = query.toLowerCase().split(/\s+/);
-    const textLower = text.toLowerCase();
-    const titleLower = title.toLowerCase();
-    
-    let score = 0;
-    for (const term of queryTerms) {
-      if (textLower.includes(term)) score += 1;
-      if (titleLower.includes(term)) score += 2; // Title boost
-    }
-    
-    // Scope boost: if scope matches docId exactly, boost significantly
-    if (scope && data.docId === scope) {
-      score += 10; // Strong boost for exact scope match
-    } else if (scope && data.docId.startsWith(scope)) {
-      score += 5; // Moderate boost for partial match
-    }
-    
-    // Normalize by text length (prefer shorter, more focused chunks)
-    score = score / Math.log(text.length + 1);
-    
-    candidates.push({
-      id: doc.id,
-      docId: data.docId as string,
-      sectionId: data.sectionId as string,
-      text,
-      sourceUrl: data.sourceUrl as string,
-      title: title || 'Untitled',
-      score,
-    });
+function importSerializedIndex(idx: any, serialized: unknown) {
+  if (!serialized || typeof idx.import !== 'function') {
+    return;
   }
-  
-  // Sort by score and return top-K
-  candidates.sort((a, b) => b.score - a.score);
-  return candidates.slice(0, topK);
-}
 
-/**
- * Re-rank candidates to final 3-5 snippets
- */
-export function rerankCandidates(
-  candidates: ChunkCandidate[],
-  maxSnippets: number = 5
-): ChunkCandidate[] {
-  // Remove duplicates by docId+sectionId, keeping highest score
-  const seen = new Map<string, ChunkCandidate>();
-  for (const candidate of candidates) {
-    const key = `${candidate.docId}-${candidate.sectionId}`;
-    const existing = seen.get(key);
-    if (!existing || candidate.score > existing.score) {
-      seen.set(key, candidate);
+  if (typeof serialized === 'string') {
+    idx.import(serialized);
+    return;
+  }
+
+  if (typeof serialized === 'object') {
+    const entries = Object.entries(serialized as Record<string, unknown>);
+    for (const [key, value] of entries) {
+      idx.import(key, value);
     }
   }
-  
-  const unique = Array.from(seen.values());
-  unique.sort((a, b) => b.score - a.score);
-  
-  return unique.slice(0, maxSnippets);
 }
 
+function buildSnippet(text: string, query: string, maxLen = 240): string {
+  const clean = (text || '').replace(/\s+/g, ' ').trim();
+  if (!clean) return '';
+
+  const normalizedQuery = query.toLowerCase();
+  const index = clean.toLowerCase().indexOf(normalizedQuery);
+
+  if (index === -1) {
+    return clean.length > maxLen ? `${clean.slice(0, maxLen)}…` : clean;
+  }
+
+  const start = Math.max(0, index - Math.floor(maxLen / 3));
+  const end = Math.min(clean.length, start + maxLen);
+  const prefix = start > 0 ? '…' : '';
+  const suffix = end < clean.length ? '…' : '';
+
+  return `${prefix}${clean.slice(start, end)}${suffix}`;
+}
+
+async function loadIndex(): Promise<CachedIndex | null> {
+  if (cache) {
+    return cache;
+  }
+
+  const bucketName = process.env.STORAGE_BUCKET || (admin.app().options.storageBucket as string) || 'askmwm';
+  console.log('RAG load start', { bucketName, path: 'indexes/primary.json' });
+
+  try {
+    const [buffer] = await admin.storage().bucket(bucketName).file('indexes/primary.json').download();
+    console.log('RAG load done', { bytes: buffer.length });
+
+    const data = JSON.parse(buffer.toString('utf8')) as {
+      index: unknown;
+      lookup?: Record<string, LookupEntry>;
+      store?: StoreEntry;
+    };
+
+    const idx = getFlexIndex();
+    if (data.index) {
+      importSerializedIndex(idx, data.index);
+      console.log('RAG index imported', {
+        hasSerializedIndex: true,
+        hasLookup: Boolean(data.lookup),
+        hasStore: Boolean(data.store),
+      });
+    } else if (data.store) {
+      console.log('RAG index missing serialized data; rebuilding from store');
+      const entries = Object.entries(data.store);
+      for (const [id, text] of entries) {
+        const meta = data.lookup?.[id];
+        idx.add(id, `${meta?.title ?? ''} ${text}`);
+      }
+      console.log('RAG rebuild complete', { docsIndexed: entries.length });
+    } else {
+      console.warn('RAG data missing both serialized index and store; retrieval will fail.');
+    }
+
+    cache = {
+      index: idx,
+      lookup: data.lookup || {},
+      store: data.store,
+    };
+
+    return cache;
+  } catch (error) {
+    console.warn('Failed to load index from Cloud Storage:', error);
+    return null;
+  }
+}
+
+export async function retrieveCandidates(query: string): Promise<ChunkCandidate[]> {
+  const loaded = await loadIndex();
+  if (!loaded) {
+    return [];
+  }
+
+  const trimmedQuery = query.trim();
+  if (!trimmedQuery) {
+    return [];
+  }
+
+  const ids = await searchIndex(loaded.index, trimmedQuery, 24);
+
+  if (ids.length === 0) {
+    const fallbackIds = await fallbackSearch(loaded.index, trimmedQuery, 24);
+    ids.push(...fallbackIds);
+  }
+
+  console.log('RAG search', { q: trimmedQuery, results: ids.length });
+
+  return ids.map((id: string, idx: number) => {
+    const meta = loaded.lookup[id] || { title: id };
+    const storeText = loaded.store?.[id] || meta.title || '';
+    return {
+      docId: id,
+      score: Math.max(1, 24 - idx),
+      sourceTitle: meta.title,
+      url: meta.url,
+      snippet: buildSnippet(storeText, trimmedQuery),
+    };
+  });
+}
+
+export async function rerankCandidates(candidates: ChunkCandidate[]): Promise<ChunkCandidate[]> {
+  return candidates;
+}
+
+async function searchIndex(index: any, text: string, limit: number): Promise<string[]> {
+  const raw = await index.search(text, { limit });
+  if (Array.isArray(raw)) {
+    return raw;
+  }
+  if (raw && Array.isArray(raw.result)) {
+    return raw.result;
+  }
+  return [];
+}
+
+async function fallbackSearch(index: any, query: string, maxResults: number): Promise<string[]> {
+  const normalized = query.replace(/[^a-zA-Z0-9\s]/g, ' ').toLowerCase();
+  const terms = Array.from(
+    new Set(
+      normalized
+        .split(/\s+/)
+        .filter((token) => token.length > 2)
+        .slice(0, 6),
+    ),
+  );
+
+  const results: string[] = [];
+  const seen = new Set<string>();
+
+  for (const term of terms) {
+    const termResults = await searchIndex(index, term, 12);
+    for (const id of termResults) {
+      if (!seen.has(id)) {
+        seen.add(id);
+        results.push(id);
+        if (results.length >= maxResults) {
+          return results;
+        }
+      }
+    }
+  }
+
+  return results;
+}
