@@ -6,6 +6,7 @@ export interface Project {
   industry: string[];
   skills: string[];
   summary: string;
+  url?: string;
   impact: Array<{
     label?: string;
     metric?: string;

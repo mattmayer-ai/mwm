@@ -37,7 +37,7 @@ export function TrustDialogWrapper({ onClose }: TrustDialogWrapperProps) {
     <Dialog.Root open={true} onOpenChange={(open) => !open && onClose()}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[560px] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white dark:bg-gray-900 p-6 shadow-xl">
+        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[560px] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white dark:bg-gray-900 p-6 shadow-xl">
           <Dialog.Title className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             How the AI works
           </Dialog.Title>
@@ -62,7 +62,7 @@ export function TrustDialogWrapper({ onClose }: TrustDialogWrapperProps) {
             <Dialog.Close asChild>
               <button
                 onClick={onClose}
-                className="rounded-xl bg-brand-blue px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-pink focus:outline-none focus:ring-2 focus:ring-brand-blue/40"
+                className="rounded-lg bg-brand-blue px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-pink focus:outline-none focus:ring-2 focus:ring-brand-blue/40"
               >
                 Close
               </button>

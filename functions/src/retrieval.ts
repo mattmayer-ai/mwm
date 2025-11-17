@@ -11,6 +11,8 @@ export type ChunkCandidate = {
 type LookupEntry = {
   title: string;
   url?: string;
+  sourceId?: string; // For chunk-based lookup
+  preview?: string;
 };
 
 type StoreEntry = Record<string, string>;
@@ -19,6 +21,7 @@ type CachedIndex = {
   index: any;
   lookup: Record<string, LookupEntry>;
   store?: StoreEntry;
+  docLookup?: Record<string, LookupEntry>; // Document-level metadata (v2)
 };
 
 let cache: CachedIndex | null = null;
@@ -81,9 +84,11 @@ async function loadIndex(): Promise<CachedIndex | null> {
     console.log('RAG load done', { bytes: buffer.length });
 
     const data = JSON.parse(buffer.toString('utf8')) as {
+      version?: number;
       index: unknown;
       lookup?: Record<string, LookupEntry>;
       store?: StoreEntry;
+      docLookup?: Record<string, LookupEntry>;
     };
 
     const idx = getFlexIndex();
@@ -101,7 +106,7 @@ async function loadIndex(): Promise<CachedIndex | null> {
         const meta = data.lookup?.[id];
         idx.add(id, `${meta?.title ?? ''} ${text}`);
       }
-      console.log('RAG rebuild complete', { docsIndexed: entries.length });
+      console.log('RAG rebuild complete', { chunksIndexed: entries.length });
     } else {
       console.warn('RAG data missing both serialized index and store; retrieval will fail.');
     }
@@ -110,6 +115,7 @@ async function loadIndex(): Promise<CachedIndex | null> {
       index: idx,
       lookup: data.lookup || {},
       store: data.store,
+      docLookup: data.docLookup,
     };
 
     return cache;
@@ -117,6 +123,30 @@ async function loadIndex(): Promise<CachedIndex | null> {
     console.warn('Failed to load index from Cloud Storage:', error);
     return null;
   }
+}
+
+/**
+ * Expand query with common term mappings for better retrieval
+ */
+function expandQuery(query: string): string {
+  const expansions: string[] = [query];
+  
+  // Expand acronyms and common terms
+  if (/\bcns\b/i.test(query)) {
+    expansions.push('Central Nervous System', 'AI-Powered Innovation Platform', 'innovation platform', 'innovation copilot', 'CNS platform');
+  }
+  if (/\bras\b/i.test(query)) {
+    expansions.push('Replenishment at Sea', 'RAS simulator');
+  }
+  if (/\bphilosophy\b/i.test(query)) {
+    expansions.push('leadership philosophy', 'product philosophy', 'teaching philosophy');
+  }
+  if (/\bachievement\b/i.test(query) || /\bbest\b/i.test(query) || /\bwin\b/i.test(query)) {
+    expansions.push('achievements', 'major achievements', 'biggest wins', 'results', 'metrics');
+  }
+  
+  // Combine expansions with original query
+  return expansions.join(' ');
 }
 
 export async function retrieveCandidates(query: string): Promise<ChunkCandidate[]> {
@@ -130,24 +160,35 @@ export async function retrieveCandidates(query: string): Promise<ChunkCandidate[
     return [];
   }
 
-  const ids = await searchIndex(loaded.index, trimmedQuery, 24);
+  // Expand query for better retrieval
+  const expandedQuery = expandQuery(trimmedQuery);
+  const ids = await searchIndex(loaded.index, expandedQuery, 24);
 
   if (ids.length === 0) {
-    const fallbackIds = await fallbackSearch(loaded.index, trimmedQuery, 24);
+    const fallbackIds = await fallbackSearch(loaded.index, expandedQuery, 24);
     ids.push(...fallbackIds);
   }
 
-  console.log('RAG search', { q: trimmedQuery, results: ids.length });
+  console.log('RAG search', { q: trimmedQuery, expanded: expandedQuery, results: ids.length });
 
-  return ids.map((id: string, idx: number) => {
-    const meta = loaded.lookup[id] || { title: id };
-    const storeText = loaded.store?.[id] || meta.title || '';
+  // Map chunk IDs to candidates, using source document metadata when available
+  return ids.map((chunkId: string, idx: number) => {
+    const chunkMeta = loaded.lookup[chunkId];
+    const chunkText = loaded.store?.[chunkId] || chunkMeta?.preview || '';
+    
+    // If this is a chunk (has sourceId), use document-level metadata for title/url
+    const sourceId = chunkMeta?.sourceId || chunkId;
+    const docMeta = loaded.docLookup?.[sourceId] || chunkMeta;
+    
+    // Extract source doc ID from chunk ID (format: docId#000)
+    const docId = chunkId.includes('#') ? chunkId.split('#')[0] : chunkId;
+    
     return {
-      docId: id,
+      docId: sourceId || docId,
       score: Math.max(1, 24 - idx),
-      sourceTitle: meta.title,
-      url: meta.url,
-      snippet: buildSnippet(storeText, trimmedQuery),
+      sourceTitle: docMeta?.title || chunkMeta?.title || chunkId,
+      url: docMeta?.url || chunkMeta?.url,
+      snippet: buildSnippet(chunkText, trimmedQuery),
     };
   });
 }

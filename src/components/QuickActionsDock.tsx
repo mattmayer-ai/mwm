@@ -13,7 +13,7 @@ export function QuickActionsDock() {
 
   return (
     <div className="fixed inset-x-0 bottom-6 z-30 flex justify-center pointer-events-none">
-      <div className="flex items-center gap-2 sm:gap-3 rounded-2xl bg-white/85 dark:bg-gray-900/80 backdrop-blur-md border border-gray-200/70 dark:border-gray-800/70 shadow-lg px-3 py-2 pointer-events-auto">
+      <div className="flex items-center gap-2 sm:gap-3 rounded-lg bg-white/85 dark:bg-gray-900/80 backdrop-blur-md border border-gray-200/70 dark:border-gray-800/70 shadow-lg px-3 py-2 pointer-events-auto">
         {/* Experience */}
         <button
           type="button"
@@ -70,6 +70,7 @@ export function QuickActionsDock() {
           open={connectOpen}
           onOpenChange={setConnectOpen}
           title="Connect"
+          size="narrow"
         >
           <Contact />
         </WideModal>

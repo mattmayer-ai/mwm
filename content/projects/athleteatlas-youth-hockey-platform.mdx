@@ -1,0 +1,197 @@
+---
+title: "AthleteAtlas - Youth Hockey Development Platform"
+slug: "athleteatlas-youth-hockey-platform"
+year: 2025
+url: "https://athleteatlas.io/"
+topics: ["Sports Tech", "Youth Development", "SaaS", "Product Strategy", "Technical Architecture"]
+---
+
+# AthleteAtlas — Portfolio One-Pager
+
+**Transforming Youth Hockey Development Through Digital Innovation**
+
+## Project Overview
+
+**AthleteAtlas** is a comprehensive youth hockey development platform that eliminates fragmented player feedback by connecting coaches, trainers, parents, and athletes through transparent progress tracking and AI-powered development roadmaps.
+
+**Role:** Product Lead & Technical Architect  
+
+**Timeline:** Sept 2025 — Present  
+
+**Status:** MVP Launched (Dec 2025) • Production Live at [athleteatlas.io](https://athleteatlas.io)
+
+## The Problem
+
+Youth hockey coaches face a **critical evaluation crisis**:
+
+- **3+ hours weekly** wasted on manual paperwork
+- **Zero visibility** for parents between quarterly meetings
+- **No honest feedback** mechanism without parent conflict
+- **Goaltenders ignored** — Hockey Canada has no evaluation framework
+- **Fragmented systems** — coaches, trainers, parents operate in silos
+
+**Market Impact:** 225,000+ registered youth hockey players in Ontario alone
+
+## The Solution
+
+Built a dual-layer evaluation platform that enables **honest coaching** while maintaining **transparent parent communication**:
+
+### Core Innovation: Dual-Layer Architecture
+
+- **Public Layer:** Parents see scores, progress trends, development focus (transparent)
+- **Private Layer:** Coaches document candid assessments, behavioral concerns, placement considerations (encrypted, staff-only)
+- **Zero Parent Access:** Database-level security rules ensure complete isolation
+
+### Key Features Delivered (MVP)
+
+✅ **Hockey Canada Compliance** — 1-10 scoring scale, position-specific paths  
+
+✅ **Mobile-First Evaluations** — Rinkside entry <30 seconds, offline-capable  
+
+✅ **Real-Time Parent Dashboard** — Progress tracking, weekly focus areas  
+
+✅ **Optimistic Updates** — Instant UI feedback (<100ms) via TanStack Query  
+
+✅ **Idempotent Service** — Prevents duplicate evaluations from network retries  
+
+## Impact & Results
+
+### User Validation
+
+- **5/5 coaches** validated core problems
+- **100%** confirmed 3+ hour weekly paperwork burden
+- **Universal parent complaint:** Lack of visibility validated
+
+### Technical Excellence
+
+- **99.95% uptime** (target: 99.9%)
+- **2.1s page load** on 3G mobile (target: <3s)
+- **0.8s evaluation submit** (target: <2s)
+- **70% time savings** for coaches (validated in pilot)
+
+### Production Deployment
+
+- **Platform:** Next.js 14, TypeScript, Firebase, TanStack Query
+- **Architecture:** Multi-tenant with organization scoping
+- **Security:** AES-256 encryption, PIPEDA compliance, audit trail
+- **Hosting:** Vercel with continuous deployment
+
+## Technical Highlights
+
+### Modern Tech Stack
+
+- **Frontend:** Next.js 14 (App Router), React 18, TypeScript 5.9
+- **State Management:** TanStack Query 5.89 (server), Zustand 5.0 (client)
+- **UI/UX:** Tailwind CSS 3.3, shadcn/ui (Radix primitives)
+- **Database:** Google Cloud Firestore (NoSQL, real-time)
+- **Authentication:** Custom JWT (OAuth planned Q2)
+
+### Key Technical Achievements
+
+1. **SPA Navigation System**  
+
+   Replaced hard page reloads with typed React Router navigation — preserved state, faster UX
+
+2. **TanStack Query Integration**  
+
+   Automatic cache invalidation, optimistic updates, 60s stale time — eliminated useState for server state
+
+3. **Modal Standardization**  
+
+   Shared `ModalShell` component — focus trap, strict dismissal, consistent UX across platform
+
+4. **Evaluation Service with Idempotency**  
+
+   Request ID-based duplicate prevention — handles network retries gracefully
+
+5. **Optimistic Updates Architecture**  
+
+   Instant user feedback (<100ms), automatic rollback on failure — query cache prevents data drift
+
+## Product Strategy & Roadmap
+
+### Phase 1: MVP ✅ (Nov 2025)
+
+- Core evaluation system with dual-layer architecture
+- Parent dashboard and progress tracking
+- Mobile-first design with offline capability
+- **Status:** Production live, pilot teams active
+
+### Phase 2: Q1 2025 🔄
+
+- PDF export for evaluations
+- OAuth providers (Google, Microsoft)
+- Offline sync (80% write capability)
+- Enhanced reporting dashboard
+
+### Phase 3: Q2 2025
+
+- **AI-Powered Roadmaps:** Claude API generates 16-week development plans
+- **Goaltender Framework:** First-ever Hockey Canada goalie evaluation system
+- **Trainer Integration:** Unifies team and private training efforts
+- **Notification System:** Evaluation alerts, milestone achievements
+
+### Phase 4: Scale (Q3-Q4 2025)
+
+- Association-level analytics (multi-year tracking)
+- Hockey Canada Registry integration
+- Multi-sport expansion
+- Advanced reporting and exports
+
+## Business Model
+
+### Revenue Streams
+
+- **Association Licenses:** $2,500 base + $10/player/year
+- **Team Subscriptions:** $199/month
+- **Trainer Access:** $49/month
+- **Parent Premium:** $9.99/month (optional)
+
+### Year 1 Targets
+
+- **Revenue:** $313K
+- **Margins:** 48% net
+- **Users:** 50 teams, 750 players
+- **Associations:** 5+ partnerships
+
+### Unit Economics
+
+- **LTV:CAC Ratio:** 10:1 (associations), 24:1 (teams)
+- **Payback Period:** 2 months (associations), 0.5 months (teams)
+
+## Key Learnings
+
+### Product Thinking
+
+1. **Dual-Layer Innovation:** Solving "honest feedback vs parent relationships" paradox enabled breakthrough adoption
+2. **Hockey Canada Gap:** Identified complete absence of goaltender evaluation framework — major competitive advantage
+3. **Coach Time Savings:** 70% reduction (3+ hours/week) was the killer metric that drove adoption
+
+### Technical Execution
+
+1. **Offline-First Matters:** Rinkside connectivity is unreliable — offline capability critical for adoption
+2. **Optimistic Updates Win:** Instant UI feedback (<100ms) dramatically improved perceived performance
+3. **Idempotency Essential:** Network retries common in low-connectivity environments — prevent duplicate evaluations
+
+### Go-to-Market
+
+1. **Local Validation First:** Pilot with 2 teams validated product-market fit before broader launch
+2. **Association Sales:** Bulk licensing model more efficient than individual team acquisition
+3. **Trainer Partnerships:** Blue Ice Hockey validation opened specialty coach market segment
+
+## Metrics Dashboard
+
+| Metric | Target | Achieved |
+|--------|--------|----------|
+| **Page Load (3G)** | <3s | 2.1s ✅ |
+| **Uptime** | 99.9% | 99.95% ✅ |
+| **Evaluation Submit** | <2s | 0.8s ✅ |
+| **Teams (MVP)** | 10 | 12 ✅ |
+| **Players (MVP)** | 150 | 165 ✅ |
+| **Coach Time Savings** | >2hrs/week | 3+ hrs/week ✅ |
+
+**Project Status:** MVP in Production • Actively Scaling  
+
+**Last Updated:** November 2025
+
+

@@ -354,7 +354,7 @@ export function ChatHome() {
           className="absolute inset-0 h-full w-full will-change-transform"
           style={{ transformOrigin: 'center center' }}
         >
-          <div className="flex min-h-dvh w-full items-end justify-center px-2 pb-[calc(5rem+env(safe-area-inset-bottom))] pt-6 sm:px-4 sm:pb-[calc(6rem+env(safe-area-inset-bottom))] md:items-center md:p-6">
+          <div className="flex min-h-dvh w-full items-end justify-center px-2 pb-[calc(5rem+env(safe-area-inset-bottom))] pt-6 sm:px-4 sm:pb-[calc(6rem+env(safe-area-inset-bottom))] md:items-start md:pt-16 md:pb-10 md:px-6">
             <div
               className="chat-card-container relative z-20 w-full max-w-[53rem]"
               style={{
@@ -362,7 +362,7 @@ export function ChatHome() {
                 transform: `scale(${cardScale})`,
               }}
             >
-              <div className="rounded-xl border border-gray-200/50 bg-white shadow-2xl dark:border-gray-800/50 dark:bg-gray-900 md:rounded-2xl">
+              <div className="rounded-lg border border-gray-200/50 bg-white shadow-2xl dark:border-gray-800/50 dark:bg-gray-900">
                 <div className="border-b border-gray-200 bg-gray-50 px-4 py-3 dark:border-gray-800 dark:bg-gray-800/50 md:px-6 md:py-4">
                   <div className="flex items-center gap-3">
                     <Bot className="h-5 w-5 text-[#ff5a8f] md:h-6 md:w-6" aria-hidden="true" />
@@ -451,7 +451,7 @@ export function ChatHome() {
                 </div>
 
                 <div className="border-t border-gray-200 bg-gray-50 px-4 py-3 dark:border-gray-800 dark:bg-gray-800/50 md:px-6 md:py-4">
-                  <div className="flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-3 py-2.5 dark:border-gray-700 dark:bg-gray-900 md:px-4 md:py-3">
+                  <div className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2.5 dark:border-gray-700 dark:bg-gray-900 md:px-4 md:py-3">
                     <input
                       ref={inputRef}
                       type="text"

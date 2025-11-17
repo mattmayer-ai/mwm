@@ -16,13 +16,19 @@ export default {
           'pink-dark': '#d14a4c',
         },
       },
+      borderRadius: {
+        lg: 'var(--radius)',
+        md: 'calc(var(--radius) - 2px)',
+        sm: 'calc(var(--radius) - 4px)',
+        DEFAULT: 'var(--radius)',
+      },
     },
   },
   plugins: [
     function({ addComponents }: { addComponents: (components: Record<string, Record<string, string>>) => void }) {
       addComponents({
         '.card-rect': {
-          '@apply rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-lg': {},
+          '@apply rounded-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-lg': {},
         },
         '.modal-wide': {
           '@apply max-w-4xl lg:max-w-5xl p-6 sm:p-8': {},

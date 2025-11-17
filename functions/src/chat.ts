@@ -20,6 +20,48 @@ interface ChatMessage {
   content: string;
 }
 
+type Intent = 'SmallTalk' | 'Contact' | null; // null means proceed to RAG
+
+const smallTalkRegex =
+  /^(hi|hello|hey|heya|hiya|howdy|good (morning|afternoon|evening)|what's up|sup|how are you|thanks|thank you|yo)\b/i;
+const contactRegex = /(hire|availability|book|rates?|contact|email|linked ?in|cal\.?com|schedule)/i;
+
+const SMALL_TALK_RESPONSES: string[] = [
+  "Hey! I'm glad you're here. Want a quick tour of my highlights, projects, or leadership style?",
+  "Hi there—I'm Matt. Ask me anything about my roles, AI platforms, or the teams I've built.",
+  "Good to see you. I can dig into projects, strategy, or how I lead—where should we start?",
+  "Hey! Thanks for dropping in. Curious about CNS, AutoTake, or my leadership playbook?",
+  "Hi! I'm doing great and always up for talking shop—projects, roles, outcomes, you name it.",
+  "Hello! If you're scouting, I can share my biggest wins, pivots, or how I keep teams moving.",
+  "Hey! Ready when you are—ask about AI agents, defense simulators, or teaching at Schulich.",
+  "Hi! Want the 90-second story, a project deep dive, or how I coach PMs?",
+  "Hey there. I'm happy to unpack my career highlights or the toughest pivots I've led.",
+  "Hi! Great to meet you. Curious about my current bets or how I think about strategy?",
+  "Hey! I'm here whenever you want to dive into outcomes, leadership, or process.",
+  "Hi! Want a brag reel, leadership philosophy, or my first 90-day plan?",
+  "Hello! Ask me about CNS, RAS, AutoTake, or how I shrink time-to-insight.",
+  "Hey! I'm Matt—fire away with questions about AI roadmaps, defense training, or teaching.",
+  "Hi there! Looking for metrics, case studies, or how I run discovery?",
+  "Hey! I can talk about my north-star metrics, experimentation, or team rituals.",
+  "Hi! Wondering how I balance speed and quality or how I align execs? Ask away.",
+  "Hello! Want to know how I decide what not to build or how I price outcomes?",
+  "Hey there! I can walk through my GTM playbooks or my favorite coaching moments.",
+  "Hi! Curious about how I use data without getting dogmatic? Happy to share.",
+  "Hey! Need my leadership style in one line or examples of empowering teams?",
+  "Hi! Ask me about a tough pivot, a rescue story, or how I keep momentum.",
+  "Hey! Want to hear how I make multi-agent systems behave? I've got stories.",
+  "Hello! I can cover security, privacy, and governance for AI if that's on your mind.",
+  "Hi there! Need a primer on how I run product reviews or post-mortems?",
+  "Hey! Ask me about my teaching at Schulich or how I mentor PMs.",
+  "Hi! Curious about hiring bar, onboarding seniors, or aligning design and eng?",
+  "Hey! Want to discuss my view on vision, dependencies, or roadmap uncertainty?",
+  "Hello! I can explain how I avoid pilot purgatory or partner with Sales.",
+  "Hi! If you need contact info or next steps, just say the word."
+];
+
+const CONTACT_RESPONSE =
+  "Happy to connect. You can email me at hello@mattmayer.ai, find me on LinkedIn, or grab time via my calendar—whatever's easiest.";
+
 // ChatRequest interface removed - using inline type in handler
 
 /**
@@ -127,35 +169,64 @@ export const chat = functions.https.onRequest(async (req, res) => {
 
     const question = lastUserMessage.content;
 
+    const sendSSE = (payload: { content: string; tone?: TonePreset }) => {
+      res.set('Content-Type', 'text/event-stream');
+      res.set('Cache-Control', 'no-cache');
+      res.set('Connection', 'keep-alive');
+      res.flushHeaders?.();
+      res.write(`data: ${JSON.stringify({ type: 'chunk', content: payload.content })}\n\n`);
+      res.write(
+        `data: ${JSON.stringify({
+          type: 'done',
+          citations: [],
+          tone: payload.tone || 'professional',
+        })}\n\n`,
+      );
+      res.end();
+    };
+
+    const routeIntent = (text: string): Intent | null => {
+      const trimmed = text.trim();
+      
+      // Only route to SmallTalk for very short greetings (≤20 chars) - let longer questions go to RAG
+      if (trimmed.length <= 20 && smallTalkRegex.test(trimmed)) {
+        return 'SmallTalk';
+      }
+      
+      // Only route to Contact for explicit hiring/contact requests
+      if (contactRegex.test(trimmed)) {
+        return 'Contact';
+      }
+      
+      // Everything else goes to RAG (return null to proceed with RAG)
+      return null;
+    };
+
+    const intent = routeIntent(question);
+    console.log('Intent routed', { intent, questionSnippet: question.slice(0, 80) });
+
     // --- QUICK PING BYPASS (keeps SSE shape) ---
     // Only respond to exact "ping" for testing, not "hi" or other messages
     const first = (safeMsgs[0]?.content || '').toLowerCase().trim();
     if (first === 'ping') {
-      res.set('Content-Type', 'text/event-stream');
-      res.set('Cache-Control', 'no-cache');
-      res.set('Connection', 'keep-alive');
-      res.flushHeaders?.();
-      res.write(`data: ${JSON.stringify({ type: 'chunk', content: 'pong' })}\n\n`);
-      res.write(`data: ${JSON.stringify({ type: 'done', citations: [], tone: 'professional' })}\n\n`);
-      res.end();
+      sendSSE({ content: 'pong' });
       return;
     }
 
-    // --- SMALL TALK HANDLER ---
-    const smallTalkPattern =
-      /^(hi|hello|hey|heya|hiya|howdy|good (morning|afternoon|evening)|what's up|sup|how are you|thanks|thank you|yo)\b/i;
-    if (smallTalkPattern.test(question) && question.length <= 60) {
-      res.set('Content-Type', 'text/event-stream');
-      res.set('Cache-Control', 'no-cache');
-      res.set('Connection', 'keep-alive');
-      res.flushHeaders?.();
-      const friendly =
-        "Hey! Thanks for checking in. Whenever you're ready, just ask about a project, role, or result and I'll jump straight into the details.";
-      res.write(`data: ${JSON.stringify({ type: 'chunk', content: friendly })}\n\n`);
-      res.write(`data: ${JSON.stringify({ type: 'done', citations: [], tone: 'professional' })}\n\n`);
-      res.end();
+    if (intent === 'SmallTalk') {
+      const friendly = SMALL_TALK_RESPONSES[Math.floor(Math.random() * SMALL_TALK_RESPONSES.length)];
+      sendSSE({ content: friendly });
       return;
     }
+
+    if (intent === 'Contact') {
+      sendSSE({
+        content: `${CONTACT_RESPONSE} Want me to highlight recent wins before we talk specifics?`,
+      });
+      return;
+    }
+
+    // If intent is null, proceed to RAG (removed OutOfScope early return)
 
     // Check settings for personal mode (read from Firestore meta/settings)
     let allowPersonal = false;
@@ -184,13 +255,23 @@ export const chat = functions.https.onRequest(async (req, res) => {
         console.log('RAG done', { correlationId, candidateCount: candidates?.length || 0 });
         reranked = await rerankCandidates(candidates); // placeholder reranker keeps order
 
-        // Build context for prompt
+        // Build context for prompt with priority boosting
         const isWhoAboutMatt = /\b(who is|who's|about|bio|background)\b/i.test(question);
-        const priorityIds = ['resume', 'resume-pdf', 'content_resume_resume', 'timeline', 'teaching'];
-        const sortedReranked = isWhoAboutMatt
+        const isPhilosophyQuestion = /\b(philosophy|philosophies|approach|style|how do you think|what's your view)\b/i.test(question);
+        const isAchievementQuestion = /\b(achievement|best|biggest|greatest|win|accomplishment|proud|success)\b/i.test(question);
+        
+        let priorityIds: string[] = [];
+        if (isWhoAboutMatt) {
+          priorityIds = ['resume', 'resume-pdf', 'content_resume_resume', 'timeline', 'teaching'];
+        } else if (isPhilosophyQuestion || isAchievementQuestion) {
+          // Boost interview Q&A content for philosophy and achievement questions
+          priorityIds = ['matt_interview_qna', 'interview', 'qa', 'resume', 'content_resume_resume'];
+        }
+        
+        const sortedReranked = priorityIds.length > 0
           ? [...reranked].sort((a, b) => {
-              const aBoost = priorityIds.some((id) => a.docId?.toLowerCase().includes(id)) ? 1 : 0;
-              const bBoost = priorityIds.some((id) => b.docId?.toLowerCase().includes(id)) ? 1 : 0;
+              const aBoost = priorityIds.some((id) => a.docId?.toLowerCase().includes(id) || a.sourceTitle?.toLowerCase().includes(id)) ? 1 : 0;
+              const bBoost = priorityIds.some((id) => b.docId?.toLowerCase().includes(id) || b.sourceTitle?.toLowerCase().includes(id)) ? 1 : 0;
               if (aBoost === bBoost) return 0;
               return bBoost - aBoost;
             })
@@ -227,7 +308,7 @@ export const chat = functions.https.onRequest(async (req, res) => {
       res.setHeader('Connection', 'keep-alive');
       res.flushHeaders?.();
       const msg =
-        'I don’t have a sourced answer yet. Ask about projects, case studies, or experience listed on this site, or try rephrasing.';
+        'I don’t have that in my sources yet. Ask about projects, roles, leadership, or teaching and I’ll share specifics.';
       res.write(`data: ${JSON.stringify({ type: 'chunk', content: msg })}\n\n`);
       res.write(`data: ${JSON.stringify({ type: 'done', citations: [], tone: 'professional' })}\n\n`);
       res.end();

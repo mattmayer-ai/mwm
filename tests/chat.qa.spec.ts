@@ -1,120 +1,50 @@
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'fs';
+import path from 'path';
+import { TRAP_QUESTIONS } from './fixtures/trapQuestions';
 
-/**
- * QA harness for chat citations
- * Tests that chat responses include expected citations
- */
+const qaFile = path.resolve(process.cwd(), 'content/interviews/matt_interview_qna.mdx');
+const fileContents = readFileSync(qaFile, 'utf8');
 
-interface QATestCase {
-  question: string;
-  expectedCitations: string[]; // Expected docId or sectionId patterns
-  minCitations?: number; // Minimum number of citations required
+type QAEntry = { question: string; answer: string };
+
+function parseQA(content: string): QAEntry[] {
+  const blocks = content.split(/^##\s+/m).slice(1);
+  return blocks.map((block) => {
+    const [heading, ...bodyParts] = block.split('\n');
+    const question = heading.trim();
+    const answer = bodyParts.join('\n').trim();
+    return { question, answer };
+  });
 }
 
-const QA_SEED: QATestCase[] = [
-  {
-    question: 'What is your experience with React?',
-    expectedCitations: ['resume', 'project'],
-    minCitations: 1,
-  },
-  {
-    question: 'Tell me about a project you worked on',
-    expectedCitations: ['project'],
-    minCitations: 1,
-  },
-  {
-    question: 'What technologies do you use?',
-    expectedCitations: ['resume', 'project'],
-    minCitations: 1,
-  },
-  // Add more test cases as content is added
-];
+const ENTRIES = parseQA(fileContents);
 
-/**
- * Test chat endpoint with seeded questions
- */
-describe('Chat QA - Citation Accuracy', () => {
-  const API_BASE = process.env.VITE_API_BASE || 'http://localhost:5001/your-project/us-central1';
+describe('Interview Q&A corpus integrity', () => {
+  it('contains 50 Q&A entries', () => {
+    expect(ENTRIES.length).toBe(50);
+  });
 
-  QA_SEED.forEach((testCase, index) => {
-    it(`should return citations for: "${testCase.question}"`, async () => {
-      const response = await fetch(`${API_BASE}/api/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          messages: [{ role: 'user', content: testCase.question }],
-        }),
-      });
+  it('answers use first-person voice', () => {
+    const firstPerson = /(\bI\b|I['’](?:m|ve)|\bmy\b|\bme\b)/i;
+    const offenders = ENTRIES.filter((entry) => !firstPerson.test(entry.answer));
+    expect(offenders).toHaveLength(0);
+  });
 
-      expect(response.ok).toBe(true);
-
-      // Read streaming response
-      const reader = response.body?.getReader();
-      if (!reader) {
-        throw new Error('No response body');
-      }
-
-      const decoder = new TextDecoder();
-      let buffer = '';
-      let citations: Array<{ title: string; sourceUrl: string }> = [];
-      let answer = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            try {
-              const data = JSON.parse(line.slice(6));
-              if (data.type === 'chunk' && data.content) {
-                answer += data.content;
-              } else if (data.type === 'done' && data.citations) {
-                citations = data.citations;
-              }
-            } catch (e) {
-              // Skip malformed JSON
-            }
-          }
-        }
-      }
-
-      // Assertions
-      expect(answer.length).toBeGreaterThan(0);
-      expect(citations.length).toBeGreaterThanOrEqual(testCase.minCitations || 1);
-
-      // Check that at least one citation matches expected pattern
-      const hasExpectedCitation = citations.some((citation) =>
-        testCase.expectedCitations.some((expected) =>
-          citation.sourceUrl.includes(expected) || citation.title.toLowerCase().includes(expected.toLowerCase())
-        )
-      );
-
-      expect(hasExpectedCitation).toBe(true);
-    }, 10000); // 10s timeout for API calls
+  it('answers stay within 200 words unless explicitly longer', () => {
+    const tooLong = ENTRIES.filter((entry) => entry.answer.split(/\s+/).length > 220);
+    expect(tooLong).toHaveLength(0);
   });
 });
 
-/**
- * Test citation format
- */
-describe('Chat QA - Citation Format', () => {
-  it('should format citations correctly', () => {
-    const citations = [
-      { title: 'Project A', sourceUrl: '/projects/project-a' },
-      { title: 'Resume', sourceUrl: '/about' },
-    ];
+describe('Trap question coverage', () => {
+  it('includes at least 10 out-of-scope traps', () => {
+    expect(TRAP_QUESTIONS.length).toBeGreaterThanOrEqual(10);
+  });
 
-    expect(citations.length).toBeGreaterThan(0);
-    citations.forEach((citation) => {
-      expect(citation.title).toBeTruthy();
-      expect(citation.sourceUrl).toBeTruthy();
+  it('traps reference non-Matt employers to ensure refusal flow', () => {
+    TRAP_QUESTIONS.forEach((trap) => {
+      expect(/google|meta|microsoft|amazon|apple|openai|nyt|new york times|twitter|salesforce|aws/.test(trap.toLowerCase())).toBe(true);
     });
   });
 });

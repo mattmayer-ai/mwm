@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --radius: 10px;
+}
+
 :root,
 body {
   margin: 0;

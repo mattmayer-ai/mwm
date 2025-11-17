@@ -23,7 +23,7 @@ export function ControlsMenu() {
           </button>
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
-          <DropdownMenu.Content className="min-w-[220px] rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-2 shadow-xl z-50">
+          <DropdownMenu.Content className="min-w-[220px] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-2 shadow-xl z-50">
             {/* Theme Section */}
             <div className="px-2 py-1.5">
               <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Theme</div>

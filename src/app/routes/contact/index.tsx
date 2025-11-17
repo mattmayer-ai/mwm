@@ -126,12 +126,12 @@ export default function Contact() {
           Prefer to schedule a call?
         </p>
         <a
-          href="https://cal.com/your-handle"
+          href="https://calendar.app.google/2rsEprtsjuieGHcD8"
           target="_blank"
           rel="noopener noreferrer"
           className="text-brand-blue dark:text-brand-blue/80 hover:underline"
         >
-          Book time on Cal.com →
+          Book time on my calendar →
         </a>
       </div>
     </main>

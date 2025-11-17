@@ -64,9 +64,14 @@ See `.env.example` for required variables:
 
 1. Add your content to `/content/projects/*.mdx` and `/content/resume/resume.md`
 2. Add resume PDF to `/public/resume/mwm-resume.pdf`
-3. Run ingestion:
+3. Run ingestion (lexical fallback):
    ```bash
    npm run ingest
+   ```
+4. Build the enriched primary index (includes interview Q&A chunks):
+   ```bash
+   npm run build:primary
+   gsutil cp indexes/primary.json gs://askmwm/indexes/primary.json
    ```
    Or trigger via API (admin-only):
    ```bash
