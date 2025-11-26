@@ -1,14 +1,14 @@
 ---
-title: "CNS - AI-Powered Innovation Platform"
+title: "CNS - Multi-Agent Innovation Platform"
 slug: "cns-ai-powered-innovation-platform"
-year: 2025
+year: 2024
 url: "https://swiftcns.ai/"
 topics: ["AI", "Innovation Management", "Experimentation", "Multi-Agent Systems"]
 ---
 
-# Welcome to CNS – The AI-Powered Innovation Platform
+# Welcome to CNS – The Multi-Agent Innovation Platform
 
-CNS is an **AI-powered innovation platform** that helps teams learn faster, make customer-informed decisions, and build stronger strategies.
+CNS stands for "Central Nervous System," a Multi-Agent Innovation Platform. It's an **AI-powered platform** that actively orchestrates the innovation process, not just tracks it. CNS helps teams learn faster, make customer-informed decisions, and build stronger strategies.
 
 ## The Problem with Innovation
 
@@ -64,6 +64,12 @@ We believe this is a new age for innovation. AI is unlocking capabilities that w
 
 ## What CNS Does
 
+CNS addresses the gap between idea generation and validation in companies, where teams often build features nobody wants. It's an AI-powered platform that actively orchestrates the innovation process, not just tracks it.
+
+CNS uses four specialized AI agents built on AWS Bedrock with Claude Sonnet 3.7, each handling different aspects of discovery. The platform generates experiments, validates hypotheses, and synthesizes learnings into decisions automatically.
+
+Users interact with CNS through a simple chat interface, describing problems in natural language. Every interaction strengthens a knowledge graph, creating a proprietary competitive advantage for the company.
+
 CNS helps teams:
 
 1. **Capture and Explore Ideas** – Ground every opportunity in a real customer problem.
@@ -78,6 +84,37 @@ CNS helps teams:
 * **Learning at Speed**: CNS reduces the cycle time from idea to evidence, making "fast learning" the default.
 * **Collaboration First**: Designed for cross-functional teams—product, research, engineering, and leadership.
 * **Evidence over Opinions**: Replace endless debates with customer-informed insights.
+
+## Technical Architecture
+
+CNS is built on a modern, scalable architecture designed for enterprise-grade performance and reliability.
+
+### AI/ML Core
+
+* **Multi-Agent System**: AWS Bedrock (Claude Sonnet 3.7) with orchestrator-workers pattern for specialized agent coordination
+* **RAG Implementation**: PGVector and PostgreSQL vector extensions for semantic search across historical experiments and learnings
+* **LLM Orchestration**: GPT-4 integration with responsible AI governance frameworks for bias testing, transparency, and performance monitoring
+* **Computer Vision**: Scale AI labeled datasets for multi-material detection and blueprint processing
+
+### Backend
+
+* **Framework**: Spring Boot 3.x with Project Reactor for reactive, non-blocking operations
+* **Database**: PostgreSQL with vector extensions (PGVector) for semantic search and knowledge graph storage
+* **Migrations**: Liquibase for version-controlled schema management
+
+### Frontend
+
+* **Framework**: Next.js 15 with React 19 and TypeScript
+* **Real-Time**: Server-Sent Events (SSE) for streaming AI agent responses and live updates
+* **State Management**: Optimized for real-time collaboration and experiment tracking
+
+### Infrastructure
+
+* **Containerization**: Docker for consistent deployment across environments
+* **Reverse Proxy**: Nginx for load balancing and SSL termination
+* **Enterprise Integration**: GitHub for version control, xAPI/CMI 5 protocols, Azure systems, Okta OAuth2/OIDC for authentication
+
+This architecture enables CNS to process complex innovation workflows at scale while maintaining low latency and high reliability.
 
 ## The Promise
 
