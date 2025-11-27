@@ -6,9 +6,6 @@ import { FeedbackButtons } from '../../../features/chat/FeedbackButtons';
 import { QuickActionsDock } from '../../../components/QuickActionsDock';
 import { Bot } from 'lucide-react';
 import { useThemeStore } from '../../../stores/theme.store';
-import { useArtifactsStore } from '../../../stores/artifacts.store';
-import { CanvasArtifact } from '../../../components/CanvasArtifact';
-import { screenToCanvas, snapToGrid } from '../../../lib/grid-snap';
 
 /**
  * Home page with centered chat interface
@@ -37,8 +34,6 @@ export function ChatHome() {
   const getEffectiveTheme = useThemeStore((state) => state.getEffectiveTheme);
   const theme = useThemeStore((state) => state.theme);
   const [isDark, setIsDark] = useState(() => getEffectiveTheme() === 'dark');
-  const artifacts = useArtifactsStore((state) => state.artifacts);
-  const addArtifact = useArtifactsStore((state) => state.addArtifact);
   const inputRef = useRef<HTMLInputElement>(null);
   const canvasContentRef = useRef<HTMLDivElement>(null);
   const canvasWrapperRef = useRef<HTMLDivElement>(null);
@@ -85,84 +80,6 @@ export function ChatHome() {
     };
   }, []);
 
-  // Global drop handler for artifacts - works even when dragging from modals
-  useEffect(() => {
-    if (!isDesktop) return;
-
-    const handleDragOver = (e: DragEvent) => {
-      // Only handle artifact drops (application/json data type)
-      if (!e.dataTransfer?.types.includes('application/json')) {
-        return;
-      }
-
-      // Check if dragging over UI elements
-      const elementUnder = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement;
-      const isOverUI = elementUnder?.closest('.chat-card-container, .quick-actions-dock, button, input, textarea, a, .canvas-artifact, [role="dialog"]') !== null;
-      
-      if (!isOverUI) {
-        e.preventDefault();
-        e.stopPropagation();
-        e.dataTransfer.dropEffect = 'move';
-      } else {
-        e.dataTransfer.dropEffect = 'none';
-      }
-    };
-
-    const handleDrop = (e: DragEvent) => {
-      // Only handle artifact drops
-      if (!e.dataTransfer?.types.includes('application/json')) {
-        return;
-      }
-
-      // Check if dropping on UI elements
-      const elementUnder = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement;
-      const isOverUI = elementUnder?.closest('.chat-card-container, .quick-actions-dock, button, input, textarea, a, .canvas-artifact, [role="dialog"]') !== null;
-      
-      if (isOverUI) {
-        return; // Don't drop on UI elements
-      }
-
-      e.preventDefault();
-      e.stopPropagation();
-
-      try {
-        const data = e.dataTransfer.getData('application/json');
-        if (!data) return;
-
-        const artifactData = JSON.parse(data);
-        const { type, data: artifactItemData } = artifactData;
-
-        // Calculate drop position relative to canvas
-        const dropX = e.clientX;
-        const dropY = e.clientY;
-
-        // Convert to canvas coordinates first
-        const canvasPos = screenToCanvas(dropX, dropY, transform);
-        
-        // Snap to grid in canvas space (40px grid)
-        const snappedCanvas = snapToGrid(canvasPos.x, canvasPos.y);
-
-        // Create artifact with snapped position
-        addArtifact({
-          type,
-          data: artifactItemData,
-          position: snappedCanvas,
-          visible: true,
-          zIndex: 10 + artifacts.length, // Increment z-index for layering
-        });
-      } catch (error) {
-        console.error('Failed to create artifact from drop:', error);
-      }
-    };
-
-    document.addEventListener('dragover', handleDragOver);
-    document.addEventListener('drop', handleDrop);
-
-    return () => {
-      document.removeEventListener('dragover', handleDragOver);
-      document.removeEventListener('drop', handleDrop);
-    };
-  }, [isDesktop, transform, artifacts.length, addArtifact]);
 
   // Update dark mode state when theme changes
   useEffect(() => {
@@ -575,92 +492,6 @@ export function ChatHome() {
           />
         </div>
 
-        {/* Artifacts layer - renders artifacts on canvas */}
-        {isDesktop && (
-          <>
-            {/* Drop zone - separate layer for accepting drops */}
-            <div
-              className="absolute inset-0 z-[25]"
-              style={{ pointerEvents: 'auto' }}
-              onDragEnter={(e) => {
-                if (!isDesktop) return;
-                const elementUnder = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement;
-                const isOverUI = elementUnder?.closest('.chat-card-container, .quick-actions-dock, button, input, textarea, a, .canvas-artifact') !== null;
-                if (!isOverUI) {
-                  e.preventDefault();
-                }
-              }}
-              onDragOver={(e) => {
-                if (!isDesktop) return;
-                // Check if dragging over UI elements - if so, don't allow drop
-                const elementUnder = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement;
-                const isOverUI = elementUnder?.closest('.chat-card-container, .quick-actions-dock, button, input, textarea, a, .canvas-artifact') !== null;
-                
-                if (!isOverUI) {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  e.dataTransfer.dropEffect = 'move';
-                } else {
-                  e.dataTransfer.dropEffect = 'none';
-                }
-              }}
-              onDrop={(e) => {
-                if (!isDesktop) return;
-                
-                // Check if dropping on UI elements
-                const elementUnder = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement;
-                const isOverUI = elementUnder?.closest('.chat-card-container, .quick-actions-dock, button, input, textarea, a, .canvas-artifact') !== null;
-                
-                if (isOverUI) {
-                  return; // Don't drop on UI elements
-                }
-                
-                e.preventDefault();
-                e.stopPropagation();
-
-                try {
-                  const data = e.dataTransfer.getData('application/json');
-                  if (!data) return;
-
-                  const artifactData = JSON.parse(data);
-                  const { type, data: artifactItemData } = artifactData;
-
-                  // Calculate drop position relative to canvas
-                  const dropX = e.clientX;
-                  const dropY = e.clientY;
-
-                  // Convert to canvas coordinates first
-                  const canvasPos = screenToCanvas(dropX, dropY, transform);
-                  
-                  // Snap to grid in canvas space (40px grid)
-                  const snappedCanvas = snapToGrid(canvasPos.x, canvasPos.y);
-
-                  // Create artifact with snapped position
-                  addArtifact({
-                    type,
-                    data: artifactItemData,
-                    position: snappedCanvas,
-                    visible: true,
-                    zIndex: 10 + artifacts.length, // Increment z-index for layering
-                  });
-                } catch (error) {
-                  console.error('Failed to create artifact from drop:', error);
-                }
-              }}
-            />
-            {/* Artifacts rendering */}
-            <div className="absolute inset-0 z-[20]" style={{ pointerEvents: 'none' }}>
-              {artifacts.map((artifact) => (
-                <CanvasArtifact
-                  key={artifact.id}
-                  artifact={artifact}
-                  canvasTransform={transform}
-                  isDesktop={isDesktop}
-                />
-              ))}
-            </div>
-          </>
-        )}
 
         {/* Chat card - zooms with canvas using CSS zoom to prevent pixelation */}
         <div 
@@ -832,12 +663,6 @@ export function ChatHome() {
         <div
           ref={interactionLayerRef}
           className={`absolute inset-0 z-[15] hidden md:block`}
-          onDragOver={(e) => {
-            // Don't interfere with artifact drops - let drop zone handle it
-            if (e.dataTransfer.types.includes('application/json')) {
-              return; // Let the drop zone at z-[25] handle it
-            }
-          }}
           onMouseMove={(event) => {
             if (!isDesktop) return;
             
@@ -866,13 +691,8 @@ export function ChatHome() {
           onPointerDown={(event) => {
             if (!isDesktop) return;
             
-            // Don't interfere with artifact dragging
-            const elementUnder = document.elementFromPoint(event.clientX, event.clientY) as HTMLElement;
-            if (elementUnder?.closest('.canvas-artifact') !== null) {
-              return; // Let artifact handle its own pointer events
-            }
-            
             // Double-check using elementFromPoint and ref
+            const elementUnder = document.elementFromPoint(event.clientX, event.clientY) as HTMLElement;
             const isOverUI = isOverUIRef.current ||
                             elementUnder?.closest('.chat-card-container, .quick-actions-dock, button, input, textarea, a') !== null ||
                             isPointerOverUIElement(event.clientX, event.clientY);
