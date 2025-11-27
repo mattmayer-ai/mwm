@@ -17,15 +17,6 @@ export function CanvasArtifact({ artifact, canvasTransform, isDesktop }: CanvasA
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const artifactRef = useRef<HTMLDivElement>(null);
 
-  if (!artifact.visible || !isDesktop) return null;
-
-  const isPortfolio = artifact.type === 'portfolio';
-  const project = isPortfolio ? (artifact.data as Project) : null;
-  const experience = !isPortfolio ? (artifact.data as ExperienceItem) : null;
-
-  // Convert canvas position to screen position for rendering
-  const screenPos = canvasToScreen(artifact.position.x, artifact.position.y, canvasTransform);
-
   const handlePointerDown = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
       // Don't start drag if clicking close button or other interactive elements
@@ -115,6 +106,15 @@ export function CanvasArtifact({ artifact, canvasTransform, isDesktop }: CanvasA
     },
     [artifact.id, removeArtifact]
   );
+
+  if (!artifact.visible || !isDesktop) return null;
+
+  const isPortfolio = artifact.type === 'portfolio';
+  const project = isPortfolio ? (artifact.data as Project) : null;
+  const experience = !isPortfolio ? (artifact.data as ExperienceItem) : null;
+
+  // Convert canvas position to screen position for rendering
+  const screenPos = canvasToScreen(artifact.position.x, artifact.position.y, canvasTransform);
 
   return (
       <div
