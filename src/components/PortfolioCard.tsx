@@ -18,16 +18,6 @@ function getImpactBullets(project: Project) {
     .filter(Boolean);
 }
 
-function truncateSummary(summary: string, maxLength: number = 160): string {
-  if (summary.length <= maxLength) {
-    return summary;
-  }
-  // Truncate at the last space before maxLength to avoid cutting words
-  const truncated = summary.slice(0, maxLength);
-  const lastSpace = truncated.lastIndexOf(' ');
-  return lastSpace > 0 ? truncated.slice(0, lastSpace) + '...' : truncated + '...';
-}
-
 export function PortfolioCard({ project, onViewDetails, draggable = false }: PortfolioCardProps) {
   const bullets = getImpactBullets(project);
   const tags = Array.from(new Set([...(project.role || []), ...(project.industry || [])])).slice(0, 4);

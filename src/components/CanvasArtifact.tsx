@@ -1,9 +1,9 @@
 import { useRef, useState, useCallback } from 'react';
 import { X } from 'lucide-react';
-import type { Artifact, ArtifactType, ExperienceItem } from '@stores/artifacts.store';
+import type { Artifact, ExperienceItem } from '@stores/artifacts.store';
 import type { Project } from '@lib/projects';
 import { useArtifactsStore } from '@stores/artifacts.store';
-import { snapToGridWithTransform, screenToCanvas, canvasToScreen, snapToGrid } from '@lib/grid-snap';
+import { screenToCanvas, canvasToScreen, snapToGrid } from '@lib/grid-snap';
 
 interface CanvasArtifactProps {
   artifact: Artifact;

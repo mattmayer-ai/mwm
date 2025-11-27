@@ -8,7 +8,7 @@ import { Bot } from 'lucide-react';
 import { useThemeStore } from '../../../stores/theme.store';
 import { useArtifactsStore } from '../../../stores/artifacts.store';
 import { CanvasArtifact } from '../../../components/CanvasArtifact';
-import { snapToGridWithTransform, screenToCanvas, snapToGrid } from '../../../lib/grid-snap';
+import { screenToCanvas, snapToGrid } from '../../../lib/grid-snap';
 
 /**
  * Home page with centered chat interface
