@@ -409,6 +409,23 @@ export const chat = functions.https.onRequest(async (req, res) => {
     // Also handle cases where there might be spaces before the bullet
     answer = answer.replace(/\n\s*\n\s*(•)/g, '\n$1');
 
+    // Hallucination detection: Check for fake companies
+    const fakeCompanies = ['quora', 'course hero', 'airbnb', 'reddit', 'google', 'meta', 'facebook', 'amazon', 'microsoft', 'apple', 'netflix', 'uber', 'lyft', 'twitter', 'x.com', 'linkedin', 'salesforce', 'oracle', 'adobe', 'spotify', 'snapchat', 'tiktok', 'pinterest', 'stripe', 'square', 'shopify', 'atlassian', 'slack', 'zoom', 'dropbox', 'palantir', 'tesla', 'spacex'];
+    const answerLower = answer.toLowerCase();
+    const hasFakeCompany = fakeCompanies.some(company => answerLower.includes(company));
+    
+    if (hasFakeCompany) {
+      console.error('HALLUCINATION DETECTED: Fake company mentioned in answer', { correlationId, answer: answer.substring(0, 200) });
+      // Replace the answer with a corrected version that redirects to actual companies
+      answer = "I haven't worked at those companies. Let me share my actual experience:\n\n" +
+        "• Head of Product at Swift Racks (2024-Present): Leading CNS innovation platform, TakeCost AI estimation, and EdPal lesson planning\n" +
+        "• Senior Product Manager at RaceRocks (2021-2024): Built world's first RAS simulator, $20M+ annual savings\n" +
+        "• Product Manager at RaceRocks (2018-2021): Developed VR/AR training systems for defense clients\n" +
+        "• eLearning Manager at Air Canada (2010-2018): Launched first offline iPad training platform, $1.5M annual savings\n" +
+        "• Product Management Instructor at Schulich School of Business (2024-Present)\n\n" +
+        "I can dive deeper into any of these roles or projects. What would you like to know?";
+    }
+
     // Self-consistency validation: Check if bot suggested this topic but is now refusing
     const normalizedAnswer = answer.toLowerCase();
     const refusalPattern = /don't have|don't know|not in my sources|can't answer/i;
