@@ -419,9 +419,11 @@ export const chat = functions.https.onRequest(async (req, res) => {
       // Replace the answer with a corrected version that redirects to actual companies
       answer = "I haven't worked at those companies. Let me share my actual experience:\n\n" +
         "• Head of Product at Swift Racks (2024-Present): Leading CNS innovation platform, TakeCost AI estimation, and EdPal lesson planning\n" +
-        "• Senior Product Manager at RaceRocks (2021-2024): Built world's first RAS simulator, $20M+ annual savings\n" +
-        "• Product Manager at RaceRocks (2018-2021): Developed VR/AR training systems for defense clients\n" +
+        "• Senior Product Manager at RaceRocks 3D (2021-2024): Built world's first RAS simulator, $20M+ annual savings\n" +
+        "• Product Manager at RaceRocks 3D (2018-2021): Developed VR/AR training systems for defense clients\n" +
         "• eLearning Manager at Air Canada (2010-2018): Launched first offline iPad training platform, $1.5M annual savings\n" +
+        "• Head of Design at Pixilink (2009-2010)\n" +
+        "• Head of Design & Development at Altima Ltd. (2008)\n" +
         "• Product Management Instructor at Schulich School of Business (2024-Present)\n\n" +
         "I can dive deeper into any of these roles or projects. What would you like to know?";
     }
