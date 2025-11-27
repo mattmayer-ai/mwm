@@ -109,10 +109,8 @@ export default function About() {
                 copy: [
                   'Lead the CNS innovation platform and AutoTake CV pipeline, targeting $4.1M ARR in year one and $280M over five years.',
                   'Spun up 15+ specialized agents (discovery, estimating, knowledge graph) with shared memory, evaluation harnesses, and guardrails.',
-                  'Ran a company-wide experimentation cadence—weekly demos, Friday evidence, Monday decisions—driving a 95% funnel conversion lift.',
                   'Instituted responsible AI governance, cost-per-correct tracking, and "plan before you prompt" playbooks to keep latency low and accuracy high.',
                   'Established enterprise-wide product vision and a nine-industry GTM strategy positioning Swift Racks as a leader in AI-powered digital transformation.',
-                  'Cultivated enterprise partnerships that generated $1.8M in recurring revenue through CNS private deployments and TakeCost subscriptions.',
                   'Built a structured knowledge base storing every hypothesis, test, and outcome—creating a compounding insight flywheel across product teams.',
                 ],
               },
