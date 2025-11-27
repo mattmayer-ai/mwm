@@ -5,7 +5,7 @@ export const portfolioProjects: Project[] = [
     slug: 'athleteatlas',
     title: 'AthleteAtlas - Youth Hockey Development Platform',
     year: 2025,
-    role: ['Product Lead', 'Technical Architect'],
+    role: ['Founder', 'CPO'],
     industry: ['Sports Tech', 'Youth Development', 'SaaS', 'EdTech'],
     skills: ['Next.js 14', 'TypeScript', 'Firebase', 'TanStack Query', 'Product Strategy', 'Technical Architecture', 'Mobile-First Design'],
     url: 'https://athleteatlas.io/',
@@ -59,7 +59,7 @@ export const portfolioProjects: Project[] = [
     slug: 'swift-racks-learnmate-ai',
     title: 'LearnMate AI - Continuous Upskilling Assistant',
     year: 2025,
-    role: ['Head of Product'],
+    role: ['Founding Product Partner (Venture Studio)'],
     industry: ['EdTech', 'AI', 'SME Training'],
     skills: ['Product Strategy', 'AI/ML', 'Document Processing', 'Micro-Learning'],
     summary:
@@ -75,7 +75,7 @@ export const portfolioProjects: Project[] = [
     slug: 'swift-racks-healthcue',
     title: 'HealthCue - Preventive Health Companion',
     year: 2025,
-    role: ['Head of Product'],
+    role: ['Founding Product Partner (Venture Studio)'],
     industry: ['HealthTech', 'AI', 'Preventive Care'],
     skills: ['Product Strategy', 'AI/ML', 'Health Systems', 'Personalization'],
     summary:
@@ -91,7 +91,7 @@ export const portfolioProjects: Project[] = [
     slug: 'edpal-startup',
     title: 'EdPal - Lesson-Planning Copilot',
     year: 2024,
-    role: ['Head of Product'],
+    role: ['Founding Product Partner (Venture Studio)'],
     industry: ['EdTech', 'AI', 'Homeschooling'],
     skills: ['Product Strategy', 'AI/ML', 'Curriculum Design', 'Startup Leadership'],
     summary:
@@ -107,7 +107,7 @@ export const portfolioProjects: Project[] = [
     slug: 'paysight-startup',
     title: 'PaySight - AI-Powered eCommerce Analytics',
     year: 2024,
-    role: ['Head of Product'],
+    role: ['Founding Product Partner (Venture Studio)'],
     industry: ['FinTech', 'Payments', 'eCommerce Analytics'],
     skills: ['Product Strategy', 'Payments', 'AI/ML', 'Analytics', 'Startup Leadership'],
     summary:

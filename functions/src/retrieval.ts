@@ -258,6 +258,37 @@ export async function rerankCandidates(candidates: ChunkCandidate[]): Promise<Ch
   return candidates;
 }
 
+/**
+ * Retrieve full document text by document ID (for deterministic responses)
+ * Returns the full document text if found, null otherwise
+ */
+export async function getFullDocument(docId: string): Promise<string | null> {
+  const loaded = await loadIndex();
+  if (!loaded) {
+    return null;
+  }
+
+  // Try to find the document in docLookup first (document-level metadata)
+  const docMeta = loaded.docLookup?.[docId];
+  if (docMeta?.preview) {
+    // For response documents, the full text is in the first chunk (id: docId#000)
+    const chunkId = `${docId}#000`;
+    const chunkText = loaded.store?.[chunkId];
+    if (chunkText) {
+      return chunkText;
+    }
+  }
+
+  // Fallback: try to find any chunk with this docId
+  const chunkId = `${docId}#000`;
+  const chunkText = loaded.store?.[chunkId];
+  if (chunkText) {
+    return chunkText;
+  }
+
+  return null;
+}
+
 async function searchIndex(index: any, text: string, limit: number): Promise<string[]> {
   const raw = await index.search(text, { limit });
   if (Array.isArray(raw)) {

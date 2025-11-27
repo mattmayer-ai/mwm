@@ -36,6 +36,7 @@ const docSources = [
   { dir: 'resume', url: () => '/about' },
   { dir: 'teaching', url: () => '/teaching' },
   { dir: 'interviews', url: () => '/about' },
+  { dir: 'responses', url: () => '/about' },
 ];
 
 function sanitize(input: string): string {
@@ -92,6 +93,7 @@ async function readDocs(): Promise<DocEntry[]> {
           url: source.url(slug),
           topics: topics.length ? topics : [source.dir],
           year: typeof data.year === 'number' ? data.year : deriveYear(slug),
+          type: data.type || 'document', // Track document type for special handling
         });
       }
     } catch (err) {
@@ -132,8 +134,22 @@ async function buildPrimary() {
   }
 
   // Create chunks from all documents
-  const chunks: Chunk[] = docs.flatMap((doc) =>
-    chunkText(doc.text).map((chunk, idx) => ({
+  // Response type documents are stored as full documents (not chunked)
+  const chunks: Chunk[] = docs.flatMap((doc) => {
+    // If it's a response type, store as single chunk (full document)
+    if (doc.type === 'response') {
+      return [{
+        id: `${doc.id}#000`,
+        text: doc.text,
+        meta: {
+          sourceId: doc.id,
+          topic: doc.topics,
+          year: doc.year,
+        },
+      }];
+    }
+    // Otherwise, chunk normally
+    return chunkText(doc.text).map((chunk, idx) => ({
       id: `${doc.id}#${idx.toString().padStart(3, '0')}`,
       text: chunk,
       meta: {
@@ -141,8 +157,8 @@ async function buildPrimary() {
         topic: doc.topics,
         year: doc.year,
       },
-    })),
-  );
+    }));
+  });
 
   // Index chunks instead of full documents for better search precision
   const index = new FlexSearch.Index({

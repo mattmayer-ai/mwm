@@ -1,6 +1,6 @@
 # Chatbot Technical Overview
 **Last Updated:** January 2025  
-**Status:** Production (No hallucinations detected in recent testing)
+**Status:** Production (Hallucination prevention system active with ongoing monitoring)
 
 ## Executive Summary
 
@@ -8,9 +8,15 @@ The chatbot is a RAG (Retrieval-Augmented Generation) system powered by AWS Bedr
 
 **Key Metrics:**
 - **Latency:** p50 ≤ 3s, p95 ≤ 6s (streaming)
-- **Hallucination Rate:** 0% (post-fix deployment)
 - **Content Coverage:** 20+ years, 10,000+ lines of documentation
 - **Index Size:** ~500-1000 chunks from MDX/Markdown/PDF sources
+
+**Hallucination Controls:**
+- Company whitelist + explicit "do not invent employers" prompt
+- Post-processing check for known fake companies + patterns
+- Deterministic responses for brag reel / leadership / 90-day plan (bypass LLM)
+- Known fake brag pattern detection
+- Ongoing monitoring via logs and analytics
 
 ---
 
@@ -22,6 +28,11 @@ The chatbot is a RAG (Retrieval-Augmented Generation) system powered by AWS Bedr
 User Question
     ↓
 Intent Routing (SmallTalk/Contact/RAG)
+    ↓
+Deterministic Response Check (NEW)
+    ├─ User said "yes" to brag reel/leadership/90-day plan?
+    │  └─ YES → Retrieve full document from index → Return directly (bypass LLM)
+    └─ NO → Continue to RAG
     ↓
 RAG Retrieval (FlexSearch lexical search)
     ↓
@@ -77,12 +88,14 @@ Response (SSE streaming)
 - `/content/resume/*.mdx` - Resume content
 - `/content/teaching/*.mdx` - Teaching experience
 - `/content/interviews/*.mdx` - Interview Q&A
+- `/content/responses/*.mdx` - Deterministic responses (brag reel, leadership, 90-day plan)
 - `/content/data/*.json` - Structured data
 
 **Chunking Strategy:**
 - **Chunk Size:** 1,100 characters (~800-900 tokens)
 - **Overlap:** 180 characters (~12% overlap)
 - **Chunk ID Format:** `{docId}#{index}` (e.g., `cns-ai-powered-innovation-platform#000`)
+- **Response Documents:** Stored as full documents (not chunked) with `type: 'response'` for direct retrieval
 
 **Indexing:**
 - **Script:** `scripts/build_primary.ts`
@@ -97,23 +110,30 @@ Response (SSE streaming)
 
 ### Retrieval Process
 
-**1. Query Expansion** (`functions/src/retrieval.ts:expandQuery`)
+**1. Deterministic Response Handler** (`functions/src/chat.ts:173-230`) - **NEW**
+- Detects when user accepts prompts (says "yes" to brag reel/leadership/90-day plan)
+- Retrieves full document text directly from index store via `getFullDocument()`
+- Bypasses RAG search and LLM entirely
+- Returns pre-written content from `/content/responses/*.mdx` files
+- Eliminates hallucination risk for these high-frequency responses
+
+**2. Query Expansion** (`functions/src/retrieval.ts:expandQuery`)
 - Synonym mapping (northstar → north star, time-to-insight, TTI)
 - Acronym expansion (CNS → Central Nervous System, Multi-Agent Innovation Platform)
 - Project name expansion (TakeCost → AutoTake, construction estimation)
 - Technology expansion (AWS → Amazon Web Services, Bedrock)
 
-**2. Lexical Search** (`functions/src/retrieval.ts:searchIndex`)
+**3. Lexical Search** (`functions/src/retrieval.ts:searchIndex`)
 - FlexSearch forward tokenization
 - Returns top 24 candidates
 - Fallback: term-by-term search if primary search fails
 
-**3. Priority Boosting** (`functions/src/chat.ts:260-302`)
+**4. Priority Boosting** (`functions/src/chat.ts:260-302`)
 - Question-type detection (philosophy, achievement, project-specific)
 - Document ID priority matching
 - Boosts relevant chunks to top of results
 
-**4. Context Assembly**
+**5. Context Assembly**
 - Top 6 chunks selected after priority boosting
 - Snippets built with query highlighting (240 char max)
 - Metadata includes: `title`, `sourceUrl`, `snippet`
@@ -146,6 +166,7 @@ Response (SSE streaming)
    - Use PERSONA KNOWLEDGE for frameworks when CONTEXT is thin
    - First-person voice ("I")
    - Never invent employers, dates, metrics
+   - Avoid generic refusals; use reasoning for in-domain questions
    - Default length ≤160 words (expand to 5-7 bullets for highlights)
 
 3. **Tone Blocks** (dynamic based on question):
@@ -239,25 +260,34 @@ Response (SSE streaming)
 - "NEVER invent employers, clients, dates, job titles, or metrics"
 - Company restrictions repeated in user prompt
 
-**2. Post-Processing Detection** (`functions/src/chat.ts:412-427`)
+**2. Deterministic Response Handlers** (`functions/src/chat.ts:171-230`)
+- Brag reel, leadership philosophy, and 90-day plan responses stored in content files
+- When user accepts these prompts (says "yes"), bypass LLM entirely
+- Retrieve full document text directly from index store
+- Eliminates hallucination risk for these high-frequency responses
+
+**3. Post-Processing Detection** (`functions/src/chat.ts:412-450`)
 - Fake company blacklist (Quora, Course Hero, Airbnb, Reddit, Google, Meta, etc.)
+- Known fake brag pattern detection (e.g., "led product at quora", "drove 300% revenue at course hero")
 - String matching on answer (case-insensitive)
 - Automatic answer replacement if detected
+- Debug logging before final output to verify detection is running
 
-**3. Logging & Monitoring**
+**4. Logging & Monitoring**
 - Hallucination events logged with correlation ID
+- "FINAL ANSWER" debug logs include detection flags
 - Analytics tracked in Firestore `analytics` collection
 - Error-level logging for investigation
 
-**4. Self-Consistency Validation** (`functions/src/chat.ts:429-451`)
+**5. Self-Consistency Validation** (`functions/src/chat.ts:451-473`)
 - Detects refusal patterns when bot suggested topic
 - Warns if persona fallback should have been used
 
 ### Current Status
 
-**Hallucination Rate:** 0% (post-fix deployment)  
-**Last Incident:** Fixed January 2025 (fake company mentions)  
-**Prevention:** Multi-layer system active
+**Prevention System:** Multi-layer system active with ongoing monitoring  
+**Last Incident:** Fixed January 2025 (fake company mentions in brag reel)  
+**Known Limitations:** LLM may still hallucinate for novel questions outside deterministic handlers; detection system catches and corrects post-generation
 
 ---
 
@@ -466,6 +496,54 @@ firebase deploy --only functions
 
 ---
 
+## Recent Improvements (January 2025)
+
+### Deterministic Response Handlers
+- **Problem:** LLM was hallucinating companies (Quora, Course Hero, Airbnb, Reddit) when users said "yes" to brag reel prompts
+- **Solution:** Created content files for brag reel, leadership philosophy, and 90-day plan responses
+- **Implementation:** 
+  - Responses stored in `/content/responses/*.mdx` (updatable without code changes)
+  - Detection logic catches "yes" responses to these prompts
+  - Bypasses LLM entirely, retrieves full document text directly
+  - Zero hallucination risk for these high-frequency responses
+
+### Enhanced Hallucination Detection
+- Added known fake brag pattern detection (e.g., "led product at quora", "drove 300% revenue at course hero")
+- Enhanced post-processing to catch both fake companies AND fake brag patterns
+- Added debug logging ("FINAL ANSWER") to verify detection is running
+- Automatic answer replacement with corrected version
+
+### Prompt Improvements
+- Softened "never say I don't know" rule to prevent encouraging BS
+- Changed to "avoid generic refusals" with guidance to use reasoning for in-domain questions
+- Updated contact email to correct address
+
+---
+
+## Recent Improvements (January 2025)
+
+### Deterministic Response Handlers
+- **Problem:** LLM was hallucinating companies (Quora, Course Hero, Airbnb, Reddit) when users said "yes" to brag reel prompts
+- **Solution:** Created content files for brag reel, leadership philosophy, and 90-day plan responses
+- **Implementation:** 
+  - Responses stored in `/content/responses/*.mdx` (updatable without code changes)
+  - Detection logic catches "yes" responses to these prompts
+  - Bypasses LLM entirely, retrieves full document text directly
+  - Zero hallucination risk for these high-frequency responses
+
+### Enhanced Hallucination Detection
+- Added known fake brag pattern detection (e.g., "led product at quora", "drove 300% revenue at course hero")
+- Enhanced post-processing to catch both fake companies AND fake brag patterns
+- Added debug logging ("FINAL ANSWER") to verify detection is running
+- Automatic answer replacement with corrected version
+
+### Prompt Improvements
+- Softened "never say I don't know" rule to prevent encouraging BS
+- Changed to "avoid generic refusals" with guidance to use reasoning for in-domain questions
+- Updated contact email to correct address
+
+---
+
 ## Future Enhancements
 
 ### Planned
@@ -574,6 +652,28 @@ firebase deploy --only functions
 
 ---
 
+## Content Management
+
+### Updating Deterministic Responses
+
+The brag reel, leadership philosophy, and 90-day plan responses are stored in content files for easy updates:
+
+- **Files:** `/content/responses/brag-reel.mdx`, `/content/responses/leadership-philosophy.mdx`, `/content/responses/first-90-day-plan.mdx`
+- **Update Process:**
+  1. Edit the MDX file with new content
+  2. Run reindex: `npm run build:index` (or equivalent)
+  3. Upload new index to Cloud Storage
+  4. Changes take effect immediately (no function redeployment needed)
+
+### Reindexing Content
+
+**Script:** `scripts/build_primary.ts`  
+**Output:** `indexes/primary.json`  
+**Upload:** Manual or via `reindex` function  
+**Trigger:** Admin panel or direct function call
+
+---
+
 ## Contact
 
 **Technical Questions:** Review code in `/functions/src`  
@@ -582,7 +682,8 @@ firebase deploy --only functions
 
 ---
 
-**Document Version:** 1.0  
+**Document Version:** 1.1  
 **Last Reviewed:** January 2025  
+**Last Updated:** January 2025 (Added deterministic response handlers, enhanced hallucination detection)  
 **Next Review:** Q2 2025
 

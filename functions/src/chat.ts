@@ -3,7 +3,7 @@ import * as admin from 'firebase-admin';
 import { ConverseCommand } from '@aws-sdk/client-bedrock-runtime';
 
 // Admin is initialized in index.ts
-import { retrieveCandidates, rerankCandidates, type ChunkCandidate } from './retrieval';
+import { retrieveCandidates, rerankCandidates, getFullDocument, type ChunkCandidate } from './retrieval';
 import {
   buildSystemPrompt,
   buildUserPrompt,
@@ -61,7 +61,7 @@ const SMALL_TALK_RESPONSES: string[] = [
 ];
 
 const CONTACT_RESPONSE =
-  "Happy to connect. You can email me at hello@mattmayer.ai, find me on LinkedIn, or grab time via my calendar—whatever's easiest.";
+  "Happy to connect. You can email me at mattmayer@hotmail.com, find me on LinkedIn, or grab time via my calendar—whatever's easiest.";
 
 // ChatRequest interface removed - using inline type in handler
 
@@ -169,6 +169,62 @@ export const chat = functions.https.onRequest(async (req, res) => {
     }
 
     const question = lastUserMessage.content;
+
+    // Detect if user is accepting a prompt from previous assistant message
+    const lastAssistant = safeMsgs.filter((m) => m.role === 'assistant').pop();
+    const normalizedQuestion = question.toLowerCase().trim();
+
+    // Check for brag reel acceptance
+    const wantsBragReel = lastAssistant && 
+      /brag reel/i.test(lastAssistant.content) &&
+      /^(yes|yeah|yep|sure|ok|okay|please|that sounds good|absolutely)/i.test(normalizedQuestion);
+
+    // Check for leadership philosophy acceptance
+    const wantsLeadership = lastAssistant &&
+      /leadership philosophy/i.test(lastAssistant.content) &&
+      /^(yes|yeah|yep|sure|ok|okay|please|that sounds good|absolutely)/i.test(normalizedQuestion);
+
+    // Check for 90-day plan acceptance
+    const wants90DayPlan = lastAssistant &&
+      /90.?day/i.test(lastAssistant.content) &&
+      /^(yes|yeah|yep|sure|ok|okay|please|that sounds good|absolutely)/i.test(normalizedQuestion);
+
+    // Handle deterministic responses (bypass LLM)
+    if (wantsBragReel || wantsLeadership || wants90DayPlan) {
+      let docId: string;
+      if (wantsBragReel) {
+        docId = 'brag-reel';
+      } else if (wantsLeadership) {
+        docId = 'leadership-philosophy';
+      } else {
+        docId = 'first-90-day-plan';
+      }
+
+      try {
+        const fullDocument = await getFullDocument(docId);
+        if (fullDocument) {
+          // Set SSE headers
+          res.setHeader('Content-Type', 'text/event-stream');
+          res.setHeader('Cache-Control', 'no-cache');
+          res.setHeader('Connection', 'keep-alive');
+          res.flushHeaders?.();
+
+          // Send the full document text as response
+          res.write(`data: ${JSON.stringify({ type: 'chunk', content: fullDocument })}\n\n`);
+          res.write(`data: ${JSON.stringify({ type: 'done', citations: [], tone: 'professional' })}\n\n`);
+          res.end();
+
+          console.log('Deterministic response sent', { correlationId, docId });
+          return;
+        } else {
+          console.warn('Deterministic response document not found', { correlationId, docId });
+          // Fall through to normal RAG flow if document not found
+        }
+      } catch (error) {
+        console.error('Error retrieving deterministic response', { correlationId, docId, error });
+        // Fall through to normal RAG flow on error
+      }
+    }
 
     const sendSSE = (payload: { content: string; tone?: TonePreset }) => {
       res.set('Content-Type', 'text/event-stream');
@@ -409,13 +465,32 @@ export const chat = functions.https.onRequest(async (req, res) => {
     // Also handle cases where there might be spaces before the bullet
     answer = answer.replace(/\n\s*\n\s*(•)/g, '\n$1');
 
-    // Hallucination detection: Check for fake companies
+    // Hallucination detection: Check for fake companies and known fake brag patterns
     const fakeCompanies = ['quora', 'course hero', 'airbnb', 'reddit', 'google', 'meta', 'facebook', 'amazon', 'microsoft', 'apple', 'netflix', 'uber', 'lyft', 'twitter', 'x.com', 'linkedin', 'salesforce', 'oracle', 'adobe', 'spotify', 'snapchat', 'tiktok', 'pinterest', 'stripe', 'square', 'shopify', 'atlassian', 'slack', 'zoom', 'dropbox', 'palantir', 'tesla', 'spacex'];
     const answerLower = answer.toLowerCase();
     const hasFakeCompany = fakeCompanies.some(company => answerLower.includes(company));
+
+    // Known fake brag patterns (from actual hallucination incidents)
+    const knownFakeBragPatterns = [
+      'led product at quora',
+      'drove 300% revenue growth at course hero',
+      'launched airbnb\'s first machine learning-powered search ranking',
+      'pioneered reddit\'s mobile strategy',
+      'scaling from 300m to 2b monthly unique visitors',
+      'growing mobile dau from',
+      '100m+ registered users',
+      '2b monthly unique visitors',
+    ];
+
+    const isKnownFakeBrag = knownFakeBragPatterns.some((p) => answerLower.includes(p));
     
-    if (hasFakeCompany) {
-      console.error('HALLUCINATION DETECTED: Fake company mentioned in answer', { correlationId, answer: answer.substring(0, 200) });
+    if (hasFakeCompany || isKnownFakeBrag) {
+      console.error('HALLUCINATION DETECTED: Fake company or brag pattern mentioned in answer', { 
+        correlationId, 
+        answer: answer.substring(0, 200),
+        hasFakeCompany,
+        isKnownFakeBrag,
+      });
       // Replace the answer with a corrected version that redirects to actual companies
       answer = "I haven't worked at those companies. Let me share my actual experience:\n\n" +
         "• Head of Product at Swift Racks (2024-Present): Leading CNS innovation platform, TakeCost AI estimation, and EdPal lesson planning\n" +
@@ -427,6 +502,14 @@ export const chat = functions.https.onRequest(async (req, res) => {
         "• Product Management Instructor at Schulich School of Business (2024-Present)\n\n" +
         "I can dive deeper into any of these roles or projects. What would you like to know?";
     }
+
+    // Debug log before final output to verify detection is running
+    console.log('FINAL ANSWER (post-hallucination-check)', {
+      correlationId,
+      snippet: answer.substring(0, 200),
+      hasFakeCompany,
+      isKnownFakeBrag,
+    });
 
     // Self-consistency validation: Check if bot suggested this topic but is now refusing
     const normalizedAnswer = answer.toLowerCase();
