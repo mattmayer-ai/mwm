@@ -49,7 +49,6 @@ export const portfolioProjects: Project[] = [
     summary:
       'CNS (Central Nervous System) is a Multi-Agent Innovation Platform that actively orchestrates the innovation process, not just tracks it. CNS addresses the gap between idea generation and validation in companies, where teams often build features nobody wants. Uses four specialized AI agents built on AWS Bedrock with Claude Sonnet 3.7, each handling different aspects of discovery. The platform generates experiments, validates hypotheses, and synthesizes learnings into decisions automatically. Users interact through a simple chat interface, describing problems in natural language. Every interaction strengthens a knowledge graph, creating a proprietary competitive advantage. Built on Spring Boot 3.x with Project Reactor backend, PostgreSQL with PGVector for semantic search, Next.js 15 and React 19 frontend with Server-Sent Events for real-time streaming, deployed via Docker with Nginx reverse proxy and Liquibase migrations.',
     impact: [
-      { metric: '$1.8M ARR via CNS pilot' },
       { metric: '85% faster decision cycles' },
       { metric: '3x experiment velocity' },
       { metric: 'Enterprise-grade experimentation for smaller teams' },

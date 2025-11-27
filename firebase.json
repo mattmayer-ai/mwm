@@ -52,6 +52,13 @@
         }
       },
       {
+        "source": "/api/updateIndexDate",
+        "function": {
+          "functionId": "updateIndexDate",
+          "region": "us-central1"
+        }
+      },
+      {
         "source": "/api/aws-selfcheck",
         "function": {
           "functionId": "awsSelfcheck",

@@ -20,12 +20,26 @@ export function TrustDialogWrapper({ onClose }: TrustDialogWrapperProps) {
       if (metaDoc.exists()) {
         const data = metaDoc.data();
         if (data?.lastIndexedAt) {
-          const date = new Date(data.lastIndexedAt);
-          setLastIndexedAt(date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          }));
+          // Handle Firestore Timestamp or ISO string
+          let date: Date;
+          if (data.lastIndexedAt.toDate && typeof data.lastIndexedAt.toDate === 'function') {
+            // Firestore Timestamp
+            date = data.lastIndexedAt.toDate();
+          } else if (typeof data.lastIndexedAt === 'string') {
+            // ISO string
+            date = new Date(data.lastIndexedAt);
+          } else {
+            // Fallback: try to construct Date
+            date = new Date(data.lastIndexedAt);
+          }
+          
+          if (!isNaN(date.getTime())) {
+            setLastIndexedAt(date.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            }));
+          }
         }
       }
     } catch (err) {

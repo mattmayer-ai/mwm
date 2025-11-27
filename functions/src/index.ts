@@ -18,6 +18,7 @@ import { chat as chatHandler } from './chat';
 import { updateSettings as settingsHandler } from './settings';
 import { contact as contactHandler } from './contact';
 import { health as healthHandler } from './health';
+import { updateIndexDate as updateIndexDateHandler } from './updateIndexDate';
 import { cleanupRateLimits } from './rateLimit';
 import { awsSelfcheck } from './awsSelfcheck';
 
@@ -36,6 +37,7 @@ export const settings = functions.https.onRequest(settingsHandler);
 export const contact = functions.https.onRequest(contactHandler);
 export const health = functions.https.onRequest(healthHandler);
 export const reindex = functions.https.onRequest(reindexHandler);
+export const updateIndexDate = functions.https.onRequest(updateIndexDateHandler);
 export { awsSelfcheck };
 
 // Scheduled function to cleanup old rate limit entries (daily)
