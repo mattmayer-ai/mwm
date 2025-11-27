@@ -107,20 +107,20 @@ export function ProjectsPage() {
             stack.
           </p>
 
-          <dl className="mt-6 grid grid-cols-1 gap-4 text-sm text-slate-700 dark:text-slate-200">
-            <div className="rounded-lg border border-slate-200/80 p-4 dark:border-gray-800">
+          <dl className="mt-6 grid grid-cols-1 gap-2 text-sm text-slate-700 dark:text-slate-200">
+            <div className="rounded-lg border border-slate-200/80 p-3 dark:border-gray-800">
               <dt className="text-xs uppercase tracking-widest text-slate-500">Programs shipped</dt>
               <dd className="text-2xl font-semibold text-slate-900 dark:text-slate-100">{totalProjects || '—'}</dd>
             </div>
-            <div className="rounded-lg border border-slate-200/80 p-4 dark:border-gray-800">
+            <div className="rounded-lg border border-slate-200/80 p-3 dark:border-gray-800">
               <dt className="text-xs uppercase tracking-widest text-slate-500">Industries covered</dt>
               <dd className="text-2xl font-semibold text-slate-900 dark:text-slate-100">{totalIndustries || '—'}</dd>
             </div>
-            <div className="rounded-lg border border-slate-200/80 p-4 dark:border-gray-800">
+            <div className="rounded-lg border border-slate-200/80 p-3 dark:border-gray-800">
               <dt className="text-xs uppercase tracking-widest text-slate-500">Leadership seats</dt>
               <dd className="text-2xl font-semibold text-slate-900 dark:text-slate-100">{totalRoles || '—'}</dd>
             </div>
-            <div className="rounded-lg border border-slate-200/80 p-4 dark:border-gray-800">
+            <div className="rounded-lg border border-slate-200/80 p-3 dark:border-gray-800">
               <dt className="text-xs uppercase tracking-widest text-slate-500">Timeline</dt>
               <dd className="text-lg font-semibold text-slate-900 dark:text-slate-100">{yearsRange}</dd>
             </div>

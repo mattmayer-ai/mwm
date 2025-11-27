@@ -29,13 +29,13 @@ export default function About() {
 
   return (
     <main className="mx-auto w-full max-w-6xl px-4 pt-4 pb-8">
-      <header className="mb-6">
+      <div className="mb-6 rounded-lg border border-slate-200/80 bg-white/95 p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)] dark:border-gray-800/70 dark:bg-gray-900/90">
         <p className="text-xs font-semibold uppercase tracking-[0.35em] text-brand-blue">Experience</p>
         <h1 className="mt-2 text-3xl font-semibold text-slate-900 dark:text-slate-100">Overview</h1>
         <p className="mt-2 max-w-3xl text-sm text-slate-600 dark:text-slate-300">
           Dual-track view of my recent leadership roles, core skills, and teaching commitments.
         </p>
-      </header>
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-[360px,1fr]">
         <aside className="space-y-6 rounded-lg border border-slate-200/80 bg-white/95 p-6 shadow-[0_18px_50px_rgba(15,23,42,0.08)] dark:border-gray-800/70 dark:bg-gray-900/90">
