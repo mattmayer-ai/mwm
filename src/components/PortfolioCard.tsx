@@ -1,11 +1,9 @@
-import { ArrowUpRight, ExternalLink, Sparkles, GripVertical } from 'lucide-react';
+import { ArrowUpRight, ExternalLink, Sparkles } from 'lucide-react';
 import type { Project } from '@lib/projects';
-import { useState } from 'react';
 
 interface PortfolioCardProps {
   project: Project;
   onViewDetails?: (project: Project) => void;
-  draggable?: boolean;
 }
 
 function getImpactBullets(project: Project) {
@@ -18,41 +16,13 @@ function getImpactBullets(project: Project) {
     .filter(Boolean);
 }
 
-export function PortfolioCard({ project, onViewDetails, draggable = false }: PortfolioCardProps) {
+export function PortfolioCard({ project, onViewDetails }: PortfolioCardProps) {
   const bullets = getImpactBullets(project);
   const tags = Array.from(new Set([...(project.role || []), ...(project.industry || [])])).slice(0, 4);
-  const [isDragging, setIsDragging] = useState(false);
-
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
-    if (!draggable) return;
-    setIsDragging(true);
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData(
-      'application/json',
-      JSON.stringify({
-        type: 'portfolio',
-        data: project,
-      })
-    );
-    // Add visual feedback
-    if (e.currentTarget) {
-      e.currentTarget.style.opacity = '0.5';
-    }
-  };
-
-  const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
-    setIsDragging(false);
-    if (e.currentTarget) {
-      e.currentTarget.style.opacity = '1';
-    }
-  };
 
   return (
     <div
-      draggable={draggable}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-      className={`group relative flex flex-col rounded-[10px] border border-gray-200/70 bg-white/95 px-5 py-6 shadow-[0_12px_35px_rgba(15,23,42,0.08)] transition-transform duration-200 hover:-translate-y-1 hover:border-brand-blue/60 dark:border-gray-800/60 dark:bg-gray-900/90 ${draggable ? 'cursor-grab active:cursor-grabbing' : ''} ${isDragging ? 'opacity-50' : ''}`}
+      className="group relative flex flex-col rounded-[10px] border border-gray-200/70 bg-white/95 px-5 py-6 shadow-[0_12px_35px_rgba(15,23,42,0.08)] transition-transform duration-200 hover:-translate-y-1 hover:border-brand-blue/60 dark:border-gray-800/60 dark:bg-gray-900/90"
     >
       <div className="flex items-start justify-between gap-4 min-h-[4.5rem]">
         <div className="flex-1">
@@ -64,9 +34,6 @@ export function PortfolioCard({ project, onViewDetails, draggable = false }: Por
           <h3 className="mt-1 text-xl font-semibold text-slate-900 dark:text-slate-100">{project.title}</h3>
         </div>
         <div className="flex items-center gap-2">
-          {draggable && (
-            <GripVertical className="h-5 w-5 flex-shrink-0 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
-          )}
           <Sparkles className="h-5 w-5 flex-shrink-0 text-brand-pink mt-1" aria-hidden="true" />
         </div>
       </div>

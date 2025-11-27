@@ -168,7 +168,7 @@ export function ProjectsPage() {
             ) : (
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 {filteredProjects.map((project: Project) => (
-                  <PortfolioCard key={project.slug} project={project} onViewDetails={handleViewDetails} draggable={true} />
+                  <PortfolioCard key={project.slug} project={project} onViewDetails={handleViewDetails} />
                 ))}
               </div>
             )}

@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { injectJSONLD, generatePersonSchema } from '../../../lib/jsonld';
 import { injectOGTags } from '../../../lib/og';
-import { GripVertical } from 'lucide-react';
 
 export default function About() {
-  const [draggingId, setDraggingId] = useState<string | null>(null);
 
   useEffect(() => {
     // Set OG tags
@@ -147,42 +145,13 @@ export default function About() {
                 ],
               },
             ].map((job) => {
-              const jobId = `${job.company}-${job.range}`;
-              const isDragging = draggingId === jobId;
-
-              const handleDragStart = (e: React.DragEvent<HTMLElement>) => {
-                setDraggingId(jobId);
-                e.dataTransfer.effectAllowed = 'move';
-                e.dataTransfer.setData(
-                  'application/json',
-                  JSON.stringify({
-                    type: 'experience',
-                    data: job,
-                  })
-                );
-                if (e.currentTarget) {
-                  e.currentTarget.style.opacity = '0.5';
-                }
-              };
-
-              const handleDragEnd = (e: React.DragEvent<HTMLElement>) => {
-                setDraggingId(null);
-                if (e.currentTarget) {
-                  e.currentTarget.style.opacity = '1';
-                }
-              };
-
               return (
                 <article
                   key={job.company}
-                  draggable={true}
-                  onDragStart={handleDragStart}
-                  onDragEnd={handleDragEnd}
-                  className={`group relative rounded-lg border border-slate-200/80 p-5 dark:border-gray-800 cursor-grab active:cursor-grabbing transition-opacity ${isDragging ? 'opacity-50' : ''}`}
+                  className="group relative rounded-lg border border-slate-200/80 p-5 dark:border-gray-800"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2 flex-1">
-                      <GripVertical className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" aria-hidden="true" />
                       <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{job.company}</h3>
                     </div>
                     <span className="text-xs uppercase tracking-widest text-slate-500">{job.range}</span>
