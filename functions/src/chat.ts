@@ -403,6 +403,12 @@ export const chat = functions.https.onRequest(async (req, res) => {
     const parts = resp.output?.message?.content ?? [];
     let answer = parts.map((p) => p?.text).filter(Boolean).join('') || '';
 
+    // Post-process: Remove blank lines between bullet points to keep them tight
+    // Replace double newlines between bullets with single newline
+    answer = answer.replace(/(•[^\n]+)\n\n+(•)/g, '$1\n$2');
+    // Also handle cases where there might be spaces before the bullet
+    answer = answer.replace(/\n\s*\n\s*(•)/g, '\n$1');
+
     // Self-consistency validation: Check if bot suggested this topic but is now refusing
     const normalizedAnswer = answer.toLowerCase();
     const refusalPattern = /don't have|don't know|not in my sources|can't answer/i;
