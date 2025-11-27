@@ -21,7 +21,7 @@ export function QuickActionsDock() {
           className="group flex flex-col items-center gap-1 px-2 py-1 text-gray-600 dark:text-gray-400 transition-colors"
           aria-label="Experience"
         >
-          <div className="rounded-lg p-1.5 bg-gray-100/70 dark:bg-gray-800/70 group-hover:bg-brand-blue dark:group-hover:bg-brand-blue transition-colors">
+          <div className="rounded-md p-1.5 bg-gray-100/70 dark:bg-gray-800/70 group-hover:bg-brand-blue dark:group-hover:bg-brand-blue transition-colors">
             <Briefcase className="w-5 h-5 group-hover:text-white transition-colors" />
           </div>
           <span className="text-[10px] uppercase tracking-wide hidden sm:block">Experience</span>
@@ -41,7 +41,7 @@ export function QuickActionsDock() {
           className="group flex flex-col items-center gap-1 px-2 py-1 text-gray-600 dark:text-gray-400 transition-colors"
           aria-label="Portfolio"
         >
-          <div className="rounded-lg p-1.5 bg-gray-100/70 dark:bg-gray-800/70 group-hover:bg-brand-blue dark:group-hover:bg-brand-blue transition-colors">
+          <div className="rounded-md p-1.5 bg-gray-100/70 dark:bg-gray-800/70 group-hover:bg-brand-blue dark:group-hover:bg-brand-blue transition-colors">
             <LayoutGrid className="w-5 h-5 group-hover:text-white transition-colors" />
           </div>
           <span className="text-[10px] uppercase tracking-wide hidden sm:block">Portfolio</span>
@@ -61,7 +61,7 @@ export function QuickActionsDock() {
           className="group flex flex-col items-center gap-1 px-2 py-1 text-gray-600 dark:text-gray-400 transition-colors"
           aria-label="Connect"
         >
-          <div className="rounded-lg p-1.5 bg-gray-100/70 dark:bg-gray-800/70 group-hover:bg-brand-blue dark:group-hover:bg-brand-blue transition-colors">
+          <div className="rounded-md p-1.5 bg-gray-100/70 dark:bg-gray-800/70 group-hover:bg-brand-blue dark:group-hover:bg-brand-blue transition-colors">
             <Send className="w-5 h-5 group-hover:text-white transition-colors" />
           </div>
           <span className="text-[10px] uppercase tracking-wide hidden sm:block">Connect</span>

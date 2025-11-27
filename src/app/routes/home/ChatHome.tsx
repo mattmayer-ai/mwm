@@ -610,7 +610,7 @@ export function ChatHome() {
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
                       placeholder="Ask about experience, case studies, or results…"
-                      className="flex-1 rounded-[10px] border border-gray-300 bg-white px-3 py-2.5 text-base sm:text-sm text-gray-900 outline-none placeholder:text-gray-400 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder:text-gray-500 md:text-[0.95rem] cursor-text relative z-50 min-h-[44px] sm:min-h-0 sm:py-1.5"
+                      className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-base sm:text-sm text-gray-900 outline-none placeholder:text-gray-400 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder:text-gray-500 md:text-[0.95rem] cursor-text relative z-50 min-h-[44px] sm:min-h-0 sm:py-1.5"
                       style={{ pointerEvents: 'auto' }}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && !e.shiftKey) {
@@ -645,7 +645,7 @@ export function ChatHome() {
                     />
                     <button
                       onClick={handleSend}
-                      className="shrink-0 rounded-[10px] bg-brand-blue h-[44px] w-[44px] sm:h-[36px] sm:w-[36px] text-white transition-colors hover:bg-brand-pink disabled:opacity-50 flex items-center justify-center"
+                      className="shrink-0 rounded-lg bg-brand-blue h-[44px] w-[44px] sm:h-[36px] sm:w-[36px] text-white transition-colors hover:bg-brand-pink disabled:opacity-50 flex items-center justify-center"
                       disabled={isLoading || !inputValue.trim()}
                       aria-label="Send message"
                     >
