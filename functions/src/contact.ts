@@ -51,7 +51,11 @@ export const contact = functions.https.onRequest(async (req, res) => {
     }
 
     const body = req.body || {};
-    const { name = '', email = '', message = '', hp = '' } = body;
+    // Ensure all values are strings, handling null/undefined
+    const name = String(body.name || '').trim();
+    const email = String(body.email || '').trim();
+    const message = String(body.message || '').trim();
+    const hp = String(body.hp || '').trim();
 
     // Honeypot check
     if (hp) {
@@ -60,11 +64,13 @@ export const contact = functions.https.onRequest(async (req, res) => {
     }
 
     // Validate payload and log failures
-    if (!name.trim() || !/^[^@]+@[^@]+\.[^@]+$/.test(email) || message.trim().length < 10) {
+    if (!name || !/^[^@]+@[^@]+\.[^@]+$/.test(email) || message.length < 10) {
       console.log('CONTACT invalid', {
+        name: name || '(empty)',
         nameLen: name.length,
-        email,
+        email: email || '(empty)',
         msgLen: message.length,
+        bodyKeys: Object.keys(body),
       });
       res.status(400).json({ error: 'INVALID_INPUT' });
       return;
@@ -78,9 +84,9 @@ export const contact = functions.https.onRequest(async (req, res) => {
 
     // Store in Firestore
     await admin.firestore().collection('leads').add({
-      name: name.trim(),
-      email: email.trim().toLowerCase(),
-      message: message.trim(),
+      name,
+      email: email.toLowerCase(),
+      message,
       timestamp: admin.firestore.FieldValue.serverTimestamp(),
       ip: req.ip || req.headers['x-forwarded-for'] || 'unknown',
       userAgent: req.headers['user-agent'] || 'unknown',

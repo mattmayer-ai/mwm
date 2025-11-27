@@ -13,24 +13,24 @@ export function ControlsMenu() {
       <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild>
           <button
-            className="group flex flex-col items-center gap-1 px-2 py-1 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+            className="group flex flex-col items-center gap-1 px-2 py-1 text-gray-600 dark:text-gray-400 transition-colors"
             aria-label="Menu"
           >
-            <div className="rounded-lg p-1.5 group-hover:bg-gray-100/70 dark:group-hover:bg-gray-800/70 transition-colors">
-              <Menu className="w-5 h-5" />
+            <div className="rounded-lg p-1.5 bg-gray-100/70 dark:bg-gray-800/70 group-hover:bg-brand-blue dark:group-hover:bg-brand-blue transition-colors">
+              <Menu className="w-5 h-5 group-hover:text-white transition-colors" />
             </div>
             <span className="text-[10px] uppercase tracking-wide hidden sm:block">Menu</span>
           </button>
         </DropdownMenu.Trigger>
         <DropdownMenu.Portal>
-          <DropdownMenu.Content className="min-w-[220px] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-2 shadow-xl z-50">
+          <DropdownMenu.Content className="min-w-[220px] rounded-[10px] border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-2 shadow-xl z-50">
             {/* Theme Section */}
             <div className="px-2 py-1.5">
               <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Theme</div>
               <div className="flex gap-1">
                 <button
                   onClick={() => setTheme('system')}
-                  className={`flex-1 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+                  className={`flex-1 rounded-[10px] px-3 py-1.5 text-xs font-medium transition-colors ${
                     theme === 'system'
                       ? 'bg-brand-blue text-white'
                       : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
@@ -41,7 +41,7 @@ export function ControlsMenu() {
                 </button>
                 <button
                   onClick={() => setTheme('light')}
-                  className={`flex-1 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+                  className={`flex-1 rounded-[10px] px-3 py-1.5 text-xs font-medium transition-colors ${
                     theme === 'light'
                       ? 'bg-brand-blue text-white'
                       : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
@@ -52,7 +52,7 @@ export function ControlsMenu() {
                 </button>
                 <button
                   onClick={() => setTheme('dark')}
-                  className={`flex-1 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+                  className={`flex-1 rounded-[10px] px-3 py-1.5 text-xs font-medium transition-colors ${
                     theme === 'dark'
                       ? 'bg-brand-blue text-white'
                       : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
@@ -70,7 +70,7 @@ export function ControlsMenu() {
             <DropdownMenu.Item asChild>
               <button
                 onClick={() => setTrustOpen(true)}
-                className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                className="flex w-full items-center gap-2 rounded-[10px] px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               >
                 <Info className="w-4 h-4" />
                 How the AI works

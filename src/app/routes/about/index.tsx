@@ -1,8 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { injectJSONLD, generatePersonSchema } from '../../../lib/jsonld';
 import { injectOGTags } from '../../../lib/og';
+import { GripVertical } from 'lucide-react';
 
 export default function About() {
+  const [draggingId, setDraggingId] = useState<string | null>(null);
+
   useEffect(() => {
     // Set OG tags
     injectOGTags({
@@ -27,8 +30,8 @@ export default function About() {
   }, []);
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-8">
-      <header className="mb-8">
+    <main className="mx-auto w-full max-w-6xl px-4 pt-4 pb-8">
+      <header className="mb-6">
         <p className="text-xs font-semibold uppercase tracking-[0.35em] text-brand-blue">Experience</p>
         <h1 className="mt-2 text-3xl font-semibold text-slate-900 dark:text-slate-100">Overview</h1>
         <p className="mt-2 max-w-3xl text-sm text-slate-600 dark:text-slate-300">
@@ -86,8 +89,12 @@ export default function About() {
             <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Education</h2>
             <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
               <li><strong>DeepLearning.AI</strong> — Machine Learning Specialization (2025)</li>
+              <li><strong>AI Product Leadership & Implementation</strong> — AI Product Strategy (2025)</li>
+              <li><strong>Center for Humane Technology</strong> — Foundations of Humane Technology (2024)</li>
               <li><strong>Scrum Alliance</strong> — Advanced CSPO (2022)</li>
               <li><strong>Harvard Business School</strong> — Leadership & Management (2013)</li>
+              <li><strong>Cranfield University</strong> — Flight Data Monitoring in Commercial Aviation (2012)</li>
+              <li><strong>Eastern Suburbs Community College</strong> — Computer Programming (2006)</li>
               <li><strong>Ryerson University</strong> — Bachelor of Design, Marketing minor (2006)</li>
             </ul>
           </section>
@@ -109,7 +116,7 @@ export default function About() {
                 ],
               },
               {
-                company: 'RaceRocks 3D (Senior PM)',
+                company: 'RaceRocks 3D',
                 range: '2021 – 2024',
                 role: 'Senior Product Manager',
                 copy: [
@@ -139,20 +146,56 @@ export default function About() {
                   'Built cross-functional rituals (flight ops, IT, DevOps, HR) that reduced update cycle time from months to weeks.',
                 ],
               },
-            ].map((job) => (
-              <article key={job.company} className="rounded-lg border border-slate-200/80 p-5 dark:border-gray-800">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{job.company}</h3>
-                  <span className="text-xs uppercase tracking-widest text-slate-500">{job.range}</span>
-                </div>
-                <p className="text-sm font-medium text-brand-blue">{job.role}</p>
-                <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
-                  {Array.isArray(job.copy)
-                    ? job.copy.map((line) => <li key={line}>• {line}</li>)
-                    : <li>• {job.copy}</li>}
-                </ul>
-              </article>
-            ))}
+            ].map((job) => {
+              const jobId = `${job.company}-${job.range}`;
+              const isDragging = draggingId === jobId;
+
+              const handleDragStart = (e: React.DragEvent<HTMLElement>) => {
+                setDraggingId(jobId);
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData(
+                  'application/json',
+                  JSON.stringify({
+                    type: 'experience',
+                    data: job,
+                  })
+                );
+                if (e.currentTarget) {
+                  e.currentTarget.style.opacity = '0.5';
+                }
+              };
+
+              const handleDragEnd = (e: React.DragEvent<HTMLElement>) => {
+                setDraggingId(null);
+                if (e.currentTarget) {
+                  e.currentTarget.style.opacity = '1';
+                }
+              };
+
+              return (
+                <article
+                  key={job.company}
+                  draggable={true}
+                  onDragStart={handleDragStart}
+                  onDragEnd={handleDragEnd}
+                  className={`group relative rounded-lg border border-slate-200/80 p-5 dark:border-gray-800 cursor-grab active:cursor-grabbing transition-opacity ${isDragging ? 'opacity-50' : ''}`}
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 flex-1">
+                      <GripVertical className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" aria-hidden="true" />
+                      <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{job.company}</h3>
+                    </div>
+                    <span className="text-xs uppercase tracking-widest text-slate-500">{job.range}</span>
+                  </div>
+                  <p className="text-sm font-medium text-brand-blue">{job.role}</p>
+                  <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
+                    {Array.isArray(job.copy)
+                      ? job.copy.map((line) => <li key={line}>• {line}</li>)
+                      : <li>• {job.copy}</li>}
+                  </ul>
+                </article>
+              );
+            })}
           </div>
         </section>
       </div>

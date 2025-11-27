@@ -10,11 +10,33 @@ export default function Contact() {
     setErrorMessage('');
 
     const formData = new FormData(e.currentTarget);
+    const name = (formData.get('name') as string) || '';
+    const email = (formData.get('email') as string) || '';
+    const message = (formData.get('message') as string) || '';
+    const hp = (formData.get('hp') as string) || ''; // Hidden honeypot field - backend expects 'hp'
+
+    // Client-side validation
+    if (!name.trim()) {
+      setErrorMessage('Name is required');
+      setStatus('err');
+      return;
+    }
+    if (!email.trim() || !/^[^@]+@[^@]+\.[^@]+$/.test(email)) {
+      setErrorMessage('Please enter a valid email address');
+      setStatus('err');
+      return;
+    }
+    if (message.trim().length < 10) {
+      setErrorMessage('Message must be at least 10 characters');
+      setStatus('err');
+      return;
+    }
+
     const data = {
-      name: formData.get('name'),
-      email: formData.get('email'),
-      message: formData.get('message'),
-      hp: formData.get('hp') || '', // Hidden honeypot field - backend expects 'hp'
+      name: name.trim(),
+      email: email.trim(),
+      message: message.trim(),
+      hp,
     };
 
     try {

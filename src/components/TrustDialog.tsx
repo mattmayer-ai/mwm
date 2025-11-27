@@ -19,13 +19,27 @@ export function TrustDialog() {
       const metaDoc = await getDoc(doc(db, 'meta', 'index'));
       if (metaDoc.exists()) {
         const data = metaDoc.data();
-        if (data.lastIndexedAt) {
-          const date = new Date(data.lastIndexedAt);
-          setLastIndexedAt(date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          }));
+        if (data?.lastIndexedAt) {
+          // Handle Firestore Timestamp or ISO string
+          let date: Date;
+          if (data.lastIndexedAt.toDate && typeof data.lastIndexedAt.toDate === 'function') {
+            // Firestore Timestamp
+            date = data.lastIndexedAt.toDate();
+          } else if (typeof data.lastIndexedAt === 'string') {
+            // ISO string
+            date = new Date(data.lastIndexedAt);
+          } else {
+            // Fallback: try to construct Date
+            date = new Date(data.lastIndexedAt);
+          }
+          
+          if (!isNaN(date.getTime())) {
+            setLastIndexedAt(date.toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            }));
+          }
         }
       }
     } catch (err) {
@@ -43,7 +57,7 @@ export function TrustDialog() {
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/50 z-40" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[560px] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white dark:bg-gray-900 p-6 shadow-xl">
+        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[560px] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 rounded-[10px] bg-white dark:bg-gray-900 p-6 shadow-xl">
           <Dialog.Title className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             How the AI works
           </Dialog.Title>
@@ -63,7 +77,7 @@ export function TrustDialog() {
           </div>
           <div className="mt-6 flex justify-end">
             <Dialog.Close asChild>
-              <button className="rounded-lg bg-brand-blue px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-pink focus:outline-none focus:ring-2 focus:ring-brand-blue/40">
+              <button className="rounded-[10px] bg-brand-blue px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-pink focus:outline-none focus:ring-2 focus:ring-brand-blue/40">
                 Close
               </button>
             </Dialog.Close>

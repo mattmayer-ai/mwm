@@ -154,7 +154,7 @@ export function AdminPanel({ open: externalOpen, onOpenChange }: AdminPanelProps
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/50 z-40" />
-            <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-gray-900 rounded-lg shadow-xl z-50 p-6">
+            <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-gray-900 rounded-[10px] shadow-xl z-50 p-6">
               <Dialog.Title className="text-xl font-semibold mb-4">Admin Panel</Dialog.Title>
               <Dialog.Description className="sr-only">
                 Admin panel for managing content indexing, settings, and viewing analytics.

@@ -12,17 +12,17 @@ export function QuickActionsDock() {
   const [connectOpen, setConnectOpen] = useState(false);
 
   return (
-    <div className="fixed inset-x-0 bottom-6 z-30 flex justify-center pointer-events-none">
-      <div className="flex items-center gap-2 sm:gap-3 rounded-lg bg-white/85 dark:bg-gray-900/80 backdrop-blur-md border border-gray-200/70 dark:border-gray-800/70 shadow-lg px-3 py-2 pointer-events-auto">
+    <div className="quick-actions-dock fixed inset-x-0 bottom-6 z-30 flex justify-center pointer-events-none">
+      <div className="flex items-center gap-2 sm:gap-3 rounded-[10px] bg-white/85 dark:bg-gray-900/80 backdrop-blur-md border border-gray-200/70 dark:border-gray-800/70 shadow-lg px-3 py-2 pointer-events-auto">
         {/* Experience */}
         <button
           type="button"
           onClick={() => setExperienceOpen(true)}
-          className="group flex flex-col items-center gap-1 px-2 py-1 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+          className="group flex flex-col items-center gap-1 px-2 py-1 text-gray-600 dark:text-gray-400 transition-colors"
           aria-label="Experience"
         >
-          <div className="rounded-lg p-1.5 group-hover:bg-gray-100/70 dark:group-hover:bg-gray-800/70 transition-colors">
-            <Briefcase className="w-5 h-5" />
+          <div className="rounded-lg p-1.5 bg-gray-100/70 dark:bg-gray-800/70 group-hover:bg-brand-blue dark:group-hover:bg-brand-blue transition-colors">
+            <Briefcase className="w-5 h-5 group-hover:text-white transition-colors" />
           </div>
           <span className="text-[10px] uppercase tracking-wide hidden sm:block">Experience</span>
         </button>
@@ -38,11 +38,11 @@ export function QuickActionsDock() {
         <button
           type="button"
           onClick={() => setPortfolioOpen(true)}
-          className="group flex flex-col items-center gap-1 px-2 py-1 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+          className="group flex flex-col items-center gap-1 px-2 py-1 text-gray-600 dark:text-gray-400 transition-colors"
           aria-label="Portfolio"
         >
-          <div className="rounded-lg p-1.5 group-hover:bg-gray-100/70 dark:group-hover:bg-gray-800/70 transition-colors">
-            <LayoutGrid className="w-5 h-5" />
+          <div className="rounded-lg p-1.5 bg-gray-100/70 dark:bg-gray-800/70 group-hover:bg-brand-blue dark:group-hover:bg-brand-blue transition-colors">
+            <LayoutGrid className="w-5 h-5 group-hover:text-white transition-colors" />
           </div>
           <span className="text-[10px] uppercase tracking-wide hidden sm:block">Portfolio</span>
         </button>
@@ -58,11 +58,11 @@ export function QuickActionsDock() {
         <button
           type="button"
           onClick={() => setConnectOpen(true)}
-          className="group flex flex-col items-center gap-1 px-2 py-1 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+          className="group flex flex-col items-center gap-1 px-2 py-1 text-gray-600 dark:text-gray-400 transition-colors"
           aria-label="Connect"
         >
-          <div className="rounded-lg p-1.5 group-hover:bg-gray-100/70 dark:group-hover:bg-gray-800/70 transition-colors">
-            <Send className="w-5 h-5" />
+          <div className="rounded-lg p-1.5 bg-gray-100/70 dark:bg-gray-800/70 group-hover:bg-brand-blue dark:group-hover:bg-brand-blue transition-colors">
+            <Send className="w-5 h-5 group-hover:text-white transition-colors" />
           </div>
           <span className="text-[10px] uppercase tracking-wide hidden sm:block">Connect</span>
         </button>

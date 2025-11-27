@@ -95,12 +95,12 @@ export function ProjectsPage() {
   );
 
   return (
-    <div className="mx-auto flex w-full flex-col gap-6 lg:flex-row">
+    <div className={`mx-auto flex w-full flex-col gap-6 lg:flex-row transition-all duration-300 ${detailOpen ? 'blur-sm pointer-events-none' : ''}`}>
       <aside className="lg:w-1/3">
         <div className="rounded-lg border border-slate-200/80 bg-white/95 p-6 shadow-[0_12px_45px_rgba(15,23,42,0.08)] dark:border-gray-800/60 dark:bg-gray-900/90">
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-brand-blue">Portfolio</p>
           <h2 className="mt-3 text-2xl font-semibold text-slate-900 dark:text-slate-100">
-            {totalProjects} flagship programs across AI platforms, defense, and aviation
+            {totalProjects} flagship programs across AI/ML & Enterprise SaaS, Aviation, Defense, Fintech, Ed & Construction Tech 
           </h2>
           <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
             Filter by role, industry, or year to see focused outcomes. Each tile captures the mission, impact, and
@@ -168,7 +168,7 @@ export function ProjectsPage() {
             ) : (
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                 {filteredProjects.map((project: Project) => (
-                  <PortfolioCard key={project.slug} project={project} onViewDetails={handleViewDetails} />
+                  <PortfolioCard key={project.slug} project={project} onViewDetails={handleViewDetails} draggable={true} />
                 ))}
               </div>
             )}
@@ -186,6 +186,8 @@ export function ProjectsPage() {
           }
         }}
         title={selectedProject?.title || 'Project detail'}
+        size="square"
+        nested={true}
       >
         {selectedProject ? (
           <div className="space-y-6">

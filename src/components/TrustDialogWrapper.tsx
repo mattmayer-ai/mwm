@@ -51,7 +51,7 @@ export function TrustDialogWrapper({ onClose }: TrustDialogWrapperProps) {
     <Dialog.Root open={true} onOpenChange={(open) => !open && onClose()}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[560px] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white dark:bg-gray-900 p-6 shadow-xl">
+        <Dialog.Content className="fixed left-1/2 top-1/2 z-50 w-[560px] max-w-[90vw] -translate-x-1/2 -translate-y-1/2 rounded-[10px] bg-white dark:bg-gray-900 p-6 shadow-xl">
           <Dialog.Title className="text-lg font-semibold text-gray-900 dark:text-gray-100">
             How the AI works
           </Dialog.Title>
@@ -60,7 +60,7 @@ export function TrustDialogWrapper({ onClose }: TrustDialogWrapperProps) {
           </Dialog.Description>
           <div className="mt-4 text-sm text-gray-700 dark:text-gray-300 space-y-3">
             <p>
-              Answers are grounded in Matt’s projects, case studies, resume, and teaching notes using retrieval-augmented generation (RAG). The model never pulls from public web data.
+              Answers are grounded in Matt's projects, case studies, resume, and teaching notes using retrieval-augmented generation (RAG). The model never pulls from public web data.
             </p>
             <ul className="list-disc pl-5 space-y-1">
               <li><strong>Model:</strong> Anthropic Claude 3.5 Sonnet (AWS Bedrock)</li>
@@ -76,7 +76,7 @@ export function TrustDialogWrapper({ onClose }: TrustDialogWrapperProps) {
             <Dialog.Close asChild>
               <button
                 onClick={onClose}
-                className="rounded-lg bg-brand-blue px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-pink focus:outline-none focus:ring-2 focus:ring-brand-blue/40"
+                className="rounded-[10px] bg-brand-blue px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-pink focus:outline-none focus:ring-2 focus:ring-brand-blue/40"
               >
                 Close
               </button>

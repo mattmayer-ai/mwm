@@ -33,7 +33,7 @@ export function ChatPanel({ scope, defaultOpen = false }: ChatPanelProps) {
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/50 z-40" />
-        <Dialog.Content className="fixed bottom-0 right-0 w-full md:w-96 h-[600px] bg-white dark:bg-gray-900 rounded-t-lg md:rounded-lg shadow-xl z-50 flex flex-col">
+        <Dialog.Content className="fixed bottom-0 right-0 w-full md:w-96 h-[600px] bg-white dark:bg-gray-900 rounded-t-[10px] md:rounded-[10px] shadow-xl z-50 flex flex-col">
           <Dialog.Title className="sr-only">Chat</Dialog.Title>
           <Dialog.Description className="sr-only">
             Chat interface for asking questions about work, experience, and projects.
