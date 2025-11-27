@@ -126,17 +126,38 @@ async function loadIndex(): Promise<CachedIndex | null> {
 }
 
 /**
+ * Synonym mapping for common query variations
+ */
+const SYNONYM_MAP: Record<string, string[]> = {
+  'northstar': ['north star', 'north-star', 'northstar metric', 'north star metric', 'time-to-insight', 'tti'],
+  'north star': ['northstar', 'north-star', 'northstar metric', 'north star metric', 'time-to-insight', 'tti'],
+  'team ritual': ['team operating system', 'team cadence', 'team practices', 'team routines', 'team processes'],
+  'team rituals': ['team operating system', 'team cadence', 'team practices', 'team routines', 'team processes'],
+  'leadership approach': ['leadership style', 'leadership philosophy', 'how i lead', 'leadership'],
+  'leadership approaches': ['leadership style', 'leadership philosophy', 'how i lead', 'leadership'],
+  'experimentation': ['testing frameworks', 'experiment design', 'hypothesis testing', 'experimental approach', 'testing approach'],
+};
+
+/**
  * Expand query with common term mappings for better retrieval
  */
 function expandQuery(query: string): string {
   const expansions: string[] = [query];
+  const normalizedQuery = query.toLowerCase();
+  
+  // Apply synonym mapping
+  for (const [key, synonyms] of Object.entries(SYNONYM_MAP)) {
+    if (normalizedQuery.includes(key)) {
+      expansions.push(...synonyms);
+    }
+  }
   
   // Expand acronyms and common terms
   if (/\bcns\b/i.test(query)) {
-    expansions.push('Central Nervous System', 'AI-Powered Innovation Platform', 'innovation platform', 'innovation copilot', 'CNS platform');
+    expansions.push('Central Nervous System', 'Multi-Agent Innovation Platform', 'AI-Powered Innovation Platform', 'innovation platform', 'innovation copilot', 'CNS platform', 'Swift Racks CNS');
   }
   if (/\bras\b/i.test(query)) {
-    expansions.push('Replenishment at Sea', 'RAS simulator');
+    expansions.push('Replenishment at Sea', 'RAS simulator', 'MV ASTERIX');
   }
   if (/\bphilosophy\b/i.test(query)) {
     expansions.push('leadership philosophy', 'product philosophy', 'teaching philosophy');
@@ -145,8 +166,48 @@ function expandQuery(query: string): string {
     expansions.push('achievements', 'major achievements', 'biggest wins', 'results', 'metrics');
   }
   
-  // Combine expansions with original query
-  return expansions.join(' ');
+  // Expand project names
+  if (/\bathleteatlas\b/i.test(query) || /\bathlete atlas\b/i.test(query)) {
+    expansions.push('AthleteAtlas', 'youth hockey', 'hockey development', 'hockey platform');
+  }
+  if (/\bpaysight\b/i.test(query) || /\bpay sight\b/i.test(query)) {
+    expansions.push('PaySight', 'eCommerce analytics', 'cart abandonment', 'payment optimization');
+  }
+  if (/\bedpal\b/i.test(query) || /\bed pal\b/i.test(query)) {
+    expansions.push('EdPal', 'lesson planning', 'homeschool', 'curriculum designer');
+  }
+  if (/\bautotake\b/i.test(query) || /\bauto take\b/i.test(query)) {
+    expansions.push('AutoTake', 'computer vision', 'blueprint', 'TakeCost');
+  }
+  if (/\btakecost\b/i.test(query) || /\btake cost\b/i.test(query)) {
+    expansions.push('TakeCost', 'construction estimation', 'blueprint', 'AutoTake');
+  }
+  
+  // Expand technology terms
+  if (/\baws\b/i.test(query)) {
+    expansions.push('Amazon Web Services', 'AWS Bedrock', 'Bedrock', 'AWS services');
+  }
+  if (/\bbedrock\b/i.test(query)) {
+    expansions.push('AWS Bedrock', 'AWS', 'Claude', 'multi-agent');
+  }
+  if (/\bschulich\b/i.test(query)) {
+    expansions.push('Schulich School of Business', 'Schulich Venture Academy', 'teaching', 'instructor', 'product management course', 'MBA', '6 modules', 'capstone project', 'continuous discovery', 'strategy development', 'go to market', 'GTM');
+  }
+  if (/\bteaching\b/i.test(query) || /\bcourse\b/i.test(query)) {
+    expansions.push('Schulich', 'Schulich Venture Academy', 'instructor', 'product management', 'teaching', '6 modules', '18 hours', 'capstone');
+  }
+  
+  // Expand AI/ML terms
+  if (/\bai\b/i.test(query) && /\bml\b/i.test(query)) {
+    expansions.push('artificial intelligence', 'machine learning', 'AI ML', 'AI/ML');
+  }
+  if (/\bmachine learning\b/i.test(query) || /\bml\b/i.test(query)) {
+    expansions.push('AI', 'artificial intelligence', 'deep learning', 'neural networks');
+  }
+  
+  // Remove duplicates and combine expansions with original query
+  const uniqueExpansions = Array.from(new Set(expansions));
+  return uniqueExpansions.join(' ');
 }
 
 export async function retrieveCandidates(query: string): Promise<ChunkCandidate[]> {

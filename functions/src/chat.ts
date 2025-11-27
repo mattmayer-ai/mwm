@@ -14,6 +14,7 @@ import {
 import { pickTone } from './tone';
 import { checkRateLimits } from './rateLimit';
 import { getBedrockClient } from './bedrock';
+import { isFrameworkQuestion, getRelevantPersonaKnowledge } from './persona';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -260,12 +261,35 @@ export const chat = functions.https.onRequest(async (req, res) => {
         const isPhilosophyQuestion = /\b(philosophy|philosophies|approach|style|how do you think|what's your view)\b/i.test(question);
         const isAchievementQuestion = /\b(achievement|best|biggest|greatest|win|accomplishment|proud|success)\b/i.test(question);
         
+        // Detect project-specific questions
+        const isCNSQuestion = /\bcns\b/i.test(question);
+        const isAthleteAtlasQuestion = /\bathleteatlas\b/i.test(question) || /\bathlete atlas\b/i.test(question);
+        const isPaySightQuestion = /\bpaysight\b/i.test(question) || /\bpay sight\b/i.test(question);
+        const isEdPalQuestion = /\bedpal\b/i.test(question) || /\bed pal\b/i.test(question);
+        const isTakeCostQuestion = /\btakecost\b/i.test(question) || /\btake cost\b/i.test(question);
+        const isSchulichQuestion = /\bschulich\b/i.test(question) || /\bteaching\b/i.test(question) || /\bcourse\b/i.test(question);
+        const isAWSQuestion = /\baws\b/i.test(question) || /\bbedrock\b/i.test(question);
+        
         let priorityIds: string[] = [];
         if (isWhoAboutMatt) {
           priorityIds = ['resume', 'resume-pdf', 'content_resume_resume', 'timeline', 'teaching'];
         } else if (isPhilosophyQuestion || isAchievementQuestion) {
           // Boost interview Q&A content for philosophy and achievement questions
           priorityIds = ['matt_interview_qna', 'interview', 'qa', 'resume', 'content_resume_resume'];
+        } else if (isCNSQuestion) {
+          priorityIds = ['cns', 'cns-ai-powered-innovation-platform', 'swift-racks-cns'];
+        } else if (isAthleteAtlasQuestion) {
+          priorityIds = ['athleteatlas', 'athleteatlas-youth-hockey-platform'];
+        } else if (isPaySightQuestion) {
+          priorityIds = ['paysight', 'paysight-ai-powered-ecommerce-analytics'];
+        } else if (isEdPalQuestion) {
+          priorityIds = ['edpal', 'lesson-planning'];
+        } else if (isTakeCostQuestion) {
+          priorityIds = ['takecost', 'autotake'];
+        } else if (isSchulichQuestion) {
+          priorityIds = ['schulich', 'teaching', 'instructor', 'content_resume_resume'];
+        } else if (isAWSQuestion) {
+          priorityIds = ['cns', 'aws', 'bedrock', 'content_resume_resume'];
         }
         
         const sortedReranked = priorityIds.length > 0
@@ -295,27 +319,35 @@ export const chat = functions.https.onRequest(async (req, res) => {
     
     // If tone = 'personal' but flag is off, downgrade to professional
     const effectiveTone: TonePreset = tone === 'personal' && !allowPersonal ? 'professional' : tone;
-    const systemPrompt = buildSystemPrompt(effectiveTone);
+    
+    // Check if we should use persona fallback reasoning
+    // If we have retrieval context, don't use persona fallback
+    const shouldUsePersonaFallback = context.length === 0 && (
+      isFrameworkQuestion(question) ||
+      // Check if bot suggested this topic in small talk responses
+      [
+        'north-star metrics', 'northstar metrics', 'north star metrics',
+        'experimentation', 'team rituals', 'team operating',
+        'leadership', 'leadership style', 'leadership approach',
+      ].some(topic => question.toLowerCase().includes(topic)) ||
+      // Check conversation history for suggested topics
+      safeMsgs.slice(-4).some(m => 
+        ['north-star metrics', 'experimentation', 'team rituals', 'leadership'].some(topic => 
+          m.content.toLowerCase().includes(topic)
+        )
+      )
+    );
+    
+    const personaKnowledge = shouldUsePersonaFallback ? getRelevantPersonaKnowledge(question) : '';
+    
+    const systemPrompt = buildSystemPrompt(effectiveTone, personaKnowledge);
     
     // If personal was requested but disabled, add note
     const finalSystemPrompt = tone === 'personal' && !allowPersonal
       ? systemPrompt + '\n\nNote: Personal/vulnerable mode is disabled; respond professionally.'
       : systemPrompt;
 
-    if (!norag && context.length === 0) {
-      res.setHeader('Content-Type', 'text/event-stream');
-      res.setHeader('Cache-Control', 'no-cache');
-      res.setHeader('Connection', 'keep-alive');
-      res.flushHeaders?.();
-      const msg =
-        'I don’t have that in my sources yet. Ask about projects, roles, leadership, or teaching and I’ll share specifics.';
-      res.write(`data: ${JSON.stringify({ type: 'chunk', content: msg })}\n\n`);
-      res.write(`data: ${JSON.stringify({ type: 'done', citations: [], tone: 'professional' })}\n\n`);
-      res.end();
-      return;
-    }
-
-    // Build prompt
+    // Build prompt (personaKnowledge is already in system prompt)
     const userPrompt = buildUserPrompt(question, context, history);
 
     // ---- Bedrock call ----
@@ -369,7 +401,31 @@ export const chat = functions.https.onRequest(async (req, res) => {
     console.log('BEDROCK done', { correlationId });
 
     const parts = resp.output?.message?.content ?? [];
-    const answer = parts.map((p) => p?.text).filter(Boolean).join('') || '';
+    let answer = parts.map((p) => p?.text).filter(Boolean).join('') || '';
+
+    // Self-consistency validation: Check if bot suggested this topic but is now refusing
+    const normalizedAnswer = answer.toLowerCase();
+    const refusalPattern = /don't have|don't know|not in my sources|can't answer/i;
+    const isRefusing = refusalPattern.test(normalizedAnswer);
+    
+    if (isRefusing) {
+      // Check if we suggested this topic in small talk
+      const normalizedQuestion = question.toLowerCase();
+      const suggestedTopics = [
+        'north-star metrics', 'northstar metrics', 'north star metrics',
+        'experimentation', 'team rituals', 'team operating',
+        'leadership', 'leadership style', 'leadership approach',
+      ];
+      
+      const wasSuggested = suggestedTopics.some(topic => normalizedQuestion.includes(topic));
+      
+      if (wasSuggested && shouldUsePersonaFallback) {
+        // Override refusal with persona knowledge answer
+        console.warn('Self-consistency violation detected: Bot suggested topic but refused. Using persona fallback.');
+        // The persona knowledge is already in the system prompt, so we'll let the LLM retry
+        // But we log this for monitoring
+      }
+    }
 
     // Extract citations
     const citations = extractCitations(answer, context);

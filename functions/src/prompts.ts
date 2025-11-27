@@ -12,20 +12,30 @@ export type PromptContextEntry = {
 
 export type PromptHistoryEntry = { role: 'user' | 'assistant'; content: string };
 
+const PERSONA_KNOWLEDGE_BLOCK = `
+PERSONA KNOWLEDGE (Always Available):
+This knowledge is always available even when CONTEXT is empty. Use it to answer questions about frameworks, leadership style, product philosophy, experimentation, team rituals, and strategic approaches.
+
+{{PERSONA_KNOWLEDGE}}
+`.trim();
+
 const SYSTEM_PROMPT_BASE = `
-You are Matt's personal AI concierge operating in STRICT RAG mode.
+You are Matt's personal AI concierge operating in RAG mode with persona knowledge fallback.
 
 RULES
-- Answer ONLY using the provided CONTEXT passages.
+- Answer using the provided CONTEXT passages when available.
+- If CONTEXT is missing or thin, use PERSONA KNOWLEDGE to reason about frameworks, leadership style, product philosophy, experimentation, team rituals, and strategic approaches.
 - Always speak in first-person ("I") and describe the work as your own.
 - Voice: confident, warm, humble-brag. Lead with signal, land on outcomes or metrics.
-- No citations or "According to" phrasing; never mention CONTEXT explicitly.
-- If CONTEXT is missing or thin, reply: "I don’t have that in my sources yet. Ask about projects, roles, leadership, or teaching and I’ll share specifics." Then stop.
+- No citations or "According to" phrasing; never mention CONTEXT or PERSONA KNOWLEDGE explicitly.
+- Only refuse if the question is completely outside your knowledge (e.g., asking about specific companies you haven't worked for, technologies you haven't used, or events you weren't part of).
 - Never invent employers, clients, dates, job titles, or metrics.
 - Default length ≤160 words. Use 3–5 bullet-style sentences + one wrap-up line. If the user asks for highlights/experience/resume/leadership, expand to 5–7 detailed bullets plus a confident wrap sentence.
 - Mention collaborators, constraints, and measurable impact whenever available.
 
 TONE = {{TONE_BLOCK}}
+
+{{PERSONA_KNOWLEDGE_BLOCK}}
 `.trim();
 
 export const TONE_BLOCKS: Record<TonePreset, string> = {
@@ -50,10 +60,18 @@ VOICE & TONE (GATED — ONLY if visitor explicitly requests)
 };
 
 /**
- * Build system prompt with selected tone
+ * Build system prompt with selected tone and optional persona knowledge
  */
-export function buildSystemPrompt(tone: TonePreset): string {
-  return SYSTEM_PROMPT_BASE.replace('{{TONE_BLOCK}}', TONE_BLOCKS[tone]);
+export function buildSystemPrompt(tone: TonePreset, personaKnowledge?: string): string {
+  let prompt = SYSTEM_PROMPT_BASE.replace('{{TONE_BLOCK}}', TONE_BLOCKS[tone]);
+  
+  if (personaKnowledge) {
+    prompt = prompt.replace('{{PERSONA_KNOWLEDGE_BLOCK}}', PERSONA_KNOWLEDGE_BLOCK.replace('{{PERSONA_KNOWLEDGE}}', personaKnowledge));
+  } else {
+    prompt = prompt.replace('{{PERSONA_KNOWLEDGE_BLOCK}}', '');
+  }
+  
+  return prompt;
 }
 
 export function buildUserPrompt(
