@@ -109,8 +109,11 @@ export default function About() {
                 copy: [
                   'Lead the CNS innovation platform and AutoTake CV pipeline, targeting $4.1M ARR in year one and $280M over five years.',
                   'Spun up 15+ specialized agents (discovery, estimating, knowledge graph) with shared memory, evaluation harnesses, and guardrails.',
-                  'Ran company-wide experimentation cadence—weekly demos, Friday evidence, Monday decisions—with a 95% funnel conversion lift.',
-                  'Instituted AI governance, cost-per-correct tracking, and “plan before you prompt” playbooks to keep latency low and accuracy high.',
+                  'Ran a company-wide experimentation cadence—weekly demos, Friday evidence, Monday decisions—driving a 95% funnel conversion lift.',
+                  'Instituted responsible AI governance, cost-per-correct tracking, and "plan before you prompt" playbooks to keep latency low and accuracy high.',
+                  'Established enterprise-wide product vision and a nine-industry GTM strategy positioning Swift Racks as a leader in AI-powered digital transformation.',
+                  'Cultivated enterprise partnerships that generated $1.8M in recurring revenue through CNS private deployments and TakeCost subscriptions.',
+                  'Built a structured knowledge base storing every hypothesis, test, and outcome—creating a compounding insight flywheel across product teams.',
                 ],
               },
               {
@@ -118,10 +121,12 @@ export default function About() {
                 range: '2021 – 2024',
                 role: 'Senior Product Manager',
                 copy: [
-                  'Owned defense portfolio strategy, coordinating Boeing, Lockheed Martin, and Royal Canadian Navy programs with shared bets/risks board.',
+                  'Owned defense portfolio strategy, coordinating Boeing, Lockheed Martin, and Royal Canadian Navy programs through a shared bets/risks board.',
                   'Launched the first integrated Replenishment at Sea simulator, delivering $15M+ annual savings and cutting training time by 40%.',
-                  'Ran four annual planning cycles with exec staff, linking roadmaps to readiness metrics and “continue / kill / amplify” evidence.',
+                  'Ran annual strategic planning cycles with executive staff, connecting capability roadmaps to readiness metrics and "continue / kill / amplify" evidence.',
                   'Scaled the platform team by codifying paved roads (Unity/Unreal primitives, telemetry contracts, deployment SLAs).',
+                  'Established cross-functional governance models standardizing measurement and delivery across complex, multi-stakeholder defense programs.',
+                  'Built enterprise-level market analysis frameworks informing multi-product strategy, competitive positioning, and capability prioritization.',
                 ],
               },
               {
@@ -129,9 +134,11 @@ export default function About() {
                 range: '2018 – 2021',
                 role: 'Product Manager',
                 copy: [
-                  'Built AR/VR/XR training systems for CAF Naval programs, architecting Azure + xAPI telemetry stacks with secure sandboxing.',
-                  'Led classified user research sprints that translated hand-written checklists into instrumented workflows.',
-                  'Delivered MV ASTERIX training modules end-to-end: requirements capture, scenario design, validation, and deployment.',
+                  'Built AR/VR/XR training systems for CAF naval programs, architecting Azure + xAPI telemetry stacks with secure sandboxing.',
+                  'Led classified user research sprints that translated handwritten checklists into fully instrumented workflows.',
+                  'Delivered MV ASTERIX mission-readiness training modules end-to-end, spanning requirements capture, scenario design, validation, and deployment.',
+                  'Architected Azure-based system integrations and telemetry pipelines (xAPI, CMI-5, WebGL) enabling high-fidelity naval training environments.',
+                  'Spearheaded next-generation naval mission readiness programs by aligning immersive technology modalities with operational constraints.',
                 ],
               },
               {
@@ -139,9 +146,11 @@ export default function About() {
                 range: '2010 – 2018',
                 role: 'eLearning Manager, Flight Operations',
                 copy: [
-                  'Launched the first offline iPad training platform for pilots, cutting friction 70% (10+ clicks → 3) and saving $1.5M annually.',
-                  'Captured 697 pain points from the global pilot corps, using them to prioritize roadmap slices and regulatory compliance work.',
-                  'Built cross-functional rituals (flight ops, IT, DevOps, HR) that reduced update cycle time from months to weeks.',
+                  'Launched the first offline iPad training platform for pilots, cutting friction by 70% (10+ clicks → 3) and saving $1.5M annually.',
+                  'Captured 697 pilot pain points globally, transforming them into roadmap slices aligned with regulatory and operational priorities.',
+                  'Built cross-functional rituals (Flight Ops, IT, DevOps, HR) that reduced update cycles from months to weeks.',
+                  'Architected deployment of two enterprise Learning Management Systems with interoperability across HR, Finance, and IT systems.',
+                  'Transitioned the organization from traditional training models to digital ecosystems—creating a transformation pattern later adopted industry-wide.',
                 ],
               },
             ].map((job) => {
