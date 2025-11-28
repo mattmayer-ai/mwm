@@ -42,7 +42,7 @@ export default function About() {
           <section>
             <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Summary</h2>
             <p className="mt-3 text-sm text-slate-700 dark:text-slate-300">
-              I architect product strategies that turn organizational chaos into competitive advantage. Over 14+ years, I've pioneered digital transformations across aviation, defense, and enterprise sectors—from building the world's first offline pilot training platform to developing AI-powered systems that have generated $20M+ in operational savings.
+              I architect product strategies that turn organizational chaos into competitive advantage. Over 14+ years, I've led digital transformations across aviation, defense, and enterprise sectors—from helping build one of the first offline iPad training platforms for pilots to developing data- and AI-driven systems that have delivered multi-million-dollar operational savings and $1.8M in recurring revenue growth.
             </p>
             <p className="mt-3 text-sm text-slate-700 dark:text-slate-300">
               My approach centers on systematic customer discovery, cross-functional coalition building, and responsible AI implementation that drives measurable business outcomes. Currently leading AI platform development at Swift Racks while teaching product management at Schulich, I specialize in zero-to-one product development that transforms how organizations operate and compete.
@@ -54,19 +54,19 @@ export default function About() {
             <div className="mt-4 space-y-4 text-sm text-slate-700 dark:text-slate-300">
               <div>
                 <p className="font-semibold text-slate-900 dark:text-slate-100">AI/ML Product Leadership</p>
-                <p>Architected multi-agent AI systems (AWS Bedrock, GPT-4, CV) and set AI governance with 85% efficiency gains.</p>
+                <p>Architected multi-agent AI systems (AWS Bedrock, GPT-4, CV) and set AI governance frameworks that drove ~85% efficiency gains and $1.8M in recurring revenue growth.</p>
               </div>
               <div>
                 <p className="font-semibold text-slate-900 dark:text-slate-100">Strategic Planning & Roadmapping</p>
-                <p>Ran annual strategy cycles at RaceRocks and brought Swift Racks to disciplined North Star execution.</p>
+                <p>Ran annual strategy cycles at RaceRocks and helped bring Swift Racks into a disciplined North Star and portfolio-level execution cadence.</p>
               </div>
               <div>
                 <p className="font-semibold text-slate-900 dark:text-slate-100">Experimentation & Insights</p>
-                <p>Developed AI-powered experiment selection and logged 697 complaints at Air Canada to pivot strategy.</p>
+                <p>Built experimentation frameworks (Air Canada 697 complaints, TakeCost pivot, Swift Racks AI experiments) that move teams from opinions to evidence-based decisions.</p>
               </div>
               <div>
                 <p className="font-semibold text-slate-900 dark:text-slate-100">Cross-Functional Leadership</p>
-                <p>Led teams across HR, Finance, IT, DevOps, and secure defense programs with mixed clearances.</p>
+                <p>Led teams across HR, Finance, IT, DevOps, and secure defense programs with mixed clearances and complex stakeholder ecosystems.</p>
               </div>
             </div>
           </section>
@@ -107,10 +107,10 @@ export default function About() {
                 range: '2024 – Present',
                 role: 'Head of Product',
                 copy: [
-                  'Lead the CNS innovation platform and AutoTake CV pipeline, targeting $4.1M ARR in year one and $280M over five years.',
-                  'Spun up 15+ specialized agents (discovery, estimating, knowledge graph) with shared memory, evaluation harnesses, and guardrails.',
+                  'Lead the CNS innovation platform and AutoTake CV pipeline, with year-one ARR targets in the low single-digit millions based on current pipeline modeling.',
+                  'Spun up over a dozen specialized agents (discovery, estimating, knowledge graph) with shared memory, evaluation harnesses, and guardrails.',
                   'Instituted responsible AI governance, cost-per-correct tracking, and "plan before you prompt" playbooks to keep latency low and accuracy high.',
-                  'Established enterprise-wide product vision and a nine-industry GTM strategy positioning Swift Racks as a leader in AI-powered digital transformation.',
+                  'Established enterprise-wide product vision and a nine-industry GTM strategy, positioning Swift Racks as a partner for AI-powered digital transformation.',
                   'Built a structured knowledge base storing every hypothesis, test, and outcome—creating a compounding insight flywheel across product teams.',
                 ],
               },
@@ -120,7 +120,7 @@ export default function About() {
                 role: 'Senior Product Manager',
                 copy: [
                   'Owned defense portfolio strategy, coordinating Boeing, Lockheed Martin, and Royal Canadian Navy programs through a shared bets/risks board.',
-                  'Launched the first integrated Replenishment at Sea simulator, delivering $15M+ annual savings and cutting training time by 40%.',
+                  'Launched the first integrated Replenishment at Sea simulator, delivering $15M+ in operational savings and cutting training time significantly for naval crews.',
                   'Ran annual strategic planning cycles with executive staff, connecting capability roadmaps to readiness metrics and "continue / kill / amplify" evidence.',
                   'Scaled the platform team by codifying paved roads (Unity/Unreal primitives, telemetry contracts, deployment SLAs).',
                   'Established cross-functional governance models standardizing measurement and delivery across complex, multi-stakeholder defense programs.',
@@ -144,11 +144,11 @@ export default function About() {
                 range: '2010 – 2018',
                 role: 'eLearning Manager, Flight Operations',
                 copy: [
-                  'Launched the first offline iPad training platform for pilots, cutting friction by 70% (10+ clicks → 3) and saving $1.5M annually.',
+                  'Built one of the first offline iPad training platforms for pilots, cutting friction by ~70% (10+ clicks → 3) and saving ~$1.5M annually.',
                   'Captured 697 pilot pain points globally, transforming them into roadmap slices aligned with regulatory and operational priorities.',
                   'Built cross-functional rituals (Flight Ops, IT, DevOps, HR) that reduced update cycles from months to weeks.',
                   'Architected deployment of two enterprise Learning Management Systems with interoperability across HR, Finance, and IT systems.',
-                  'Transitioned the organization from traditional training models to digital ecosystems—creating a transformation pattern later adopted industry-wide.',
+                  'Led the shift from traditional training models to digital ecosystems, creating a transformation pattern later reused across future initiatives.',
                 ],
               },
             ].map((job) => {
