@@ -1,6 +1,7 @@
 # Chatbot Technical Overview
-**Last Updated:** January 2025  
-**Status:** Production (Hallucination prevention system active with ongoing monitoring)
+**Last Updated:** November 2025  
+**Status:** Production (Hallucination prevention system active with ongoing monitoring)  
+**Content Coverage:** 15,000+ lines of documentation spanning nearly 20 years of career experience
 
 ## Executive Summary
 
@@ -8,8 +9,9 @@ The chatbot is a RAG (Retrieval-Augmented Generation) system powered by AWS Bedr
 
 **Key Metrics:**
 - **Latency:** p50 ≤ 3s, p95 ≤ 6s (streaming)
-- **Content Coverage:** 20+ years, 10,000+ lines of documentation
+- **Content Coverage:** Nearly 20 years, 15,000+ lines of real documentation
 - **Index Size:** ~500-1000 chunks from MDX/Markdown/PDF sources
+- **Knowledge Base:** Projects, case studies, frameworks, teaching notes from Air Canada, RaceRocks, Swift Racks, and Schulich School of Business
 
 **Hallucination Controls:**
 - Company whitelist + explicit "do not invent employers" prompt
@@ -682,8 +684,8 @@ The brag reel, leadership philosophy, and 90-day plan responses are stored in co
 
 ---
 
-**Document Version:** 1.1  
-**Last Reviewed:** January 2025  
-**Last Updated:** January 2025 (Added deterministic response handlers, enhanced hallucination detection)  
-**Next Review:** Q2 2025
+**Document Version:** 1.2  
+**Last Reviewed:** November 2025  
+**Last Updated:** November 2025 (Updated content coverage to 15,000+ lines, refined documentation)  
+**Next Review:** Q1 2026
 

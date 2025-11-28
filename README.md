@@ -1,27 +1,46 @@
 # mwm — AI-Driven Portfolio
 
-An AI-powered portfolio site built with React 19, Vite, Firebase, and Anthropic Claude.
+An AI-powered portfolio site built with React 19, Vite, Firebase, and Anthropic Claude. Features an interactive chat interface powered by RAG (Retrieval-Augmented Generation) that answers questions about Matt's career, projects, and methodologies using over 15,000 lines of real documentation spanning nearly 20 years of experience.
 
 ## Status
 
-**Phase 1 & 2 Complete** ✅
-- Content ingestion pipeline (P1.1-P1.4)
-- AI chat with citations (P2.1-P2.3)
-- Lexical search-based RAG
+**Production Ready** ✅
 
-**Remaining:**
-- Owner UI for reindexing (P1.5)
-- QA eval harness (P2.4)
-- Projects directory & case studies (Phase 3)
-- Resume/Contact/Trust UI/Theming (Phase 4)
-- Analytics & deploy (Phase 5)
+**Completed Features:**
+- ✅ Content ingestion pipeline with FlexSearch lexical indexing
+- ✅ AI chat with citations powered by Claude 3.5 Sonnet (AWS Bedrock)
+- ✅ RAG system with deterministic response handlers
+- ✅ Projects directory with filtering and case studies
+- ✅ Portfolio cards with impact metrics
+- ✅ Resume/Contact/Trust UI with dark mode support
+- ✅ Analytics tracking and deployment pipeline
+- ✅ Multi-layer hallucination prevention system
+- ✅ Rate limiting and security controls
+
+**Live Site:** https://askmwm.web.app
 
 ## Tech Stack
 
-- **Frontend**: React 19 + Vite 7.7, TypeScript 5.9.3, Tailwind CSS 3.4, Radix UI
-- **Backend**: Firebase 12.4.0 (Firestore, Cloud Functions, Hosting)
-- **AI**: Anthropic Claude 3.5 Sonnet via Firebase Functions
-- **Search**: FlexSearch (lexical search, upgrade path to embeddings)
+**Frontend:**
+- React 19 + Vite 7.7
+- TypeScript 5.9.3 (strict mode)
+- Tailwind CSS 3.4.17
+- Radix UI primitives (Dialog, Dropdown Menu, Select, Tabs, Toast)
+- React Router DOM 7.4
+- Zustand 5.8 for state management
+- Lucide React + Heroicons for icons
+
+**Backend:**
+- Firebase 12.4.0
+  - Firestore (chunks, metadata, analytics)
+  - Cloud Functions (Node.js 20, 2nd Gen)
+  - Cloud Storage (lexical index)
+  - Firebase Hosting
+
+**AI/ML:**
+- Anthropic Claude 3.5 Sonnet via AWS Bedrock
+- FlexSearch (lexical search, upgrade path to embeddings)
+- RAG system with query expansion and priority boosting
 
 ## Setup
 
@@ -62,23 +81,40 @@ See `.env.example` for required variables:
 
 ### Content Ingestion
 
-1. Add your content to `/content/projects/*.mdx` and `/content/resume/resume.md`
-2. Add resume PDF to `/public/resume/mwm-resume.pdf`
-3. Run ingestion (lexical fallback):
+The system indexes content from multiple sources:
+
+**Source Files:**
+- `/content/projects/*.mdx` - Project case studies
+- `/content/resume/*.mdx` - Resume content
+- `/content/teaching/*.mdx` - Teaching experience
+- `/content/interviews/*.mdx` - Interview Q&A
+- `/content/responses/*.mdx` - Deterministic responses (brag reel, leadership, 90-day plan)
+- `/content/data/*.json` - Structured data
+
+**Ingestion Process:**
+1. Add your content to the appropriate directories
+2. Run ingestion:
    ```bash
    npm run ingest
    ```
-4. Build the enriched primary index (includes interview Q&A chunks):
+3. Build the enriched primary index:
    ```bash
    npm run build:primary
+   ```
+4. Upload to Cloud Storage:
+   ```bash
    gsutil cp indexes/primary.json gs://askmwm/indexes/primary.json
    ```
-   Or trigger via API (admin-only):
+   Or trigger via admin API:
    ```bash
-   curl -X POST https://your-project.cloudfunctions.net/api/reindex \
-     -H "Authorization: Bearer YOUR_TOKEN" \
-     -H "X-Admin-Secret: YOUR_SECRET"
+   curl -X POST https://us-central1-askmwm.cloudfunctions.net/api/reindex \
+     -H "Authorization: Bearer YOUR_TOKEN"
    ```
+
+**Chunking Strategy:**
+- Chunk size: 1,100 characters (~800-900 tokens)
+- Overlap: 180 characters (~12% overlap)
+- Index type: FlexSearch with forward tokenization
 
 ### Firebase Functions Deployment
 
@@ -118,12 +154,31 @@ firebase deploy --only hosting
 - `npm run test` - Run tests
 - `npm run ingest` - Run content ingestion
 
-## Notes
+## Key Features
 
-- The ingestion script uses Firebase client SDK; for production, consider migrating to Admin SDK
-- Lexical search is used for MVP; upgrade path to vector embeddings is planned
-- Chat API streams responses for better UX
-- All AI calls are server-side via Firebase Functions
+**RAG System:**
+- Lexical search with FlexSearch (upgrade path to embeddings ready)
+- Query expansion (synonyms, acronyms, project names)
+- Priority boosting for project-specific questions
+- Deterministic response handlers for high-frequency queries
+- Multi-layer hallucination prevention
+
+**Content Coverage:**
+- Over 15,000 lines of real documentation
+- Nearly 20 years of career experience
+- Projects from Air Canada, RaceRocks, Swift Racks, and Schulich School of Business
+- Case studies, frameworks, teaching notes, and methodologies
+
+**Performance:**
+- Chat latency: p50 ≤ 3s, p95 ≤ 6s (streaming)
+- Page load: LCP ≤ 2.5s, FCP < 1.5s
+- Retrieval: < 1s total RAG time
+
+**Security:**
+- All AI calls server-side via Firebase Functions
+- Rate limiting (30/min, 200/day)
+- No API keys exposed to frontend
+- Admin-only reindex endpoints
 
 ## License
 
