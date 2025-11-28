@@ -17,3 +17,16 @@ body {
   font-weight: 400;
 }
 
+/* Override Radix UI DropdownMenu.Item default focus/active styles */
+[data-radix-dropdown-menu-item] {
+  outline: none;
+  border: none;
+}
+
+[data-radix-dropdown-menu-item]:focus,
+[data-radix-dropdown-menu-item]:focus-visible,
+[data-radix-dropdown-menu-item][data-highlighted] {
+  outline: none;
+  box-shadow: none;
+}
+

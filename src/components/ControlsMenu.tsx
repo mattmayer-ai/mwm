@@ -30,7 +30,7 @@ export function ControlsMenu() {
               <div className="flex gap-1">
                 <button
                   onClick={() => setTheme('system')}
-                  className={`flex-1 rounded-[10px] px-3 py-1.5 text-xs font-medium transition-colors ${
+                  className={`flex-1 rounded-[10px] px-3 py-1.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-brand-blue/40 ${
                     theme === 'system'
                       ? 'bg-brand-blue text-white'
                       : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
@@ -41,7 +41,7 @@ export function ControlsMenu() {
                 </button>
                 <button
                   onClick={() => setTheme('light')}
-                  className={`flex-1 rounded-[10px] px-3 py-1.5 text-xs font-medium transition-colors ${
+                  className={`flex-1 rounded-[10px] px-3 py-1.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-brand-blue/40 ${
                     theme === 'light'
                       ? 'bg-brand-blue text-white'
                       : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
@@ -52,7 +52,7 @@ export function ControlsMenu() {
                 </button>
                 <button
                   onClick={() => setTheme('dark')}
-                  className={`flex-1 rounded-[10px] px-3 py-1.5 text-xs font-medium transition-colors ${
+                  className={`flex-1 rounded-[10px] px-3 py-1.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-brand-blue/40 ${
                     theme === 'dark'
                       ? 'bg-brand-blue text-white'
                       : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
@@ -67,10 +67,10 @@ export function ControlsMenu() {
             <DropdownMenu.Separator className="h-px bg-gray-200 dark:bg-gray-700 my-2" />
 
             {/* How the AI works */}
-            <DropdownMenu.Item asChild>
+            <DropdownMenu.Item asChild className="outline-none border-0 focus:outline-none focus:ring-0">
               <button
                 onClick={() => setTrustOpen(true)}
-                className="flex w-full items-center gap-2 rounded-[10px] px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                className="flex w-full items-center gap-2 rounded-[10px] px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 active:outline-none transition-colors"
               >
                 <Info className="w-4 h-4" />
                 How the AI works
