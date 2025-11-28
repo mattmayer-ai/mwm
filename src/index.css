@@ -18,7 +18,8 @@ body {
 }
 
 /* Override Radix UI DropdownMenu.Item default focus/active/hover styles */
-[data-radix-dropdown-menu-item] {
+[data-radix-dropdown-menu-item],
+[data-radix-dropdown-menu-item] * {
   outline: none !important;
   border: none !important;
   box-shadow: none !important;
@@ -27,22 +28,68 @@ body {
 [data-radix-dropdown-menu-item]:hover,
 [data-radix-dropdown-menu-item]:focus,
 [data-radix-dropdown-menu-item]:focus-visible,
+[data-radix-dropdown-menu-item]:active,
 [data-radix-dropdown-menu-item][data-highlighted],
-[data-radix-dropdown-menu-item][data-state="open"] {
+[data-radix-dropdown-menu-item][data-state="open"],
+[data-radix-dropdown-menu-item][data-state="highlighted"] {
   outline: none !important;
   box-shadow: none !important;
   border: none !important;
+  border-width: 0 !important;
+  border-style: none !important;
 }
 
 /* Ensure child button elements also have no border */
-[data-radix-dropdown-menu-item] button {
+[data-radix-dropdown-menu-item] button,
+[data-radix-dropdown-menu-item] a {
   border: none !important;
+  border-width: 0 !important;
+  border-style: none !important;
   outline: none !important;
+  box-shadow: none !important;
 }
 
 [data-radix-dropdown-menu-item]:hover button,
-[data-radix-dropdown-menu-item][data-highlighted] button {
+[data-radix-dropdown-menu-item]:hover a,
+[data-radix-dropdown-menu-item][data-highlighted] button,
+[data-radix-dropdown-menu-item][data-highlighted] a,
+[data-radix-dropdown-menu-item]:hover *,
+[data-radix-dropdown-menu-item][data-highlighted] * {
   border: none !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Target any pseudo-elements that might be adding borders */
+[data-radix-dropdown-menu-item]::before,
+[data-radix-dropdown-menu-item]::after,
+[data-radix-dropdown-menu-item]:hover::before,
+[data-radix-dropdown-menu-item]:hover::after {
+  display: none !important;
+}
+
+/* Specific override for "How the AI works" button */
+.how-ai-works-item,
+.how-ai-works-item *,
+.how-ai-works-item button {
+  border: none !important;
+  border-width: 0 !important;
+  border-style: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.how-ai-works-item:hover,
+.how-ai-works-item:hover *,
+.how-ai-works-item:hover button,
+.how-ai-works-item[data-highlighted],
+.how-ai-works-item[data-highlighted] *,
+.how-ai-works-item[data-highlighted] button {
+  border: none !important;
+  border-width: 0 !important;
+  border-style: none !important;
   outline: none !important;
   box-shadow: none !important;
 }
