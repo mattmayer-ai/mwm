@@ -17,12 +17,14 @@ body {
   font-weight: 400;
 }
 
-/* Override Radix UI DropdownMenu.Item default focus/active styles */
+/* Override Radix UI DropdownMenu.Item default focus/active/hover styles */
 [data-radix-dropdown-menu-item] {
   outline: none !important;
   border: none !important;
+  box-shadow: none !important;
 }
 
+[data-radix-dropdown-menu-item]:hover,
 [data-radix-dropdown-menu-item]:focus,
 [data-radix-dropdown-menu-item]:focus-visible,
 [data-radix-dropdown-menu-item][data-highlighted],
@@ -30,5 +32,18 @@ body {
   outline: none !important;
   box-shadow: none !important;
   border: none !important;
+}
+
+/* Ensure child button elements also have no border */
+[data-radix-dropdown-menu-item] button {
+  border: none !important;
+  outline: none !important;
+}
+
+[data-radix-dropdown-menu-item]:hover button,
+[data-radix-dropdown-menu-item][data-highlighted] button {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 

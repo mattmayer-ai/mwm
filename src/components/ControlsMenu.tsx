@@ -67,10 +67,10 @@ export function ControlsMenu() {
             <DropdownMenu.Separator className="h-px bg-gray-200 dark:bg-gray-700 my-2" />
 
             {/* How the AI works */}
-            <DropdownMenu.Item asChild className="outline-none border-0 focus:outline-none focus:ring-0">
+            <DropdownMenu.Item asChild className="outline-none border-0 focus:outline-none focus:ring-0 hover:border-0">
               <button
                 onClick={() => setTrustOpen(true)}
-                className="flex w-full items-center gap-2 rounded-[10px] px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-brand-blue hover:text-white focus:outline-none focus:ring-2 focus:ring-brand-blue/40 active:outline-none transition-colors"
+                className="flex w-full items-center gap-2 rounded-[10px] px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-brand-blue hover:text-white hover:border-0 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 active:outline-none active:border-0 transition-colors border-0"
               >
                 <Info className="w-4 h-4" />
                 How the AI works
