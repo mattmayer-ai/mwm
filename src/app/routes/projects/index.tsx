@@ -50,6 +50,22 @@ export function ProjectsPage() {
     setDetailOpen(true);
   };
 
+  // Map raw industry values to actual industries
+  const mapToActualIndustry = (industries: string[]): string | null => {
+    // Define actual industries (in priority order)
+    const actualIndustries = ['Aviation', 'Defense', 'Construction Tech', 'HealthTech', 'EdTech', 'FinTech', 'Sports Tech'];
+    
+    // Find the first actual industry in the list
+    for (const industry of industries) {
+      if (actualIndustries.includes(industry)) {
+        return industry;
+      }
+    }
+    
+    // If no actual industry found, return null (shouldn't happen, but safe fallback)
+    return null;
+  };
+
   // Extract unique values for filters
   const availableRoles = useMemo(() => {
     const roles = new Set<string>();
@@ -59,7 +75,12 @@ export function ProjectsPage() {
 
   const availableIndustries = useMemo(() => {
     const industries = new Set<string>();
-    projects.forEach((p) => p.industry.forEach((i: string) => industries.add(i)));
+    projects.forEach((p) => {
+      const actualIndustry = mapToActualIndustry(p.industry);
+      if (actualIndustry) {
+        industries.add(actualIndustry);
+      }
+    });
     return Array.from(industries).sort();
   }, [projects]);
 
@@ -75,9 +96,34 @@ export function ProjectsPage() {
     return Array.from(years).sort((a, b) => b - a);
   }, [projects]);
 
-  // Filter projects
+  // Filter projects (using mapped industry)
   const filteredProjects = useMemo(() => {
-    return filterProjects(projects, filters);
+    if (!filters.industry) {
+      return filterProjects(projects, filters);
+    }
+    
+    // Filter by mapped industry - check if project's mapped industry matches the filter
+    return projects.filter((project) => {
+      const projectIndustry = mapToActualIndustry(project.industry);
+      if (projectIndustry !== filters.industry) {
+        return false;
+      }
+      
+      // Apply other filters
+      if (filters.role && !project.role.includes(filters.role)) {
+        return false;
+      }
+      if (filters.skills && filters.skills.length > 0) {
+        const hasSkill = filters.skills.some((skill) => project.skills.includes(skill));
+        if (!hasSkill) {
+          return false;
+        }
+      }
+      if (filters.year && project.year !== filters.year) {
+        return false;
+      }
+      return true;
+    });
   }, [projects, filters]);
 
   const yearsRange =

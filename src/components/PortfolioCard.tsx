@@ -11,14 +11,13 @@ function getImpactBullets(project: Project) {
     return [];
   }
   return project.impact
-    .slice(0, 3)
+    .slice(0, 2)
     .map((item) => item.metric || item.label || '')
     .filter(Boolean);
 }
 
 export function PortfolioCard({ project, onViewDetails }: PortfolioCardProps) {
   const bullets = getImpactBullets(project);
-  const tags = Array.from(new Set([...(project.role || []), ...(project.industry || [])])).slice(0, 4);
 
   return (
     <div
@@ -50,19 +49,6 @@ export function PortfolioCard({ project, onViewDetails }: PortfolioCardProps) {
             </li>
           ))}
         </ul>
-      )}
-
-      {tags.length > 0 && (
-        <div className="mt-5 flex flex-wrap gap-2">
-          {tags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full border border-gray-200 px-3 py-1 text-xs font-medium text-gray-600 dark:border-gray-700 dark:text-gray-300"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
       )}
 
       <div className="mt-6 space-y-2">
