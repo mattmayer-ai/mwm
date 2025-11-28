@@ -63,7 +63,7 @@ export function TrustDialogWrapper({ onClose }: TrustDialogWrapperProps) {
               Answers are grounded in Matt's projects, case studies, resume, and teaching notes using retrieval-augmented generation (RAG). The model never pulls from public web data.
             </p>
             <p>
-              The knowledge base draws from over 20 years of Matt's career experience, encompassing more than 10,000 lines of documentation, project details, frameworks, and insights from roles at Air Canada, RaceRocks, and Swift Racks.
+              The model is trained on over 15,000 lines of Matt's real documentation, project work, frameworks, and writing from roles at Air Canada, RaceRocks, and Swift Racks—spanning nearly 20 years of career experience.
             </p>
             <ul className="list-disc pl-5 space-y-1">
               <li><strong>Model:</strong> Anthropic Claude 3.5 Sonnet (AWS Bedrock)</li>

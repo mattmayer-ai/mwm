@@ -34,11 +34,11 @@ export function TrustDialog() {
           }
           
           if (!isNaN(date.getTime())) {
-            setLastIndexedAt(date.toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            }));
+          setLastIndexedAt(date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          }));
           }
         }
       }
@@ -63,7 +63,10 @@ export function TrustDialog() {
           </Dialog.Title>
           <div className="mt-4 text-sm text-gray-700 dark:text-gray-300 space-y-3">
             <p>
-              Answers are grounded in Matt’s projects, case studies, resume, and teaching notes using retrieval-augmented generation (RAG). The model never pulls from public web data.
+              Answers are grounded in Matt's projects, case studies, resume, and teaching notes using retrieval-augmented generation (RAG). The model never pulls from public web data.
+            </p>
+            <p>
+              The model is trained on over 15,000 lines of Matt's real documentation, project work, frameworks, and writing from roles at Air Canada, RaceRocks, and Swift Racks—spanning nearly 20 years of career experience.
             </p>
             <ul className="list-disc pl-5 space-y-1">
               <li><strong>Model:</strong> Anthropic Claude 3.5 Sonnet (AWS Bedrock)</li>
