@@ -126,8 +126,7 @@ export function ProjectsPage() {
     });
   }, [projects, filters]);
 
-  const yearsRange =
-    availableYears.length > 0 ? `${availableYears[availableYears.length - 1]} – ${availableYears[0]}` : '—';
+  const yearsRange = '2010 – 2025';
   const totalIndustries = availableIndustries.length;
   const totalRoles = availableRoles.length;
   const totalProjects = projects.length;
@@ -149,7 +148,7 @@ export function ProjectsPage() {
             {totalProjects} flagship programs across AI/ML & Enterprise SaaS, Aviation, Defense, Fintech, Ed & Construction Tech 
           </h2>
           <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
-            Filter by role, industry, or year to see focused outcomes. Each tile captures the mission, impact, and
+            Filter by role or industry to see focused outcomes. Each tile captures the mission, impact, and
             stack.
           </p>
 
@@ -196,7 +195,6 @@ export function ProjectsPage() {
             availableRoles={availableRoles}
             availableIndustries={availableIndustries}
             availableSkills={availableSkills}
-            availableYears={availableYears}
           />
           <div className="mt-6">
             {loading ? (
