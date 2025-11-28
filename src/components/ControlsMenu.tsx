@@ -33,7 +33,7 @@ export function ControlsMenu() {
                   className={`flex-1 rounded-[10px] px-3 py-1.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-brand-blue/40 ${
                     theme === 'system'
                       ? 'bg-brand-blue text-white'
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-brand-blue hover:text-white'
                   }`}
                 >
                   <Monitor className="w-3 h-3 inline mr-1" />
@@ -44,7 +44,7 @@ export function ControlsMenu() {
                   className={`flex-1 rounded-[10px] px-3 py-1.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-brand-blue/40 ${
                     theme === 'light'
                       ? 'bg-brand-blue text-white'
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-brand-blue hover:text-white'
                   }`}
                 >
                   <Sun className="w-3 h-3 inline mr-1" />
@@ -55,7 +55,7 @@ export function ControlsMenu() {
                   className={`flex-1 rounded-[10px] px-3 py-1.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-brand-blue/40 ${
                     theme === 'dark'
                       ? 'bg-brand-blue text-white'
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-brand-blue hover:text-white'
                   }`}
                 >
                   <Moon className="w-3 h-3 inline mr-1" />
@@ -70,7 +70,7 @@ export function ControlsMenu() {
             <DropdownMenu.Item asChild className="outline-none border-0 focus:outline-none focus:ring-0">
               <button
                 onClick={() => setTrustOpen(true)}
-                className="flex w-full items-center gap-2 rounded-[10px] px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-brand-blue/40 active:outline-none transition-colors"
+                className="flex w-full items-center gap-2 rounded-[10px] px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-brand-blue hover:text-white focus:outline-none focus:ring-2 focus:ring-brand-blue/40 active:outline-none transition-colors"
               >
                 <Info className="w-4 h-4" />
                 How the AI works

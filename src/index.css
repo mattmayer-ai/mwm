@@ -19,14 +19,16 @@ body {
 
 /* Override Radix UI DropdownMenu.Item default focus/active styles */
 [data-radix-dropdown-menu-item] {
-  outline: none;
-  border: none;
+  outline: none !important;
+  border: none !important;
 }
 
 [data-radix-dropdown-menu-item]:focus,
 [data-radix-dropdown-menu-item]:focus-visible,
-[data-radix-dropdown-menu-item][data-highlighted] {
-  outline: none;
-  box-shadow: none;
+[data-radix-dropdown-menu-item][data-highlighted],
+[data-radix-dropdown-menu-item][data-state="open"] {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
