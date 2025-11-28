@@ -53,25 +53,25 @@ export function PortfolioCard({ project, onViewDetails }: PortfolioCardProps) {
 
       <div className="mt-6 space-y-2">
         {/* View Details button */}
-        <button
-          type="button"
-          onClick={() => onViewDetails?.(project)}
+          <button
+            type="button"
+            onClick={() => onViewDetails?.(project)}
           className="w-full flex items-center justify-center gap-1 rounded-[10px] bg-brand-blue px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-pink focus:outline-none focus:ring-2 focus:ring-brand-blue/30"
-        >
-          View details
-          <ArrowUpRight className="h-4 w-4" />
-        </button>
+          >
+            View details
+            <ArrowUpRight className="h-4 w-4" />
+          </button>
         {/* Visit site button */}
         {project.url && (
-          <a
-            href={project.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full flex items-center justify-center gap-1 rounded-[10px] border border-brand-blue bg-white px-3 py-2 text-sm font-semibold text-brand-blue transition-colors hover:bg-brand-blue hover:text-white dark:border-brand-blue dark:bg-gray-900 dark:text-brand-blue dark:hover:bg-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/30"
-          >
-            Visit site
-            <ExternalLink className="h-4 w-4" />
-          </a>
+            <a
+              href={project.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            className="w-full flex items-center justify-center gap-1 rounded-[10px] border border-brand-blue bg-white px-3 py-2 text-sm font-semibold text-brand-blue transition-colors hover:bg-brand-blue hover:text-white dark:border-brand-blue dark:bg-gray-900 dark:text-brand-blue dark:hover:bg-brand-blue dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-brand-blue/30"
+            >
+              Visit site
+              <ExternalLink className="h-4 w-4" />
+            </a>
         )}
       </div>
 
